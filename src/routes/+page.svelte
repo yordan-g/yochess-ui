@@ -2,7 +2,7 @@
 
 </script>
 
-<h1>Welcome to SvelteKit hello 1</h1>
+<h1>this is home</h1>
 
 <style>
 </style>
