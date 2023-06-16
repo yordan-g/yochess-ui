@@ -14,12 +14,12 @@
 <style>
     .layout {
         display: grid;
-        grid-template-columns: 250px 1fr
+        grid-template-columns: 250px 1fr;
+        margin-top:100px
     }
 
     nav {
         position: relative;
-        margin-top: 200px;
     }
 
     nav::after {

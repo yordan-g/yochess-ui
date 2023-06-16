@@ -13,7 +13,8 @@
 
 <style>
 
-    #containerId {
-        width: 500px;
+    .board {
+        width: 600px;
+        justify-self: center;
     }
 </style>
