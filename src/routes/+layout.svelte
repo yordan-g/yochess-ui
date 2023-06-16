@@ -4,7 +4,6 @@
             <li>
                 <a href="/">home</a>
                 <a href="chess">chess</a>
-                <a href="about">about</a>
             </li>
         </ul>
     </nav>
