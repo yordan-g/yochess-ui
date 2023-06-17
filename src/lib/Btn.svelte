@@ -1,5 +1,4 @@
 <script>
-
     export let text;
 </script>
 
@@ -8,5 +7,47 @@
 </button>
 
 <style>
-    @import "../../static/css/shared.css";
+    :global(.btn) {
+        display: inline-block;
+        border: none;
+        text-decoration: none;
+        background-color: white;
+        /*font-size: 40px;*/
+        font-family: Helvetica;
+        font-weight: lighter;
+        padding: 10px 20px;
+        /*border: 1px solid #d3d3d3;*/
+        /*border-radius: 10px;*/
+        color: #2c1252;
+        transition: color 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    :global(.btn:hover) {
+        color: white;
+    }
+
+    :global(.btn::before) {
+        position: absolute;
+        content: "";
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: linear-gradient(
+                to left top,
+                #FF00CEFF,
+                #7f99ff
+        );
+        z-index: -1;
+        transition: opacity 0.3s linear;
+        opacity: 0;
+        border: 1px solid #ffffff;
+        border-radius: 10px;
+    }
+
+    :global(.btn:hover::before) {
+        opacity: 0.7;
+    }
 </style>

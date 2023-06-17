@@ -57,4 +57,8 @@
         justify-content: center;
         align-items: center;
     }
+
+    a {
+        font-size: 40px;
+    }
 </style>
