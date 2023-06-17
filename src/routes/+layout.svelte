@@ -1,9 +1,12 @@
+<script>
+</script>
+
 <div class="layout">
     <nav>
         <ul>
             <li>
-                <a href="/">home</a>
-                <a href="chess">chess</a>
+                <a class="btn" href="/">home</a>
+                <a class="btn" href="chess">chess</a>
             </li>
         </ul>
     </nav>
@@ -53,47 +56,5 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-    }
-
-    a {
-        display: inline-block;
-        font-size: 40px;
-        font-family: Helvetica;
-        font-weight: lighter;
-        text-decoration: none;
-        padding: 10px 20px;
-        /*border: 1px solid #d3d3d3;*/
-        /*border-radius: 10px;*/
-        color: #2c1252;
-        transition: color 0.3s ease;
-        position: relative;
-        z-index: 1;
-    }
-
-    a:hover {
-        color: white;
-    }
-
-    a::before {
-        position: absolute;
-        content: "";
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-image: linear-gradient(
-                to left top,
-                #FF00CEFF,
-                #7f99ff
-        );
-        z-index: -1;
-        transition: opacity 0.3s linear;
-        opacity: 0;
-        border: 1px solid #ffffff;
-        border-radius: 10px;
-    }
-
-    a:hover::before {
-        opacity: 0.7;
     }
 </style>
