@@ -7,7 +7,9 @@
             </li>
         </ul>
     </nav>
-    <slot></slot>
+    <div class="c2">
+        <slot></slot>
+    </div>
 </div>
 
 
@@ -15,7 +17,14 @@
     .layout {
         display: grid;
         grid-template-columns: 250px 1fr;
-        margin-top:100px
+        margin-top: 100px
+    }
+
+    .c2 {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        justify-self: center;
+        gap: 50px;
     }
 
     nav {
