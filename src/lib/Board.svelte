@@ -5,7 +5,7 @@
     import {onMount} from "svelte";
     import {MARKER_TYPE, Markers} from "cm-chessboard/src/extensions/markers/Markers.js";
 
-    let board;
+    export let board;
 
     onMount(async () => {
         board = new Chessboard(document.getElementById("containerId"), {
