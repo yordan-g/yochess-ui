@@ -19,7 +19,7 @@
 
     function inputHandler(event) {
         // console.log(event)
-        board.removeMarkers(MARKER_TYPE.frame)
+        // board.removeMarkers(MARKER_TYPE.frame)
         switch (event.type) {
             case INPUT_EVENT_TYPE.moveInputStarted:
                 // log(`moveInputStarted: ${event.square}`)

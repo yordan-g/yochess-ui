@@ -7,14 +7,13 @@
 </script>
 
 <div class="controls">
-    <Btn on:click={()=> board.setPosition(FEN.start)} text={"Start Position"}></Btn>
-    <Btn on:click={()=>"dsad"} text={"hello1ssssss"}></Btn>
-    <Btn on:click={()=>"dsad"} text={"hello2"}></Btn>
+    <Btn classes="bd" on:click={()=> board.setPosition(FEN.start)} text={"Start Position"}></Btn>
+    <Btn classes="bd" on:click={()=>"dsad"} text={"hello1ssssss"}></Btn>
+    <Btn classes="bd" on:click={()=>"dsad"} text={"hello2"}></Btn>
 </div>
 <Board bind:board/>
 
 <style>
-
     .controls {
         display: flex;
         flex-direction: column;
