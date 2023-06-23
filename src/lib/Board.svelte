@@ -1,7 +1,7 @@
 <script>
     import "cm-chessboard/assets/chessboard.css";
     import "cm-chessboard/assets/extensions/markers/markers.css";
-    import {Chessboard, FEN, INPUT_EVENT_TYPE} from "cm-chessboard/src/Chessboard.js";
+    import {BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE} from "cm-chessboard/src/Chessboard.js";
     import {onMount} from "svelte";
     import {MARKER_TYPE, Markers} from "cm-chessboard/src/extensions/markers/Markers.js";
 
@@ -11,7 +11,11 @@
         board = new Chessboard(document.getElementById("containerId"), {
             position: FEN.start,
             assetsUrl: "../assets/",
-            extensions: [{class: Markers}]
+            extensions: [{class: Markers}],
+            style: {
+                cssClass: "default",
+                borderType: BORDER_TYPE.frame
+            }
         })
 
         board.enableMoveInput(inputHandler)
@@ -28,6 +32,12 @@
                 // log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)q
                 return true
             case INPUT_EVENT_TYPE.moveInputCanceled:
+                return true
+            case INPUT_EVENT_TYPE.moveInputFinished:
+                {
+                    console.log(board.getPosition())
+                    return true
+                }
             // log(`moveInputCanceled`)
         }
     }
