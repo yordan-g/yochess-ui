@@ -5,22 +5,27 @@ let ws;
 
 const state = writable({
     id: '',
-    game: {}
+    game: {
+        position: "",
+    },
+    lastMove: {
+        piece: "",
+        squareFrom: "",
+        squareTo: "",
+        valid: false
+    }
 });
 
-export const sendMessage = () => {
-    ws.send(JSON.stringify({
-                message: "Hello"
-            }
-        )
-    );
+export const sendMessage = (lastMove) => {
+    // console.log(lastMove)
+    ws.send(JSON.stringify(lastMove));
 }
 
 export const connect = async (id) => {
 
     try {
         let resp = await init(id);
-
+        console.log("INIT WS")
         ws = resp.ws;
         state.update((state) => {
             const {id} = resp;
@@ -50,10 +55,10 @@ export const connect = async (id) => {
         const parsed = JSON.parse(message.data);
 
         console.log('request received', message.data);
-        console.log('request received', parsed);
+        // console.log('request received', parsed);
 
         state.update((state) => {
-            return {...state, game: parsed}
+            return {...state, lastMove: parsed}
         });
     });
 

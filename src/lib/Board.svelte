@@ -4,6 +4,7 @@
     import {BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE} from "cm-chessboard/src/Chessboard.js";
     import {onMount} from "svelte";
     import {MARKER_TYPE, Markers} from "cm-chessboard/src/extensions/markers/Markers.js";
+    import {sendMessage} from "$lib/store.js";
 
     export let board;
 
@@ -22,29 +23,24 @@
     });
 
     function inputHandler(event) {
-        // console.log(event)
         board.removeMarkers(MARKER_TYPE.frame)
         switch (event.type) {
             case INPUT_EVENT_TYPE.moveInputStarted:
-                console.log(`move started`)
-                let piece = event.chessboard.getPiece(event.squareFrom)
-                console.log(piece)
+                console.log(`moveInputStarted`);
                 return true
             case INPUT_EVENT_TYPE.validateMoveInput:
-                console.log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)
+                console.log(`validateMoveInput:`);
+                sendMessage({
+                    piece: event.chessboard.getPiece(event.squareFrom),
+                    squareFrom: event.squareFrom,
+                    squareTo: event.squareTo,
+                });
                 return true
             case INPUT_EVENT_TYPE.moveInputCanceled:
-                console.log(`invalid move`)
-                return true
+                console.log("moveInputCanceled")
+                return false
             case INPUT_EVENT_TYPE.moveInputFinished:
-                {
-                    // console.log(board.getPosition())
-                    console.log(event)
-                    // let piece = event.chessboard.getPiece(event.squareTo)
-                    // console.log(piece)
-
-                    return true
-                }
+                return true
         }
     }
 
