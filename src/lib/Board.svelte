@@ -23,22 +23,28 @@
 
     function inputHandler(event) {
         // console.log(event)
-        // board.removeMarkers(MARKER_TYPE.frame)
+        board.removeMarkers(MARKER_TYPE.frame)
         switch (event.type) {
             case INPUT_EVENT_TYPE.moveInputStarted:
-                // log(`moveInputStarted: ${event.square}`)
+                console.log(`move started`)
+                let piece = event.chessboard.getPiece(event.squareFrom)
+                console.log(piece)
                 return true
             case INPUT_EVENT_TYPE.validateMoveInput:
-                // log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)q
+                console.log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)
                 return true
             case INPUT_EVENT_TYPE.moveInputCanceled:
+                console.log(`invalid move`)
                 return true
             case INPUT_EVENT_TYPE.moveInputFinished:
                 {
-                    console.log(board.getPosition())
+                    // console.log(board.getPosition())
+                    console.log(event)
+                    // let piece = event.chessboard.getPiece(event.squareTo)
+                    // console.log(piece)
+
                     return true
                 }
-            // log(`moveInputCanceled`)
         }
     }
 

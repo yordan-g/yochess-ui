@@ -1,14 +1,19 @@
-import { writable } from 'svelte/store';
-import { init } from '$lib/websocket';
+import {writable} from 'svelte/store';
+import {init} from '$lib/websocket';
 
 let ws;
 
 const state = writable({
     id: '',
+    game: {}
 });
 
 export const sendMessage = () => {
-    ws.send("Hello from client");
+    ws.send(JSON.stringify({
+                message: "Hello"
+            }
+        )
+    );
 }
 
 export const connect = async (id) => {
@@ -18,8 +23,8 @@ export const connect = async (id) => {
 
         ws = resp.ws;
         state.update((state) => {
-            const { id } = resp;
-            return { ...state, id};
+            const {id} = resp;
+            return {...state, id};
         });
     } catch (e) {
         state.update((state) => {
@@ -42,10 +47,13 @@ export const connect = async (id) => {
     });
 
     ws.addEventListener('message', (message) => {
-        // const data = JSON.parse(message.data);
+        const parsed = JSON.parse(message.data);
+
         console.log('request received', message.data);
+        console.log('request received', parsed);
+
         state.update((state) => {
-            return { ...state, message: "PO" + message.data }
+            return {...state, game: parsed}
         });
     });
 
