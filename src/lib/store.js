@@ -5,7 +5,7 @@ let ws;
 
 const state = writable({
     id: "",
-    wsStage: "OPEN",
+    wsStage: "",
     game: {
         color: "",
         position: "",
@@ -18,6 +18,11 @@ const state = writable({
     }
 });
 
+export const reset = () => {
+    // console.log(lastMove)
+    ws.send(JSON.stringify({piece: "z"}));
+}
+
 export const sendMessage = (lastMove) => {
     // console.log(lastMove)
     ws.send(JSON.stringify(lastMove));
@@ -28,10 +33,10 @@ export const connect = async (id) => {
         let resp = await init(id);
         console.log("INIT WS")
         ws = resp.ws;
-        state.update((state) => {
-            const {id} = resp;
-            return {...state, id};
-        });
+        // state.update((state) => {
+        //     const {id} = resp;
+        //     return {...state, id};
+        // });
     } catch (e) {
         state.update((state) => {
             state.error = 'There was an error connecting websockets';
@@ -50,40 +55,38 @@ export const connect = async (id) => {
 
     ws.addEventListener('open', () => {
         console.log('Opened websocket');
-        // console.log(message);
-        // console.log(message.data);
-        //
-        // const init = JSON.parse(message.data);
-        //
-        // state.update((state) => {
-        //     return {
-        //         ...state,
-        //         game: {
-        //             ...state.game,
-        //             color: init.color
-        //         }
-        //     };
-        // });
     });
 
     ws.addEventListener('message', (message) => {
-        console.log('request received', message);
-
         const parsed = JSON.parse(message.data);
+        console.log('onMessage', parsed);
+        console.log('open', parsed.color);
 
-        console.log('request received', message.data);
-        // console.log('request received', parsed);
-
-        state.update((state) => {
-            return {...state, lastMove: parsed}
-        });
+        if (parsed.color != undefined) {
+            state.update((state) => {
+                return {
+                    ...state,
+                    wsStage: "OPEN",
+                    game: {
+                        ...state.game,
+                        color: init.color
+                    }
+                };
+            });
+        } else {
+            state.update((state) => {
+                return {
+                    ...state, wsStage: "MESSAGING", lastMove: parsed, game: ""
+                }
+            });
+        }
     });
 
     ws.addEventListener('close', (_message) => {
-        state.update((s) => {
-            s.error = 'The websocket has closed';
-            return s;
-        });
+        // state.update((s) => {
+        //     s.error = 'The websocket has closed';
+        //     return s;
+        // });
     });
 
     ws.addEventListener('error', (_message) => {

@@ -1,6 +1,6 @@
 <script>
     import {onDestroy, onMount} from "svelte";
-    import state, { connect, sendMessage } from '$lib/store';
+    import state, { connect, reset } from '$lib/store';
     import Btn from "$lib/Btn.svelte";
     import Board from "$lib/Board.svelte";
     import { v4 as uuidv4 } from 'uuid';
@@ -9,7 +9,11 @@
     let unsubscribe;
 
     function handleStateUpdate(state) {
-        console.log('State updated:', state);
+        if (state.wsStage == "OPEN") {
+            console.log("-- SET POSITION", state.game.color)
+            board.setOrientation(state.game.color)
+            return;
+        }
 
         switch (state.lastMove.valid) {
             case true: {
@@ -44,7 +48,7 @@
 
 <Board bind:board/>
 
-<Btn classes="bd" on:click={sendMessage} text={"send"}>
+<Btn classes="bd" on:click={reset} text={"send"}>
 </Btn>
 
 <style>
