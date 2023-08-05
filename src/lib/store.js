@@ -4,8 +4,10 @@ import {init} from '$lib/websocket';
 let ws;
 
 const state = writable({
-    id: '',
+    id: "",
+    wsStage: "OPEN",
     game: {
+        color: "",
         position: "",
     },
     lastMove: {
@@ -22,7 +24,6 @@ export const sendMessage = (lastMove) => {
 }
 
 export const connect = async (id) => {
-
     try {
         let resp = await init(id);
         console.log("INIT WS")
@@ -49,9 +50,25 @@ export const connect = async (id) => {
 
     ws.addEventListener('open', () => {
         console.log('Opened websocket');
+        // console.log(message);
+        // console.log(message.data);
+        //
+        // const init = JSON.parse(message.data);
+        //
+        // state.update((state) => {
+        //     return {
+        //         ...state,
+        //         game: {
+        //             ...state.game,
+        //             color: init.color
+        //         }
+        //     };
+        // });
     });
 
     ws.addEventListener('message', (message) => {
+        console.log('request received', message);
+
         const parsed = JSON.parse(message.data);
 
         console.log('request received', message.data);

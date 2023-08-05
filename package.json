@@ -14,7 +14,8 @@
 		"vite": "^4.2.0"
 	},
 	"dependencies": {
-		"cm-chessboard": "^7.7.1"
+		"cm-chessboard": "^7.7.1",
+		"uuid": "^9.0.0"
 	},
 	"type": "module"
 }
