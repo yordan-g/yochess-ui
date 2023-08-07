@@ -8,22 +8,22 @@
     let board;
     let unsubscribe;
 
-    function handleStateUpdate(state) {
+    async function handleStateUpdate(state) {
         if (state.wsStage == "OPEN") {
             console.log("-- SET POSITION", state.game.color)
-            board.setOrientation(state.game.color)
+            await board.setOrientation(state.game.color)
             return;
         }
 
         switch (state.lastMove.valid) {
             case true: {
                 console.log(`Moving ${state.lastMove.squareFrom} - ${state.lastMove.squareTo}`, state);
-                board.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
+                await board.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
                 break;
             }
             default: {
                 console.log(`Moving ${state.lastMove.squareTo} - ${state.lastMove.squareFrom}`, state);
-                board.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
+                await board.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
                 break;
             }
         }

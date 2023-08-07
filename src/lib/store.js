@@ -32,10 +32,6 @@ export const connect = async (id) => {
         let resp = await init(id);
         console.log("INIT WS")
         ws = resp.ws;
-        // state.update((state) => {
-        //     const {id} = resp;
-        //     return {...state, id};
-        // });
     } catch (e) {
         state.update((state) => {
             state.error = 'There was an error connecting websockets';
@@ -68,25 +64,20 @@ export const connect = async (id) => {
                     wsStage: "OPEN",
                     game: {
                         ...state.game,
-                        color: init.color
+                        color: parsed.color
                     }
                 };
             });
         } else {
             state.update((state) => {
                 return {
-                    ...state, wsStage: "MESSAGING", lastMove: parsed, game: ""
+                    ...state, wsStage: "MESSAGING", lastMove: parsed
                 }
             });
         }
     });
 
-    ws.addEventListener('close', (_message) => {
-        // state.update((s) => {
-        //     s.error = 'The websocket has closed';
-        //     return s;
-        // });
-    });
+    ws.addEventListener('close', (_message) => {});
 
     ws.addEventListener('error', (_message) => {
         console.log(_message);
