@@ -19,7 +19,6 @@ const state = writable({
 });
 
 export const reset = () => {
-    // console.log(lastMove)
     ws.send(JSON.stringify({piece: "z"}));
 }
 

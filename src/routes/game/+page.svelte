@@ -31,7 +31,6 @@
 
     onMount(async () => {
             await connect(uuidv4());
-            // await connect('yordan');
             unsubscribe = state.subscribe(handleStateUpdate);
         }
     );
