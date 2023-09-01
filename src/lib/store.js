@@ -1,9 +1,7 @@
 import {writable} from 'svelte/store';
-import {init} from '$lib/websocket';
-
-let ws;
 
 const state = writable({
+    ws: null,
     id: "",
     wsStage: "",
     game: {
@@ -18,41 +16,31 @@ const state = writable({
     }
 });
 
-export const reset = () => {
-    ws.send(JSON.stringify({piece: "z"}));
+export const reset = (ws) => {
+    if (ws !== null) {
+        ws.send(JSON.stringify({piece: "z"}));
+    }
 }
 
-export const sendMessage = (lastMove) => {
+export const sendMessage = (ws, lastMove) => {
+    if (ws !== null) {
+        ws.send(JSON.stringify(lastMove));
+    }
     // console.log(lastMove)
-    ws.send(JSON.stringify(lastMove));
 }
 
-export const connect = async (id) => {
-    try {
-        let resp = await init(id);
-        console.log("INIT WS")
-        ws = resp.ws;
-    } catch (e) {
-        state.update((state) => {
-            state.error = 'There was an error connecting websockets';
-            return state;
-        });
-        return;
+export const connect = (id) => {
+    const wsInit = new WebSocket('ws://localhost:8080/chess/' + id);
+    if (!wsInit) {
+        throw new Error("Server didn't accept WebSocket");
     }
+    console.log(wsInit);
 
-    if (!ws) {
-        state.update((state) => {
-            state.error = 'There was an error connecting websockets';
-            return state;
-        });
-        return;
-    }
-
-    ws.addEventListener('open', () => {
+    wsInit.addEventListener('open', () => {
         console.log('Opened websocket');
     });
 
-    ws.addEventListener('message', (message) => {
+    wsInit.addEventListener('message', (message) => {
         const parsed = JSON.parse(message.data);
         console.log('onMessage', parsed);
         console.log('open', parsed.color);
@@ -77,12 +65,25 @@ export const connect = async (id) => {
         }
     });
 
-    ws.addEventListener('close', (_message) => {});
+    wsInit.addEventListener('close', (_message) => {
+    });
 
-    ws.addEventListener('error', (_message) => {
+    wsInit.addEventListener('error', (_message) => {
         console.log(_message);
         console.log('Something went wrong with the WebSocket');
     });
-};
+
+    state.update((old) => {
+        return {
+            ...old, ws: wsInit
+        };
+    });
+
+// state.update((state) => {
+//     state.error = 'There was an error connecting websockets';
+//     return state;
+// });
+// return;
+}
 
 export default state
