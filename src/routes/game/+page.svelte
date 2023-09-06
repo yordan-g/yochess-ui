@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import state, {reset} from '$lib/store';
     import Btn from "$lib/Btn.svelte";
     import Board from "$lib/Board.svelte";

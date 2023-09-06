@@ -1,9 +1,9 @@
-<script>
+<script lang="ts">
     import Board from "$lib/Board.svelte";
     import Btn from "$lib/Btn.svelte";
-    import {FEN} from "cm-chessboard/src/Chessboard.js";
+    import { Chessboard, FEN } from "cm-chessboard/src/Chessboard.js";
 
-    let board;
+    let board: Chessboard;
 
     function printPosition() {
         console.log(board.getPosition())

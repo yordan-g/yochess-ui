@@ -1,10 +1,10 @@
-<script>
-    export let text;
-    export let classes;
+<script lang="ts">
+  export let text: string;
+  export let classes: string;
 </script>
 
 <button class="btn {classes}" on:click>
-    {text}
+  {text}
 </button>
 
 <style>
