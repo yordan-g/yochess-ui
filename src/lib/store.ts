@@ -51,7 +51,7 @@ export const sendMessage = (ws: WebSocket | null, lastMove: LastMove): void => {
 	// console.log(lastMove)
 };
 
-export const connect = (id: String) => {
+export const connect = (id: String): void => {
 	const wsInit = new WebSocket('ws://localhost:8080/chess/' + id);
 	if (!wsInit) {
 		throw new Error("Server didn't accept WebSocket");
