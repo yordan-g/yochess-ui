@@ -44,10 +44,11 @@ const initialState: GameState = {
 
 const state = writable(initialState);
 
-export const reset = (ws: WebSocket | null): void => {
-	if (ws !== null) {
-		ws.send(JSON.stringify({ piece: 'z' }));
-	}
+export function closeWsConnection() {
+	state.update((old: GameState) => {
+		old.ws?.close();
+		return initialState;
+	});
 };
 
 export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
@@ -57,7 +58,7 @@ export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
 	// console.log(lastMove)
 };
 
-export const connect = (id: String): void => {
+export const connectToWs = (id: String): void => {
 	const wsInit = new WebSocket('ws://localhost:8080/chess/' + id);
 	if (!wsInit) {
 		throw new Error("Server didn't accept WebSocket");

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import state, { connect, sendMessage } from "$lib/store";
+  import state, { closeWsConnection, connectToWs, sendMessage } from "$lib/store";
   import type { Unsubscriber } from "svelte/store";
   import { v4 as uuidv4 } from "uuid";
   import "cm-chessboard/assets/chessboard.css";
@@ -11,10 +11,10 @@
   import type { GameState } from "$lib/store";
 
   let board: Chessboard;
-  let unsubscribe: Unsubscriber | null = null;
+  let unsubscribe: Unsubscriber;
 
   onMount(() => {
-    connect(uuidv4());
+    connectToWs(uuidv4());
 
     board = new Chessboard(document.getElementById("containerId"), {
       position: FEN.start,
@@ -31,10 +31,8 @@
   });
 
   onDestroy(() => {
-    if (unsubscribe) {
-      unsubscribe();
-      unsubscribe = null;
-    }
+    closeWsConnection();
+    if (unsubscribe) unsubscribe();
   });
 
   async function handleStateUpdate(state: GameState) {
