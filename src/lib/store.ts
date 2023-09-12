@@ -5,7 +5,13 @@ type Game = {
 	position: string;
 };
 
-type LastMove = {
+type Message = Init | Move;
+
+type Init = {
+	color: string;
+};
+
+type Move = {
 	piece: string;
 	squareFrom: string;
 	squareTo: string;
@@ -17,7 +23,7 @@ export type GameState = {
 	id: string;
 	wsStage: string;
 	game: Game;
-	lastMove: LastMove;
+	lastMove: Move;
 };
 
 const initialState: GameState = {
@@ -44,7 +50,7 @@ export const reset = (ws: WebSocket | null): void => {
 	}
 };
 
-export const sendMessage = (ws: WebSocket | null, lastMove: LastMove): void => {
+export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
 	if (ws !== null) {
 		ws.send(JSON.stringify(lastMove));
 	}
@@ -62,25 +68,27 @@ export const connect = (id: String): void => {
 		console.log('Opened websocket');
 	});
 
-	wsInit.addEventListener('message', (message) => {
-		const parsed = JSON.parse(message.data);
-		console.log('onMessage', parsed);
-		console.log('open', parsed.color);
+	wsInit.addEventListener('message', (rawMessage: MessageEvent<string>) => {
+		const message: Message = JSON.parse(rawMessage.data);
+		console.log('onMessage', message);
 
-		if (parsed.color != undefined) {
+		if ('color' in message) {
 			state.update((old: GameState) => ({
 				...old,
 				wsStage: 'OPEN',
 				game: {
 					...old.game,
-					color: parsed.color
+					color: message.color
 				}
 			}));
-		} else {
+			return;
+		}
+
+		if ('piece' in message) {
 			state.update((old: GameState) => ({
 				...old,
 				wsStage: 'MESSAGING',
-				lastMove: parsed
+				lastMove: message
 			}));
 		}
 	});
@@ -96,12 +104,6 @@ export const connect = (id: String): void => {
 		...old,
 		ws: wsInit
 	}));
-
-	// state.update((state) => {
-	//     state.error = 'There was an error connecting websockets';
-	//     return state;
-	// });
-	// return;
 };
 
 export default state;
