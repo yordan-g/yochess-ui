@@ -1,4 +1,7 @@
 import { writable } from 'svelte/store';
+import type { VisualMoveInput } from 'cm-chessboard/src/view/VisualMoveInput';
+import { MARKER_TYPE, Markers } from 'cm-chessboard/src/extensions/markers/Markers.js';
+import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from 'cm-chessboard/src/Chessboard.js';
 
 type Game = {
 	color: string;
@@ -19,7 +22,6 @@ type Move = {
 };
 
 export type GameState = {
-	ws: WebSocket | null;
 	id: string;
 	wsStage: string;
 	game: Game;
@@ -27,7 +29,6 @@ export type GameState = {
 };
 
 const initialState: GameState = {
-	ws: null,
 	id: '',
 	wsStage: '',
 	game: {
@@ -42,14 +43,74 @@ const initialState: GameState = {
 	}
 };
 
-const state = writable(initialState);
+export const state = writable(initialState);
+let ws: WebSocket | null;
+let board: Chessboard;
 
-export function closeWsConnection() {
-	state.update((old: GameState) => {
-		old.ws?.close();
-		return initialState;
+export function initBoard() {
+	board = new Chessboard(document.getElementById('containerId'), {
+		position: FEN.start,
+		assetsUrl: '../assets/',
+		extensions: [{ class: Markers }],
+		style: {
+			cssClass: 'default',
+			borderType: BORDER_TYPE.frame
+		}
 	});
-};
+	board.enableMoveInput(inputHandler);
+}
+
+export async function handleStateUpdate(state: GameState) {
+	if (state.wsStage == 'OPEN') {
+		console.log('-- SET POSITION', state.game.color);
+		await board.setOrientation(state.game.color);
+		return;
+	}
+
+	switch (state.lastMove.valid) {
+		case true: {
+			console.log(`Moving ${state.lastMove.squareFrom} - ${state.lastMove.squareTo}`, state);
+			await board.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
+			break;
+		}
+		default: {
+			console.log(`Moving ${state.lastMove.squareTo} - ${state.lastMove.squareFrom}`, state);
+			await board.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
+			break;
+		}
+	}
+}
+
+function inputHandler(event: VisualMoveInput): boolean {
+	board.removeMarkers(MARKER_TYPE.frame);
+	switch (event.type) {
+		case INPUT_EVENT_TYPE.moveInputStarted:
+			console.log(`moveInputStarted`);
+			return true;
+		case INPUT_EVENT_TYPE.validateMoveInput:
+			console.log(`validateMoveInput:`);
+			sendMessage(ws, {
+				piece: event.chessboard.getPiece(event.squareFrom),
+				squareFrom: event.squareFrom,
+				squareTo: event.squareTo,
+				valid: true
+			});
+			return true;
+		case INPUT_EVENT_TYPE.moveInputCanceled:
+			console.log('moveInputCanceled');
+			return false;
+		case INPUT_EVENT_TYPE.moveInputFinished:
+			return true;
+		default: {
+			return false;
+		}
+	}
+}
+
+export function closeWsConnection(): void {
+	ws?.close();
+	state.set(initialState);
+}
 
 export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
 	if (ws !== null) {
@@ -59,17 +120,17 @@ export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
 };
 
 export const connectToWs = (id: String): void => {
-	const wsInit = new WebSocket('ws://localhost:8080/chess/' + id);
-	if (!wsInit) {
+	ws = new WebSocket('ws://localhost:8080/chess/' + id);
+	if (!ws) {
 		throw new Error("Server didn't accept WebSocket");
 	}
-	console.log(wsInit);
+	// console.log(wsInit);
 
-	wsInit.addEventListener('open', () => {
+	ws.addEventListener('open', () => {
 		console.log('Opened websocket');
 	});
 
-	wsInit.addEventListener('message', (rawMessage: MessageEvent<string>) => {
+	ws.addEventListener('message', (rawMessage: MessageEvent<string>) => {
 		const message: Message = JSON.parse(rawMessage.data);
 		console.log('onMessage', message);
 
@@ -94,17 +155,10 @@ export const connectToWs = (id: String): void => {
 		}
 	});
 
-	wsInit.addEventListener('close', (_message) => {});
+	ws.addEventListener('close', (message) => {});
 
-	wsInit.addEventListener('error', (_message) => {
-		console.log(_message);
+	ws.addEventListener('error', (message) => {
+		console.log(message);
 		console.log('Something went wrong with the WebSocket');
 	});
-
-	state.update((old: GameState) => ({
-		...old,
-		ws: wsInit
-	}));
 };
-
-export default state;
