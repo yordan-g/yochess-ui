@@ -1,54 +1,66 @@
-import { writable } from 'svelte/store';
+import { type Unsubscriber, writable, type Writable } from 'svelte/store';
 import type { VisualMoveInput } from 'cm-chessboard/src/view/VisualMoveInput';
 import { MARKER_TYPE, Markers } from 'cm-chessboard/src/extensions/markers/Markers.js';
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from 'cm-chessboard/src/Chessboard.js';
 
-type Game = {
-	color: string;
-	position: string;
+enum MessageType {
+	INIT = 'INIT',
+	MOVE = 'MOVE'
+}
+
+type InitGame = {
+	ws: WebSocket | null;
+	board: Chessboard | null;
+	gameId: string | null;
+	color: string | null;
+	position: string | null;
 };
 
 type Message = Init | Move;
 
 type Init = {
+	type: MessageType.INIT;
 	color: string;
+	gameId: string;
 };
 
 type Move = {
+	type: MessageType.MOVE;
 	piece: string;
 	squareFrom: string;
 	squareTo: string;
+	gameId: string;
 	valid: boolean;
 };
 
 export type GameState = {
-	id: string;
-	wsStage: string;
-	game: Game;
 	lastMove: Move;
 };
 
 const initialState: GameState = {
-	id: '',
-	wsStage: '',
-	game: {
-		color: '',
-		position: ''
-	},
 	lastMove: {
+		type: MessageType.MOVE,
 		piece: '',
 		squareFrom: '',
 		squareTo: '',
-		valid: false
+		gameId: '',
+		valid: true
 	}
 };
 
-export const state = writable(initialState);
-let ws: WebSocket | null;
-let board: Chessboard;
+const gameNotStarted: InitGame = {
+	ws: null,
+	color: null,
+	gameId: null,
+	board: null,
+	position: null
+};
 
-export function initBoard() {
-	board = new Chessboard(document.getElementById('containerId'), {
+let initGame: InitGame = { ...gameNotStarted };
+export const startedGameState: Writable<GameState> = writable(initialState);
+
+export function initBoard(): Unsubscriber {
+	initGame.board = new Chessboard(document.getElementById('containerId'), {
 		position: FEN.start,
 		assetsUrl: '../assets/',
 		extensions: [{ class: Markers }],
@@ -57,42 +69,40 @@ export function initBoard() {
 			borderType: BORDER_TYPE.frame
 		}
 	});
-	board.enableMoveInput(inputHandler);
+	initGame.board.enableMoveInput(inputHandler);
+
+	return startedGameState.subscribe(handleStateUpdate);
 }
 
-export async function handleStateUpdate(state: GameState) {
-	if (state.wsStage == 'OPEN') {
-		console.log('-- SET POSITION', state.game.color);
-		await board.setOrientation(state.game.color);
-		return;
-	}
-
+export async function handleStateUpdate(state: GameState): Promise<void> {
 	switch (state.lastMove.valid) {
 		case true: {
 			console.log(`Moving ${state.lastMove.squareFrom} - ${state.lastMove.squareTo}`, state);
-			await board.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
+			await initGame.board?.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
 			break;
 		}
 		default: {
 			console.log(`Moving ${state.lastMove.squareTo} - ${state.lastMove.squareFrom}`, state);
-			await board.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
+			await initGame.board?.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
 			break;
 		}
 	}
 }
 
 function inputHandler(event: VisualMoveInput): boolean {
-	board.removeMarkers(MARKER_TYPE.frame);
+	initGame.board?.removeMarkers(MARKER_TYPE.frame);
 	switch (event.type) {
 		case INPUT_EVENT_TYPE.moveInputStarted:
 			console.log(`moveInputStarted`);
 			return true;
 		case INPUT_EVENT_TYPE.validateMoveInput:
 			console.log(`validateMoveInput:`);
-			sendMessage(ws, {
+			sendMessage(initGame.ws, {
+				type: MessageType.MOVE,
 				piece: event.chessboard.getPiece(event.squareFrom),
 				squareFrom: event.squareFrom,
 				squareTo: event.squareTo,
+				gameId: initGame.gameId ?? 'init',
 				valid: true
 			});
 			return true;
@@ -108,56 +118,52 @@ function inputHandler(event: VisualMoveInput): boolean {
 }
 
 export function closeWsConnection(): void {
-	ws?.close();
-	state.set(initialState);
+	initGame.ws?.close();
+	initGame = { ...gameNotStarted };
+	startedGameState.set(initialState);
 }
 
 export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
 	if (ws !== null) {
 		ws.send(JSON.stringify(lastMove));
 	}
-	// console.log(lastMove)
 };
 
-export const connectToWs = (id: String): void => {
-	ws = new WebSocket('ws://localhost:8080/chess/' + id);
-	if (!ws) {
+export const connectToWs = (username: String): void => {
+	initGame.ws = new WebSocket(`ws://localhost:8080/chess/${username}/${initGame.gameId}`);
+	if (!initGame.ws) {
 		throw new Error("Server didn't accept WebSocket");
 	}
-	// console.log(wsInit);
 
-	ws.addEventListener('open', () => {
+	initGame.ws.addEventListener('open', () => {
 		console.log('Opened websocket');
 	});
 
-	ws.addEventListener('message', (rawMessage: MessageEvent<string>) => {
+	initGame.ws.addEventListener('message', (rawMessage: MessageEvent<string>) => {
 		const message: Message = JSON.parse(rawMessage.data);
 		console.log('onMessage', message);
 
-		if ('color' in message) {
-			state.update((old: GameState) => ({
-				...old,
-				wsStage: 'OPEN',
-				game: {
-					...old.game,
-					color: message.color
-				}
-			}));
+		if (message.type == MessageType.INIT) {
+			initGame.gameId = message.gameId;
+
+			if (initGame.color == null) {
+				initGame.color = message.color;
+				initGame.board?.setOrientation(message.color);
+				console.log(`Set orientation to ${message.color}`);
+			}
 			return;
 		}
 
-		if ('piece' in message) {
-			state.update((old: GameState) => ({
-				...old,
-				wsStage: 'MESSAGING',
+		if (message.type == MessageType.MOVE) {
+			startedGameState.update((old: GameState) => ({
 				lastMove: message
 			}));
 		}
 	});
 
-	ws.addEventListener('close', (message) => {});
+	initGame.ws.addEventListener('close', (message) => {});
 
-	ws.addEventListener('error', (message) => {
+	initGame.ws.addEventListener('error', (message) => {
 		console.log(message);
 		console.log('Something went wrong with the WebSocket');
 	});
