@@ -7,9 +7,9 @@
     <nav>
         <ul>
             <li>
-                <a class="btn" href="/">home</a>
-                <a class="btn" href="chess">chess</a>
-                <a class="btn" href="game">play</a>
+                <a class="btn" href="/">Home</a>
+                <a class="btn" href="practice">Practice</a>
+                <a class="btn" href="game">Play</a>
             </li>
         </ul>
     </nav>
