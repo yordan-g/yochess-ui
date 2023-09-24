@@ -5,22 +5,19 @@ import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from 'cm-chessboard/sr
 
 enum MessageType {
 	INIT = 'INIT',
+	START = 'START',
 	MOVE = 'MOVE'
 }
 
-type InitGame = {
-	ws: WebSocket | null;
-	board: Chessboard | null;
-	gameId: string | null;
-	color: string | null;
-	position: string | null;
-};
-
-type Message = Init | Move;
+type Message = Init | Start | Move;
 
 type Init = {
 	type: MessageType.INIT;
-	color: string;
+};
+
+type Start = {
+	type: MessageType.START;
+	color: string | null;
 	gameId: string;
 };
 
@@ -31,6 +28,14 @@ type Move = {
 	squareTo: string;
 	gameId: string;
 	valid: boolean;
+};
+
+type InitGame = {
+	ws: WebSocket | null;
+	board: Chessboard | null;
+	gameId: string | null;
+	color: string | null;
+	position: string | null;
 };
 
 export type GameState = {
@@ -58,6 +63,7 @@ const gameNotStarted: InitGame = {
 
 let initGame: InitGame = { ...gameNotStarted };
 export const startedGameState: Writable<GameState> = writable(initialState);
+export const isLoading: Writable<boolean> = writable(true);
 
 export function initBoard(): Unsubscriber {
 	initGame.board = new Chessboard(document.getElementById('containerId'), {
@@ -70,6 +76,7 @@ export function initBoard(): Unsubscriber {
 		}
 	});
 	initGame.board.enableMoveInput(inputHandler);
+	initGame.board.setOrientation(initGame.color!!);
 
 	return startedGameState.subscribe(handleStateUpdate);
 }
@@ -121,6 +128,7 @@ export function closeWsConnection(): void {
 	initGame.ws?.close();
 	initGame = { ...gameNotStarted };
 	startedGameState.set(initialState);
+	isLoading.set(true);
 }
 
 export const sendMessage = (ws: WebSocket | null, lastMove: Move): void => {
@@ -143,21 +151,24 @@ export const connectToWs = (username: String): void => {
 		const message: Message = JSON.parse(rawMessage.data);
 		console.log('onMessage', message);
 
-		if (message.type == MessageType.INIT) {
-			initGame.gameId = message.gameId;
-
-			if (initGame.color == null) {
-				initGame.color = message.color;
-				initGame.board?.setOrientation(message.color);
-				console.log(`Set orientation to ${message.color}`);
+		switch (message.type) {
+			case MessageType.INIT: {
+				break;
 			}
-			return;
-		}
-
-		if (message.type == MessageType.MOVE) {
-			startedGameState.update((old: GameState) => ({
-				lastMove: message
-			}));
+			case MessageType.START: {
+				initGame.gameId = message.gameId;
+				initGame.color = message.color;
+				isLoading.set(false);
+				break;
+			}
+			case MessageType.MOVE: {
+				startedGameState.update((old: GameState) => ({
+					lastMove: message
+				}));
+				break;
+			}
+			default:
+				break;
 		}
 	});
 
