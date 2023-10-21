@@ -28,6 +28,7 @@ type Move = {
 	squareTo: string;
 	gameId: string;
 	valid: boolean;
+	enPassantCapture: string | null;
 };
 
 type InitGame = {
@@ -49,7 +50,8 @@ const initialState: GameState = {
 		squareFrom: '',
 		squareTo: '',
 		gameId: '',
-		valid: true
+		valid: true,
+		enPassantCapture: null
 	}
 };
 
@@ -86,11 +88,14 @@ export async function handleStateUpdate(state: GameState): Promise<void> {
 		case true: {
 			console.log(`Moving ${state.lastMove.squareFrom} - ${state.lastMove.squareTo}`, state);
 			await initGame.board?.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
+			if (state.lastMove.enPassantCapture) {
+				await initGame.board?.setPiece(state.lastMove.enPassantCapture, null, true);
+			}
 			break;
 		}
 		default: {
-			console.log(`Moving ${state.lastMove.squareTo} - ${state.lastMove.squareFrom}`, state);
-			await initGame.board?.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
+			// console.log(`Moving ${state.lastMove.squareTo} - ${state.lastMove.squareFrom}`, state);
+			// await initGame.board?.movePiece(state.lastMove.squareTo, state.lastMove.squareFrom);
 			break;
 		}
 	}
@@ -100,24 +105,28 @@ function inputHandler(event: VisualMoveInput): boolean {
 	initGame.board?.removeMarkers(MARKER_TYPE.frame);
 	switch (event.type) {
 		case INPUT_EVENT_TYPE.moveInputStarted:
-			console.log(`moveInputStarted`);
+			// console.log(`moveInputStarted`);
 			return true;
 		case INPUT_EVENT_TYPE.validateMoveInput:
 			console.log(`validateMoveInput:`);
+			console.log(event);
+			console.log(event.chessboard.getPosition());
+
 			sendMessage(initGame.ws, {
 				type: MessageType.MOVE,
 				piece: event.chessboard.getPiece(event.squareFrom),
 				squareFrom: event.squareFrom,
 				squareTo: event.squareTo,
 				gameId: initGame.gameId ?? 'init',
-				valid: true
+				valid: true,
+				enPassantCapture: null
 			});
-			return true;
+			return false;
 		case INPUT_EVENT_TYPE.moveInputCanceled:
 			console.log('moveInputCanceled');
-			return false;
-		case INPUT_EVENT_TYPE.moveInputFinished:
 			return true;
+		case INPUT_EVENT_TYPE.moveInputFinished:
+			return false;
 		default: {
 			return false;
 		}

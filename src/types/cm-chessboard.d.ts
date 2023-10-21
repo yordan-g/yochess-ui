@@ -10,6 +10,8 @@ declare module 'cm-chessboard/src/Chessboard.js' {
 
 		async movePiece(squareFrom: string, squareTo: string, animated?: boolean): Promise<void>;
 
+		async setPiece(square: string, piece: string | null, animated?: boolean): Promise<void>;
+
 		removeMarkers(type?: any, square?: any): void;
 
 		enableMoveInput(eventHandler: (event: VisualMoveInput) => Boolean, color?: any): void;
