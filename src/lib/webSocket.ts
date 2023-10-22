@@ -1,7 +1,8 @@
 import { type Unsubscriber, writable, type Writable } from 'svelte/store';
 import type { VisualMoveInput } from 'cm-chessboard/src/view/VisualMoveInput';
-import { MARKER_TYPE, Markers } from 'cm-chessboard/src/extensions/markers/Markers.js';
-import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from 'cm-chessboard/src/Chessboard.js';
+import { MARKER_TYPE, Markers } from 'cm-chessboard/src/extensions/markers/Markers';
+import { PromotionDialog } from 'cm-chessboard/src/extensions/promotion-dialog/PromotionDialog';
+import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from 'cm-chessboard/src/Chessboard';
 
 enum MessageType {
 	INIT = 'INIT',
@@ -29,6 +30,7 @@ type Move = {
 	gameId: string;
 	valid: boolean;
 	enPassantCapture: string | null;
+	promotion: string | null;
 };
 
 type InitGame = {
@@ -51,7 +53,8 @@ const initialState: GameState = {
 		squareTo: '',
 		gameId: '',
 		valid: true,
-		enPassantCapture: null
+		enPassantCapture: null,
+		promotion: null
 	}
 };
 
@@ -71,7 +74,7 @@ export function initBoard(): Unsubscriber {
 	initGame.board = new Chessboard(document.getElementById('containerId'), {
 		position: FEN.start,
 		assetsUrl: '../assets/',
-		extensions: [{ class: Markers }],
+		extensions: [{ class: Markers }, { class: PromotionDialog }],
 		style: {
 			cssClass: 'default',
 			borderType: BORDER_TYPE.frame
@@ -90,6 +93,9 @@ export async function handleStateUpdate(state: GameState): Promise<void> {
 			await initGame.board?.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
 			if (state.lastMove.enPassantCapture) {
 				await initGame.board?.setPiece(state.lastMove.enPassantCapture, null, true);
+			}
+			if (state.lastMove.promotion) {
+				await initGame.board?.setPiece(state.lastMove.squareTo, state.lastMove.promotion, true);
 			}
 			break;
 		}
@@ -111,16 +117,37 @@ function inputHandler(event: VisualMoveInput): boolean {
 			console.log(`validateMoveInput:`);
 			console.log(event);
 			console.log(event.chessboard.getPosition());
-
-			sendMessage(initGame.ws, {
+			let moveRequest: Move = {
 				type: MessageType.MOVE,
 				piece: event.chessboard.getPiece(event.squareFrom),
 				squareFrom: event.squareFrom,
 				squareTo: event.squareTo,
 				gameId: initGame.gameId ?? 'init',
 				valid: true,
-				enPassantCapture: null
-			});
+				enPassantCapture: null,
+				promotion: null
+			};
+
+			if (event.squareTo.charAt(1) === '8' && event.piece.charAt(1) === 'p') {
+				// @ts-ignore
+				initGame.board?.showPromotionDialog(event.squareTo, 'w', (result) => {
+					console.log('Promotion result', result);
+
+					sendMessage(initGame.ws, { ...moveRequest, promotion: result.piece });
+				});
+				return false;
+			}
+			if (event.squareTo.charAt(1) === '1' && event.piece.charAt(1) === 'p') {
+				// @ts-ignore
+				initGame.board?.showPromotionDialog(event.squareTo, 'b', (result) => {
+					console.log('Promotion result', result);
+
+					sendMessage(initGame.ws, { ...moveRequest, promotion: result.piece });
+				});
+				return false;
+			}
+
+			sendMessage(initGame.ws, moveRequest);
 			return false;
 		case INPUT_EVENT_TYPE.moveInputCanceled:
 			console.log('moveInputCanceled');

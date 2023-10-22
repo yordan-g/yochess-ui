@@ -5,6 +5,7 @@
     import { onDestroy, onMount } from "svelte";
     import "cm-chessboard/assets/chessboard.css";
     import "cm-chessboard/assets/extensions/markers/markers.css";
+    import "cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css";
 
     let unsubscribe: Unsubscriber;
 
