@@ -22,6 +22,12 @@ type Start = {
 	gameId: string;
 };
 
+type Castle = {
+	rook: string;
+	rookPosStart: string;
+	rookPosEnd: string;
+};
+
 type Move = {
 	type: MessageType.MOVE;
 	piece: string;
@@ -31,6 +37,7 @@ type Move = {
 	valid: boolean;
 	enPassantCapture: string | null;
 	promotion: string | null;
+	castle: Castle | null;
 };
 
 type InitGame = {
@@ -54,7 +61,8 @@ const initialState: GameState = {
 		gameId: '',
 		valid: true,
 		enPassantCapture: null,
-		promotion: null
+		promotion: null,
+		castle: null
 	}
 };
 
@@ -97,6 +105,14 @@ export async function handleStateUpdate(state: GameState): Promise<void> {
 			if (state.lastMove.promotion) {
 				await initGame.board?.setPiece(state.lastMove.squareTo, state.lastMove.promotion, true);
 			}
+			if (state.lastMove.castle) {
+				await initGame.board?.setPiece(state.lastMove.castle.rookPosStart, null, true);
+				await initGame.board?.setPiece(
+					state.lastMove.castle.rookPosEnd,
+					state.lastMove.castle.rook,
+					true
+				);
+			}
 			break;
 		}
 		default: {
@@ -125,7 +141,8 @@ function inputHandler(event: VisualMoveInput): boolean {
 				gameId: initGame.gameId ?? 'init',
 				valid: true,
 				enPassantCapture: null,
-				promotion: null
+				promotion: null,
+				castle: null
 			};
 
 			if (event.squareTo.charAt(1) === '8' && event.piece.charAt(1) === 'p') {
