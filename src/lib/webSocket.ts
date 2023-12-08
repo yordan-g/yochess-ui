@@ -35,7 +35,7 @@ type Move = {
 	squareTo: string;
 	gameId: string;
 	valid: boolean;
-	enPassantCapture: string | null;
+	enPassantCapturePos: string | null;
 	promotion: string | null;
 	castle: Castle | null;
 };
@@ -60,7 +60,7 @@ const initialState: GameState = {
 		squareTo: '',
 		gameId: '',
 		valid: true,
-		enPassantCapture: null,
+		enPassantCapturePos: null,
 		promotion: null,
 		castle: null
 	}
@@ -99,8 +99,8 @@ export async function handleStateUpdate(state: GameState): Promise<void> {
 		case true: {
 			console.log(`Moving ${state.lastMove.squareFrom} - ${state.lastMove.squareTo}`, state);
 			await initGame.board?.movePiece(state.lastMove.squareFrom, state.lastMove.squareTo);
-			if (state.lastMove.enPassantCapture) {
-				await initGame.board?.setPiece(state.lastMove.enPassantCapture, null, true);
+			if (state.lastMove.enPassantCapturePos) {
+				await initGame.board?.setPiece(state.lastMove.enPassantCapturePos, null, true);
 			}
 			if (state.lastMove.promotion) {
 				await initGame.board?.setPiece(state.lastMove.squareTo, state.lastMove.promotion, true);
@@ -139,8 +139,8 @@ function inputHandler(event: VisualMoveInput): boolean {
 				squareFrom: event.squareFrom,
 				squareTo: event.squareTo,
 				gameId: initGame.gameId ?? 'init',
-				valid: true,
-				enPassantCapture: null,
+				valid: false,
+				enPassantCapturePos: null,
 				promotion: null,
 				castle: null
 			};
