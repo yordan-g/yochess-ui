@@ -1,30 +1,23 @@
 <script lang="ts">
-    import { fade } from "svelte/transition";
-    import { initBoard } from "$lib/webSocket";
-    import type { Unsubscriber } from "svelte/store";
-    import { onDestroy, onMount } from "svelte";
-    import "cm-chessboard/assets/chessboard.css";
-    import "cm-chessboard/assets/extensions/markers/markers.css";
-    import "cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css";
+	import { fade } from "svelte/transition";
+	import { initBoard } from "./webSocket.svelte";
+	import { onMount } from "svelte";
+	import "cm-chessboard/assets/chessboard.css";
+	import "cm-chessboard/assets/extensions/markers/markers.css";
+	import "cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css";
 
-    let unsubscribe: Unsubscriber;
-
-    onMount(() => {
-        unsubscribe = initBoard();
-    });
-
-    onDestroy(() => {
-        if (unsubscribe) unsubscribe();
-    });
+	onMount(() => {
+		initBoard();
+	});
 
 </script>
 
 <div in:fade="{{ duration: 700 }}" class="board"
-     id="containerId">
+	 id="containerId">
 </div>
 
 <style>
-    .board {
-        width: 600px;
-    }
+	.board {
+		width: 600px;
+	}
 </style>
