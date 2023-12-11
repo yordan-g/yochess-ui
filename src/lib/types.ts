@@ -34,6 +34,8 @@ export type Move = {
 	enPassantCapturePos: string | null;
 	promotion: string | null;
 	castle: Castle | null;
+	whiteCaptures: string[];
+	blackCaptures: string[];
 };
 
 export type InitGame = {

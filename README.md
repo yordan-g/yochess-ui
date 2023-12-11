@@ -32,3 +32,8 @@ You can preview the production build with `npm run preview`.
 ### JS Chess UI library
 
 - https://github.com/shaack/cm-chessboard
+
+### Notes
+
+#### SSR state problem
+- https://blog.aakashgoplani.in/avoid-shared-state-on-the-server-in-sveltekit

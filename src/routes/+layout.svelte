@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/global.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
 
 <script>
 </script>
@@ -13,9 +14,7 @@
 			</li>
 		</ul>
 	</nav>
-	<div class="c2">
-		<slot></slot>
-	</div>
+	<slot></slot>
 </div>
 
 
@@ -23,25 +22,18 @@
 	.layout {
 		display: grid;
 		grid-template-columns: 250px 1fr;
-		margin-top: 100px
-	}
-
-	.c2 {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		justify-self: center;
-		gap: 50px;
 	}
 
 	nav {
+		margin-top: 100px;
 		position: relative;
 	}
 
 	nav::after {
 		content: "";
 		position: absolute;
-		top: -100px;
-		bottom: -100px;
+		top: -200px;
+		bottom: -200px;
 		right: 0px;
 		border-right: 3px solid #d3d3d3;
 		border-radius: 10px;
