@@ -5,6 +5,7 @@ import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/sr
 import type { GameState, InitGame, Message, Move } from "$lib/types";
 import { MessageType } from "$lib/types";
 import { getContext } from "svelte";
+import { PUBLIC_WS_BASE_URL } from "$env/static/public";
 
 const GAME_NOT_STARTED: InitGame = {
 	ws: null,
@@ -56,7 +57,7 @@ export function initBoard(gameState: GameState) {
 		extensions: [{ class: Markers }, { class: PromotionDialog }],
 		style: {
 			cssClass: "default",
-			borderType: BORDER_TYPE.frame
+			borderType: BORDER_TYPE.thin
 		}
 	});
 	gameState.game.board.enableMoveInput(createEventHandler(gameState));
@@ -163,7 +164,7 @@ async function sendMessage(ws: WebSocket | null, moveRequest: Move) {
 
 export function connectToWs(username: String, gameState: GameState): void {
 	gameState.game.ws = new WebSocket(
-		`ws://localhost:8080/chess/${username}/${gameState.game.gameId}`
+		`${PUBLIC_WS_BASE_URL}/${username}/${gameState.game.gameId}`
 	);
 	if (!gameState.game.ws) {
 		throw new Error("Server didn't accept WebSocket");

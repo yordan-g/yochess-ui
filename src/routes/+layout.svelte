@@ -1,16 +1,27 @@
 <link rel="stylesheet" href="/css/global.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<script lang="ts">
+	import { page } from "$app/stores";
 
-<script>
 </script>
 
 <div class="layout">
 	<nav>
 		<ul>
 			<li>
-				<a class="btn" href="/">Home</a>
-				<a class="btn" href="practice">Practice</a>
-				<a class="btn" href="play">Play</a>
+				<a href="/" class="btn"
+				   class:highlighted={$page.url.pathname === '/'}
+				>Home
+				</a>
+				<a href="practice"
+				   class="btn"
+				   class:highlighted={$page.url.pathname === '/practice'}
+				>Practice
+				</a>
+				<a href="play" class="btn"
+				   class:highlighted={$page.url.pathname === '/play'}
+				>Play</a>
 			</li>
 		</ul>
 	</nav>
@@ -27,6 +38,10 @@
 	nav {
 		margin-top: 100px;
 		position: relative;
+	}
+
+	a {
+		color: rgba(0, 0, 0, 85%);
 	}
 
 	nav::after {
@@ -56,4 +71,17 @@
 	a {
 		font-size: 40px;
 	}
+
+	.highlighted::before {
+		opacity: 0.7;
+	}
+
+	.highlighted::after {
+		opacity: 1;
+	}
+
+	.highlighted:hover::after {
+		opacity: 0;
+	}
+
 </style>

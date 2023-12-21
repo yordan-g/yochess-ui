@@ -21,29 +21,29 @@
 
 </script>
 
-<!--<div class="play-c">-->
-<!--	<div class="game-c">-->
-<!--		<PlayerInfo color={color == "w" ? "b" : "w"} />-->
-<!--		<Board />-->
-<!--		<PlayerInfo color={color} />-->
-<!--	</div>-->
-<!--	<div class="chat-c">-->
-<!--	</div>-->
-<!--</div>-->
-
-{#if game.state.game.isLoading}
-	<Spinner />
-{:else}
-	<div class="play-c">
-		<div class="game-c">
-			<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />
-			<Board />
-			<PlayerInfo color={game.state.game.color} />
-		</div>
-		<div class="chat-c">
-		</div>
+<div class="play-c">
+	<div class="game-c">
+		<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />
+		<Board />
+		<PlayerInfo color={game.state.game.color} />
 	</div>
-{/if}
+	<div class="chat-c">
+	</div>
+</div>
+
+<!--{#if game.state.game.isLoading}-->
+<!--	<Spinner />-->
+<!--{:else}-->
+<!--	<div class="play-c">-->
+<!--		<div class="game-c">-->
+<!--			<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />-->
+<!--			<Board />-->
+<!--			<PlayerInfo color={game.state.game.color} />-->
+<!--		</div>-->
+<!--		<div class="chat-c">-->
+<!--		</div>-->
+<!--	</div>-->
+<!--{/if}-->
 
 <style>
 	.play-c {
@@ -61,6 +61,10 @@
 	}
 
 	.chat-c {
-		border: 1px solid black;
+		/*border: 1px solid black;*/
+		border-radius: 10px;
+
+		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
+		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
 	}
 </style>

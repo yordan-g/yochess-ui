@@ -22,10 +22,10 @@
 	.board {
 		width: 600px;
 
-		box-shadow: rgba(128, 128, 128, 0.8) 0px 3px 3px -2px,
-		rgba(128, 128, 128, 0.5) 0px 6px 2px -4px,
-		rgba(128, 128, 128, 0.3) 0px 9px 2px -6px,
-		rgba(128, 128, 128, 0.2) 1px 3px 3px 2px,
-		rgba(128, 128, 128, 0.1) 2px 3px 3px 5px;
+		box-shadow: rgba(80, 80, 80, 1) 0px 3px 3px -2px,
+		rgba(80, 80, 80, 1) 0px 5px 3px -3px,
+		rgba(80, 80, 80, 1) 0px 8px 3px -4px,
+		rgba(128, 128, 128, 0.5) 0px 16px 2px -5px,
+		rgba(128, 128, 128, 0.3) 5px 5px 5px 7px;
 	}
 </style>

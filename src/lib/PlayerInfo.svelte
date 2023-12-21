@@ -13,11 +13,12 @@
 
 <div class="player-info">
 	<div class="user-c">
-		<i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>
-		<span>Yordan</span>
+<!--		<i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>-->
+		<span class="material-symbols-outlined i-face">face_6</span>
+		<span>Yordan Ganev</span>
 	</div>
 	<div class="time-c">
-		<span>05:00</span>
+		<span>03:59</span>
 	</div>
 	<div class="pieces-c">
 		{#each captures.toSorted(compareFn) as piece}
@@ -30,13 +31,12 @@
 <style>
 	.player-info {
 		display: grid;
-		grid-template-columns: 1fr 1fr 3fr;
-		/*border: 1px solid black;*/
+		grid-template-columns: 200px 100px 2fr;
 	}
 
 	.user-c {
 		display: flex;
-		justify-content: center;
+		justify-content: start;
 		align-items: center;
 		column-gap: 10px;
 	}
@@ -45,9 +45,11 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-size: x-large;
-		border: 2px solid #bb34a3;
+		font-family: "Digital Bold", Helvetica;
+		font-size: 35px;
 		border-radius: 15px;
+		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
+		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
 	}
 
 	.pieces-c {
@@ -58,11 +60,22 @@
 		font-size: x-large;
 	}
 
-	span {
-		font-size: larger;
+	.user-c span {
+		font-size: 18px;
+	}
+	.i-face {
+		font-size: 40px !important;
 	}
 
 	i {
 		color: #2c1252;
 	}
+
+	 .material-symbols-outlined {
+		 font-variation-settings:
+			 'FILL' 0,
+			 'wght' 200,
+			 'GRAD' 0,
+			 'opsz' 24
+	 }
 </style>
