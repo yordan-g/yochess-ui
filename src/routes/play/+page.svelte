@@ -11,7 +11,7 @@
 	setContext(GAME_STATE_KEY, game);
 
 	onMount(() => {
-		connectToWs(uuidv4(), game.state);
+		connectToWs(uuidv4(), game);
 	});
 
 	onDestroy(() => {
@@ -21,29 +21,29 @@
 
 </script>
 
-<div class="play-c">
-	<div class="game-c">
-		<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />
-		<Board />
-		<PlayerInfo color={game.state.game.color} />
-	</div>
-	<div class="chat-c">
-	</div>
-</div>
-
-<!--{#if game.state.game.isLoading}-->
-<!--	<Spinner />-->
-<!--{:else}-->
-<!--	<div class="play-c">-->
-<!--		<div class="game-c">-->
-<!--			<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />-->
-<!--			<Board />-->
-<!--			<PlayerInfo color={game.state.game.color} />-->
-<!--		</div>-->
-<!--		<div class="chat-c">-->
-<!--		</div>-->
+<!--<div class="play-c">-->
+<!--	<div class="game-c">-->
+<!--		<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />-->
+<!--		<Board />-->
+<!--		<PlayerInfo color={game.state.game.color} />-->
 <!--	</div>-->
-<!--{/if}-->
+<!--	<div class="chat-c">-->
+<!--	</div>-->
+<!--</div>-->
+
+{#if game.state.game.isLoading}
+	<Spinner />
+{:else}
+	<div class="play-c">
+		<div class="game-c">
+			<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />
+			<Board />
+			<PlayerInfo color={game.state.game.color} />
+		</div>
+		<div class="chat-c">
+		</div>
+	</div>
+{/if}
 
 <style>
 	.play-c {
@@ -61,7 +61,6 @@
 	}
 
 	.chat-c {
-		/*border: 1px solid black;*/
 		border-radius: 10px;
 
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,

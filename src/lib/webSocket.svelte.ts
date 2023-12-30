@@ -6,6 +6,7 @@ import type { GameState, InitGame, Message, Move } from "$lib/types";
 import { MessageType } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
+import { START_TIME } from "$lib/utils.svelte";
 
 const GAME_NOT_STARTED: InitGame = {
 	ws: null,
@@ -26,7 +27,9 @@ const INIT_MOVE: Move = {
 	promotion: null,
 	castle: null,
 	whiteCaptures: [],
-	blackCaptures: []
+	blackCaptures: [],
+	timeLeft: START_TIME,
+	turn: "w"
 };
 
 const INITIAL_STATE: GameState = {
@@ -38,15 +41,22 @@ export const GAME_STATE_KEY = "gameState";
 
 export function initGameState() {
 	const state = $state<GameState>(INITIAL_STATE);
+	let turn = $state("w");
 
 	return {
 		get state() {
 			return state;
+		},
+		get turn() {
+			return turn;
+		},
+		set turn(value: string) {
+			turn = value;
 		}
 	};
 }
 
-export function getGameState(): { readonly state: GameState } {
+export function getGameState() {
 	return getContext(GAME_STATE_KEY);
 }
 
@@ -92,17 +102,15 @@ async function updateBoard(move: Move, gameState: GameState): Promise<void> {
 }
 
 function createEventHandler(gameState: GameState) {
-	// This is signature required by cm-chessboard.
+	// the method signature below required by cm-chessboard.
 	return function inputHandler(event: VisualMoveInput) {
 		gameState.game.board?.removeMarkers(MARKER_TYPE.frame);
 		switch (event.type) {
 			case INPUT_EVENT_TYPE.moveInputStarted:
-				// console.log(`moveInputStarted`);
 				return true;
 			case INPUT_EVENT_TYPE.validateMoveInput:
 				console.log(`validateMoveInput:`);
 				console.log(event);
-				console.log(event.chessboard.getPosition());
 				let moveRequest: Move = {
 					type: MessageType.MOVE,
 					piece: event.chessboard.getPiece(event.squareFrom),
@@ -114,11 +122,16 @@ function createEventHandler(gameState: GameState) {
 					promotion: null,
 					castle: null,
 					whiteCaptures: [],
-					blackCaptures: []
+					blackCaptures: [],
+					timeLeft: gameState.lastMove.timeLeft,
+					turn: gameState.lastMove.turn
 				};
 
-				if (event.squareTo.charAt(1) === "8" && event.piece.charAt(1) === "p") {
-					// @ts-ignore
+				if (
+					event.squareFrom.charAt(1) === "7" &&
+					event.squareTo.charAt(1) === "8" &&
+					event.piece.charAt(1) === "p"
+				) {
 					gameState.game.board?.showPromotionDialog(event.squareTo, "w", (result) => {
 						console.log("Promotion result", result);
 
@@ -126,8 +139,11 @@ function createEventHandler(gameState: GameState) {
 					});
 					return false;
 				}
-				if (event.squareTo.charAt(1) === "1" && event.piece.charAt(1) === "p") {
-					// @ts-ignore
+				if (
+					event.squareFrom.charAt(1) === "2" &&
+					event.squareTo.charAt(1) === "1" &&
+					event.piece.charAt(1) === "p"
+				) {
 					gameState.game.board?.showPromotionDialog(event.squareTo, "b", (result) => {
 						console.log("Promotion result", result);
 
@@ -139,7 +155,6 @@ function createEventHandler(gameState: GameState) {
 				sendMessage(gameState.game.ws, moveRequest);
 				return false;
 			case INPUT_EVENT_TYPE.moveInputCanceled:
-				console.log("moveInputCanceled");
 				return true;
 			case INPUT_EVENT_TYPE.moveInputFinished:
 				return false;
@@ -162,19 +177,19 @@ async function sendMessage(ws: WebSocket | null, moveRequest: Move) {
 	}
 }
 
-export function connectToWs(username: String, gameState: GameState): void {
-	gameState.game.ws = new WebSocket(
-		`${PUBLIC_WS_BASE_URL}/${username}/${gameState.game.gameId}`
+export function connectToWs(username: String, game: any): void {
+	game.state.game.ws = new WebSocket(
+		`${PUBLIC_WS_BASE_URL}/${username}/${game.state.game.gameId}`
 	);
-	if (!gameState.game.ws) {
+	if (!game.state.game.ws) {
 		throw new Error("Server didn't accept WebSocket");
 	}
 
-	gameState.game.ws.addEventListener("open", () => {
+	game.state.game.ws.addEventListener("open", () => {
 		console.log("Opened websocket");
 	});
 
-	gameState.game.ws.addEventListener("message", (rawMessage: MessageEvent<string>) => {
+	game.state.game.ws.addEventListener("message", (rawMessage: MessageEvent<string>) => {
 		const message: Message = JSON.parse(rawMessage.data);
 		console.log("onMessage", message);
 
@@ -183,14 +198,19 @@ export function connectToWs(username: String, gameState: GameState): void {
 				break;
 			}
 			case MessageType.START: {
-				gameState.game.gameId = message.gameId;
-				gameState.game.color = message.color;
-				gameState.game.isLoading = false;
+				game.state.game.gameId = message.gameId;
+				game.state.game.color = message.color;
+				game.state.game.isLoading = false;
 				break;
 			}
 			case MessageType.MOVE: {
-				updateBoard(message, gameState);
-				gameState.lastMove = message;
+				updateBoard(message, game.state);
+				if (message.valid) {
+					game.state.lastMove = message;
+				}
+				if (message.turn !== game.turn) {
+					game.turn = message.turn;
+				}
 				break;
 			}
 			default:
@@ -198,10 +218,10 @@ export function connectToWs(username: String, gameState: GameState): void {
 		}
 	});
 
-	gameState.game.ws.addEventListener("close", (message) => {
+	game.state.game.ws.addEventListener("close", (message) => {
 	});
 
-	gameState.game.ws.addEventListener("error", (message) => {
+	game.state.game.ws.addEventListener("error", (message) => {
 		console.log(message);
 		console.log("Something went wrong with the WebSocket");
 	});

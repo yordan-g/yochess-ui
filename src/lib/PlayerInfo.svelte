@@ -1,24 +1,38 @@
 <script lang="ts">
 	import { getGameState } from "$lib/webSocket.svelte";
-	import { piecesMap, compareFn } from "$lib/utils";
+	import { piecesMap, compareFn, clockState, formatToClock } from "$lib/utils.svelte";
 
 	let { color } = $props();
 	const game = getGameState();
 
-	let captures = $derived(
-		color === "w" ? game.state.lastMove.whiteCaptures : game.state.lastMove.blackCaptures
-	);
+	let captures = $derived(color === "w" ? game.state.lastMove.whiteCaptures : game.state.lastMove.blackCaptures);
 
+	let clock = clockState();
+	let timeLeft = $derived(color === "w" ? game.state.lastMove.timeLeft.white : game.state.lastMove.timeLeft.black);
+	$effect(() => {
+		if (color === game.turn) {
+			clock.start(timeLeft);
+		} else {
+			clock.stop();
+		}
+
+		return () => {
+			clock.stop();
+		};
+	});
 </script>
 
 <div class="player-info">
 	<div class="user-c">
-<!--		<i class="fa fa-user-circle fa-2x" aria-hidden="true"></i>-->
 		<span class="material-symbols-outlined i-face">face_6</span>
 		<span>Yordan Ganev</span>
 	</div>
 	<div class="time-c">
-		<span>03:59</span>
+		{#if color !== game.turn}
+			<span>{formatToClock(timeLeft)}</span>
+		{:else}
+			<span>{formatToClock(clock.time)}</span>
+		{/if}
 	</div>
 	<div class="pieces-c">
 		{#each captures.toSorted(compareFn) as piece}
@@ -45,7 +59,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		font-family: "Digital Bold", Helvetica;
+		font-family: Digital, Helvetica;
 		font-size: 35px;
 		border-radius: 15px;
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
@@ -63,6 +77,7 @@
 	.user-c span {
 		font-size: 18px;
 	}
+
 	.i-face {
 		font-size: 40px !important;
 	}
@@ -71,11 +86,10 @@
 		color: #2c1252;
 	}
 
-	 .material-symbols-outlined {
-		 font-variation-settings:
-			 'FILL' 0,
-			 'wght' 200,
-			 'GRAD' 0,
-			 'opsz' 24
-	 }
+	.material-symbols-outlined {
+		font-variation-settings: 'FILL' 0,
+		'wght' 200,
+		'GRAD' 0,
+		'opsz' 24
+	}
 </style>

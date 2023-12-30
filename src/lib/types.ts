@@ -36,7 +36,14 @@ export type Move = {
 	castle: Castle | null;
 	whiteCaptures: string[];
 	blackCaptures: string[];
+	timeLeft: Time;
+	turn: string;
 };
+
+export type Time = {
+	white: number;
+	black: number;
+}
 
 export type InitGame = {
 	ws: WebSocket | null;

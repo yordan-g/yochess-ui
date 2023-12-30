@@ -1,9 +1,10 @@
 <script lang="ts">
   import Btn from "$lib/Btn.svelte";
-  import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard.js";
+  import { BORDER_TYPE, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard.js";
   import { onMount } from "svelte";
   import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers.js";
   import type { VisualMoveInput } from "cm-chessboard/src/view/VisualMoveInput";
+  import { Chessboard } from "cm-chessboard/src/Chessboard";
 
   let board: Chessboard;
 
