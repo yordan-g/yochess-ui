@@ -9,6 +9,14 @@
 
 	let clock = clockState();
 	let timeLeft = $derived(color === "w" ? game.state.lastMove.timeLeft.white : game.state.lastMove.timeLeft.black);
+
+	$effect(() => {
+		if (clock.time === 0) {
+			game.endState.end = true;
+			game.endState.winner = color === "w" ? "b" : "w";
+		}
+	});
+
 	$effect(() => {
 		if (color === game.turn) {
 			clock.start(timeLeft);

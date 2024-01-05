@@ -42,6 +42,7 @@ export const GAME_STATE_KEY = "gameState";
 export function initGameState() {
 	const state = $state<GameState>(INITIAL_STATE);
 	let turn = $state("w");
+	let endState = $state({ end: false, winner: "d" });
 
 	return {
 		get state() {
@@ -52,11 +53,17 @@ export function initGameState() {
 		},
 		set turn(value: string) {
 			turn = value;
+		},
+		get endState() {
+			return endState;
+		},
+		set endState(value: any) {
+			endState = value;
 		}
 	};
 }
 
-export function getGameState() {
+export function getGameState(): { endState: any, readonly state: GameState, turn: string } {
 	return getContext(GAME_STATE_KEY);
 }
 

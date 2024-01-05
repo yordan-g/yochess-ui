@@ -5,6 +5,7 @@
 	import { closeWsConnection, connectToWs, GAME_STATE_KEY, initGameState } from "$lib/webSocket.svelte";
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
+	import EndDialog from "$lib/EndDialog.svelte";
 
 	const game = initGameState();
 	// sets it to the context API to be reused by other components
@@ -43,6 +44,9 @@
 		<div class="chat-c">
 		</div>
 	</div>
+	<EndDialog/>
+	<button on:click={() => (game.endState.end = true)}> show modal</button>
+	<button on:click={() => (game.endState.end = false)}> show modal false</button>
 {/if}
 
 <style>

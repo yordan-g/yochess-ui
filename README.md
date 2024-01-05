@@ -36,6 +36,7 @@ You can preview the production build with `npm run preview`.
 ### Notes
 
 - Fonts, Icons - https://fonts.google.com/
+- CSS - https://bulma.io/documentation/
 
 #### SSR state problem
 - https://blog.aakashgoplani.in/avoid-shared-state-on-the-server-in-sveltekit

@@ -13,18 +13,21 @@ export const order = ["p", "n", "b", "q", "k", "r"];
 export const compareFn = (a: string, b: string) => order.indexOf(a[1]) - order.indexOf(b[1]);
 
 export const START_TIME: Time = {
-	white: 300,
-	black: 300
+	white: 5,
+	black: 5
 };
 
 export function clockState() {
-	let time = $state(300);
+	let time = $state(5);
 	let interval;
 
 	function start(timeLeft: number) {
 		// clearInterval(interval);
 		time = timeLeft;
 		interval = setInterval(() => {
+			if (time < 2) {
+				clearInterval(interval);
+			}
 			time -= 1;
 		}, 1000);
 	}
@@ -45,9 +48,17 @@ export function clockState() {
 export function formatToClock(seconds: number) {
 	const minutes = Math.floor(seconds / 60);
 	const remainingSeconds = seconds % 60;
-
 	const paddedMinutes = minutes.toString().padStart(2, "0");
 	const paddedSeconds = remainingSeconds.toString().padStart(2, "0");
 
 	return `${paddedMinutes}:${paddedSeconds}`;
+}
+
+export function gameResult(winner: string): string {
+	switch (winner) {
+		case "d": return "Draw!"
+		case "w": return "White wins!"
+		case "b": return "Black wins!"
+		default: return "Draw!"
+	}
 }
