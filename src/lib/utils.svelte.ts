@@ -22,7 +22,6 @@ export function clockState() {
 	let interval;
 
 	function start(timeLeft: number) {
-		// clearInterval(interval);
 		time = timeLeft;
 		interval = setInterval(() => {
 			if (time < 2) {

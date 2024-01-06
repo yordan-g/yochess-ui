@@ -17,7 +17,7 @@ const GAME_NOT_STARTED: InitGame = {
 };
 
 const INIT_MOVE: Move = {
-	type: MessageType.MOVE,
+	kind: MessageType.MOVE,
 	piece: "",
 	squareFrom: "",
 	squareTo: "",
@@ -119,7 +119,7 @@ function createEventHandler(gameState: GameState) {
 				console.log(`validateMoveInput:`);
 				console.log(event);
 				let moveRequest: Move = {
-					type: MessageType.MOVE,
+					kind: MessageType.MOVE,
 					piece: event.chessboard.getPiece(event.squareFrom),
 					squareFrom: event.squareFrom,
 					squareTo: event.squareTo,
@@ -139,7 +139,7 @@ function createEventHandler(gameState: GameState) {
 					event.squareTo.charAt(1) === "8" &&
 					event.piece.charAt(1) === "p"
 				) {
-					gameState.game.board?.showPromotionDialog(event.squareTo, "w", (result) => {
+					gameState.game.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
 						console.log("Promotion result", result);
 
 						sendMessage(gameState.game.ws, { ...moveRequest, promotion: result.piece });
@@ -151,7 +151,7 @@ function createEventHandler(gameState: GameState) {
 					event.squareTo.charAt(1) === "1" &&
 					event.piece.charAt(1) === "p"
 				) {
-					gameState.game.board?.showPromotionDialog(event.squareTo, "b", (result) => {
+					gameState.game.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
 						console.log("Promotion result", result);
 
 						sendMessage(gameState.game.ws, { ...moveRequest, promotion: result.piece });
@@ -200,14 +200,13 @@ export function connectToWs(username: String, game: any): void {
 		const message: Message = JSON.parse(rawMessage.data);
 		console.log("onMessage", message);
 
-		switch (message.type) {
+		switch (message.kind) {
 			case MessageType.INIT: {
-				break;
-			}
-			case MessageType.START: {
-				game.state.game.gameId = message.gameId;
-				game.state.game.color = message.color;
-				game.state.game.isLoading = false;
+				if (message.type === "START") {
+					game.state.game.gameId = message.gameId;
+					game.state.game.color = message.color;
+					game.state.game.isLoading = false;
+				}
 				break;
 			}
 			case MessageType.MOVE: {
@@ -225,10 +224,10 @@ export function connectToWs(username: String, game: any): void {
 		}
 	});
 
-	game.state.game.ws.addEventListener("close", (message) => {
+	game.state.game.ws.addEventListener("close", (message: Message) => {
 	});
 
-	game.state.game.ws.addEventListener("error", (message) => {
+	game.state.game.ws.addEventListener("error", (message: Message) => {
 		console.log(message);
 		console.log("Something went wrong with the WebSocket");
 	});

@@ -2,18 +2,14 @@ import type { Chessboard } from "cm-chessboard/src/Chessboard";
 
 export enum MessageType {
 	INIT = "INIT",
-	START = "START",
 	MOVE = "MOVE"
 }
 
-export type Message = Init | Start | Move;
+export type Message = Init | Move;
 
 type Init = {
-	type: MessageType.INIT;
-};
-
-export type Start = {
-	type: MessageType.START;
+	kind: MessageType.INIT;
+	type: String;
 	color: string | null;
 	gameId: string;
 };
@@ -25,7 +21,7 @@ export type Castle = {
 };
 
 export type Move = {
-	type: MessageType.MOVE;
+	kind: MessageType.MOVE;
 	piece: string;
 	squareFrom: string;
 	squareTo: string;
