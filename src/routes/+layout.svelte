@@ -20,6 +20,7 @@
 				>Practice
 				</a>
 				<a href="play" class="btn"
+				   data-sveltekit-reload
 				   class:highlighted={$page.url.pathname === '/play'}
 				>Play</a>
 			</li>

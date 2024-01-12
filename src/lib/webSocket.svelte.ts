@@ -2,21 +2,21 @@ import type { VisualMoveInput } from "cm-chessboard/src/view/VisualMoveInput";
 import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers";
 import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog";
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
-import type { GameState, InitGame, Message, Move } from "$lib/types";
-import { MessageType } from "$lib/types";
+import { type End, type GameState, type InitGame, type Message, MessageType, type Move } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
-import { START_TIME } from "$lib/utils.svelte";
+import { buildChangeNameMessage, buildInitialEndState, START_TIME } from "$lib/utils.svelte";
 
-const GAME_NOT_STARTED: InitGame = {
+export const GAME_NOT_STARTED: InitGame = {
 	ws: null,
 	color: null,
 	gameId: null,
 	board: null,
-	isLoading: true
+	isLoading: true,
+	opponentUsername: null
 };
 
-const INIT_MOVE: Move = {
+export const INIT_MOVE: Move = {
 	kind: MessageType.MOVE,
 	piece: "",
 	squareFrom: "",
@@ -32,22 +32,31 @@ const INIT_MOVE: Move = {
 	turn: "w"
 };
 
-const INITIAL_STATE: GameState = {
-	game: { ...GAME_NOT_STARTED },
-	lastMove: { ...INIT_MOVE }
-};
+export function buildInitialState(): GameState {
+	return {
+		game: { ...GAME_NOT_STARTED },
+		lastMove: { ...INIT_MOVE }
+	};
+}
 
 export const GAME_STATE_KEY = "gameState";
 
 export function initGameState() {
-	const state = $state<GameState>(INITIAL_STATE);
-	let turn = $state("w");
-	let endState = $state({ end: false, winner: "d" });
+	let state = $state<GameState>(buildInitialState());
+	let turn = $state<string>("w");
+	let endState = $state<End>(buildInitialEndState());
+
+	function resetState() {
+		const reset = buildInitialState();
+		console.log("resetting state, isloading - ", reset.game.isLoading);
+		state = reset;
+	}
 
 	return {
 		get state() {
 			return state;
 		},
+		resetState,
 		get turn() {
 			return turn;
 		},
@@ -63,7 +72,7 @@ export function initGameState() {
 	};
 }
 
-export function getGameState(): { endState: any, readonly state: GameState, turn: string } {
+export function getGameState(): { readonly endState: End, readonly state: GameState, turn: string } {
 	return getContext(GAME_STATE_KEY);
 }
 
@@ -172,22 +181,22 @@ function createEventHandler(gameState: GameState) {
 	};
 }
 
-export async function closeWsConnection(gameState: GameState) {
-	gameState.game.ws?.close();
-	gameState.game = GAME_NOT_STARTED;
-	gameState.lastMove = INIT_MOVE;
-}
-
-async function sendMessage(ws: WebSocket | null, moveRequest: Move) {
-	if (ws !== null) {
-		ws.send(JSON.stringify(moveRequest));
+export async function sendMessage(ws: WebSocket | null, message: Message) {
+	if (ws !== null && ws.readyState === WebSocket.OPEN) {
+		ws.send(JSON.stringify(message));
 	}
 }
 
-export function connectToWs(username: String, game: any): void {
-	game.state.game.ws = new WebSocket(
-		`${PUBLIC_WS_BASE_URL}/${username}/${game.state.game.gameId}`
-	);
+export function connectToWs(userId: String, game: any, username: string, rematchGameId: string | null): void {
+	let url;
+
+	if (rematchGameId != null) {
+		url = `${PUBLIC_WS_BASE_URL}/${userId}?rematchGameId=${encodeURIComponent(rematchGameId)}`;
+	} else {
+		url = `${PUBLIC_WS_BASE_URL}/${userId}`;
+	}
+	// todo: try assigning the ws to the state at the end
+	game.state.game.ws = new WebSocket(url);
 	if (!game.state.game.ws) {
 		throw new Error("Server didn't accept WebSocket");
 	}
@@ -206,6 +215,7 @@ export function connectToWs(username: String, game: any): void {
 					game.state.game.gameId = message.gameId;
 					game.state.game.color = message.color;
 					game.state.game.isLoading = false;
+					sendMessage(game.state.game.ws, buildChangeNameMessage(game.state.game.gameId, username));
 				}
 				break;
 			}
@@ -217,6 +227,15 @@ export function connectToWs(username: String, game: any): void {
 				if (message.turn !== game.turn) {
 					game.turn = message.turn;
 				}
+				break;
+			}
+			case MessageType.END: {
+				game.endState = message;
+				break;
+			}
+			case MessageType.CHANGE_NAME: {
+				// the backend always sends the opposite player name change event!
+				game.state.game.opponentUsername = message.name;
 				break;
 			}
 			default:

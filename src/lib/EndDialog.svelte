@@ -1,38 +1,69 @@
 <script lang="ts">
-	import { GAME_STATE_KEY, getGameState } from "$lib/webSocket.svelte";
-	import { gameResult } from "$lib/utils.svelte";
+	import { goto } from "$app/navigation";
+	import { GAME_STATE_KEY, getGameState, sendMessage } from "./webSocket.svelte";
+	import { buildCloseEndMessage, buildRematchMessage, gameResult } from "./utils.svelte";
 
 	let dialog: HTMLDialogElement;
 	let game = getGameState(GAME_STATE_KEY);
 	let endResult = $derived(gameResult(game.endState.winner));
 
 	$effect(() => {
-		if (game.endState.end && dialog) dialog.showModal();
+		if (game.endState.ended && dialog) dialog.showModal();
 	});
+
+	$effect(() => {
+		if (game.endState.rematchSuccess && dialog) {
+			let queryParams = new URLSearchParams({ rematchGameId: game.endState.rematchGameId, }).toString();
+			goto(`/play?${queryParams}`);
+		}
+	});
+
+	function closeDialog() {
+		dialog.close();
+		sendMessage(game.state.game.ws, buildCloseEndMessage(game.state.game.gameId));
+	}
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
 	bind:this={dialog}
-	on:click|self={() => dialog.close()}
+	on:click|self={closeDialog}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation class="modal-c">
 		<h2>{endResult}</h2>
+		<div class="next-action-c">
+			{#if game.endState.close || game.endState.leftGame }
+				<span>Your opponent left the game!</span>
+			{:else}
+				<span>Hello</span>
+			{/if}
+		</div>
 		<div class="modal-btn">
 			<button
-				on:click={() => dialog.close()}
+				on:click={closeDialog}
 				class="button is-danger is-light">Close
 			</button>
-			<button autofocus class="button is-success is-light">Rematch</button>
-			<button class="button is-success is-light">Play Again</button>
+			<button
+				on:click={() => sendMessage(game.state.game.ws, buildRematchMessage(game.state.game.gameId))}
+				autofocus class="button is-success is-light">Rematch
+			</button>
+			<a href="play" class="button is-success is-light"
+			   on:click={closeDialog}
+			   data-sveltekit-reload>Play Again
+			</a>
 		</div>
 	</div>
 </dialog>
 
 <style>
+	a {
+		text-decoration: none;
+		height: auto;
+	}
+
 	.modal-c {
 		display: grid;
-		grid-template-rows: 1fr 1fr;
+		grid-template-rows: 1fr auto 1fr;
 		height: 200px;
 	}
 

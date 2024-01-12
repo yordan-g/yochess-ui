@@ -2,23 +2,31 @@ import type { Chessboard } from "cm-chessboard/src/Chessboard";
 
 export enum MessageType {
 	INIT = "INIT",
-	MOVE = "MOVE"
+	MOVE = "MOVE",
+	END = "END",
+	CHANGE_NAME = "CHANGE_NAME"
 }
 
-export type Message = Init | Move;
+export type Message = Init | Move | End | ChangeName;
 
 type Init = {
 	kind: MessageType.INIT;
-	type: String;
+	type: string;
 	color: string | null;
 	gameId: string;
 };
 
-export type Castle = {
-	rook: string;
-	rookPosStart: string;
-	rookPosEnd: string;
-};
+export type End = {
+	kind: MessageType.END;
+	gameId: string;
+	winner: string;
+	ended: boolean | null;
+	leftGame: boolean | null;
+	close: boolean | null;
+	rematch: boolean | null;
+	rematchSuccess: boolean | null;
+	rematchGameId: string | null;
+}
 
 export type Move = {
 	kind: MessageType.MOVE;
@@ -36,10 +44,22 @@ export type Move = {
 	turn: string;
 };
 
+export type ChangeName = {
+	kind: MessageType.CHANGE_NAME;
+	gameId: string;
+	name: string;
+}
+
 export type Time = {
 	white: number;
 	black: number;
 }
+
+export type Castle = {
+	rook: string;
+	rookPosStart: string;
+	rookPosEnd: string;
+};
 
 export type InitGame = {
 	ws: WebSocket | null;
@@ -47,6 +67,7 @@ export type InitGame = {
 	gameId: string | null;
 	color: string | null;
 	isLoading: boolean;
+	opponentUsername: string | null;
 };
 
 export type GameState = {

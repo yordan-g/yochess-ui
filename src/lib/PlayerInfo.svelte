@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { getGameState } from "$lib/webSocket.svelte";
-	import { piecesMap, compareFn, clockState, formatToClock } from "$lib/utils.svelte";
+	import { getGameState, sendMessage } from "$lib/webSocket.svelte";
+	import { buildTimeoutMessage, clockState, compareFn, formatToClock, piecesMap } from "$lib/utils.svelte";
+	import InputUsername from "$lib/InputUsername.svelte";
 
 	let { color } = $props();
 	const game = getGameState();
-
 	let captures = $derived(color === "w" ? game.state.lastMove.whiteCaptures : game.state.lastMove.blackCaptures);
 
 	let clock = clockState();
@@ -12,8 +12,12 @@
 
 	$effect(() => {
 		if (clock.time === 0) {
-			game.endState.end = true;
-			game.endState.winner = color === "w" ? "b" : "w";
+			const winner = color === "w" ? "b" : "w";
+			console.log("timeout effect -------");
+			sendMessage(
+				game.state.game.ws,
+				buildTimeoutMessage(game.state.game.gameId, winner)
+			);
 		}
 	});
 
@@ -33,7 +37,8 @@
 <div class="player-info">
 	<div class="user-c">
 		<span class="material-symbols-outlined i-face">face_6</span>
-		<span>Yordan Ganev</span>
+<!--		<span>{username}</span>-->
+		<InputUsername color="{color}"/>
 	</div>
 	<div class="time-c">
 		{#if color !== game.turn}
@@ -65,7 +70,8 @@
 
 	.time-c {
 		display: flex;
-		justify-content: center;
+		/*justify-content: center;*/
+		padding-left: 13px;
 		align-items: center;
 		font-family: Digital, Helvetica;
 		font-size: 35px;
