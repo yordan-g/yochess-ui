@@ -143,11 +143,7 @@ function createEventHandler(gameState: GameState) {
 					turn: gameState.lastMove.turn
 				};
 
-				if (
-					event.squareFrom.charAt(1) === "7" &&
-					event.squareTo.charAt(1) === "8" &&
-					event.piece.charAt(1) === "p"
-				) {
+				if (isWhitePromotionMove(event)) {
 					gameState.game.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
 						console.log("Promotion result", result);
 
@@ -155,11 +151,7 @@ function createEventHandler(gameState: GameState) {
 					});
 					return false;
 				}
-				if (
-					event.squareFrom.charAt(1) === "2" &&
-					event.squareTo.charAt(1) === "1" &&
-					event.piece.charAt(1) === "p"
-				) {
+				if (isBlackPromotionMove(event)) {
 					gameState.game.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
 						console.log("Promotion result", result);
 
@@ -250,4 +242,18 @@ export function connectToWs(userId: String, game: any, username: string, rematch
 		console.log(message);
 		console.log("Something went wrong with the WebSocket");
 	});
+}
+
+function isWhitePromotionMove(event: VisualMoveInput): boolean {
+	return event.squareFrom.charAt(1) === "7" &&
+		event.squareTo.charAt(1) === "8" &&
+		event.piece.charAt(1) === "p" &&
+		event.piece.charAt(0) === "w";
+}
+
+function isBlackPromotionMove(event: VisualMoveInput): boolean {
+	return event.squareFrom.charAt(1) === "2" &&
+		event.squareTo.charAt(1) === "1" &&
+		event.piece.charAt(1) === "p" &&
+		event.piece.charAt(0) === "b";
 }
