@@ -4,12 +4,19 @@ export enum MessageType {
 	INIT = "INIT",
 	MOVE = "MOVE",
 	END = "END",
-	CHANGE_NAME = "CHANGE_NAME"
+	CHANGE_NAME = "CHANGE_NAME",
+	COMMUNICATION_ERROR = "COMMUNICATION_ERROR",
 }
 
-export type Message = Init | Move | End | ChangeName;
+export type Message = Init | Move | End | ChangeName | CommunicationError;
 
-type Init = {
+export type CommunicationError = {
+	kind: MessageType.COMMUNICATION_ERROR;
+	isPresent: boolean;
+	userMessage: string;
+}
+
+export type Init = {
 	kind: MessageType.INIT;
 	type: string;
 	color: string | null;

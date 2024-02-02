@@ -2,10 +2,10 @@ import type { VisualMoveInput } from "cm-chessboard/src/view/VisualMoveInput";
 import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers";
 import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog";
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
-import { type End, type GameState, type InitGame, type Message, MessageType, type Move } from "$lib/types";
+import { type CommunicationError, type End, type GameState, type InitGame, type Message, MessageType, type Move } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
-import { buildChangeNameMessage, buildInitialEndState, START_TIME } from "$lib/utils.svelte";
+import { buildChangeNameMessage, buildInitialCommunicationError, buildInitialEndState, START_TIME } from "$lib/utils.svelte";
 
 export const GAME_NOT_STARTED: InitGame = {
 	ws: null,
@@ -45,15 +45,17 @@ export function initGameState() {
 	let state = $state<GameState>(buildInitialState());
 	let turn = $state<string>("w");
 	let endState = $state<End>(buildInitialEndState());
-
+	let communicationError = $state<CommunicationError>(buildInitialCommunicationError());
 	function resetState() {
-		const reset = buildInitialState();
-		console.log("resetting state, isloading - ", reset.game.isLoading);
-		state = reset;
+		const resetState = buildInitialState();
+		// const resetEndState = buildInitialEndState();
+		console.log("resetting state, isloading - ", resetState.game.isLoading);
+		state = resetState;
+		// endState = resetEndState;
 	}
 
 	return {
-		get state() {
+		get state(): GameState {
 			return state;
 		},
 		resetState,
@@ -68,11 +70,17 @@ export function initGameState() {
 		},
 		set endState(value: any) {
 			endState = value;
+		},
+		get communicationError(): CommunicationError {
+			return communicationError;
+		},
+		set communicationError(value: CommunicationError) {
+			communicationError = value;
 		}
 	};
 }
 
-export function getGameState(): { readonly endState: End, readonly state: GameState, turn: string } {
+export function getGameState(): { readonly endState: End, readonly state: GameState, turn: string, communicationError: CommunicationError } {
 	return getContext(GAME_STATE_KEY);
 }
 
@@ -228,6 +236,10 @@ export function connectToWs(userId: String, game: any, username: string, rematch
 			case MessageType.CHANGE_NAME: {
 				// the backend always sends the opposite player name change event!
 				game.state.game.opponentUsername = message.name;
+				break;
+			}
+			case MessageType.COMMUNICATION_ERROR: {
+				game.communicationError = message
 				break;
 			}
 			default:

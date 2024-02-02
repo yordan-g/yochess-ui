@@ -1,4 +1,4 @@
-import { type Time, type End, MessageType, type ChangeName } from "$lib/types";
+import { type Time, type End, MessageType, type ChangeName, type CommunicationError } from "$lib/types";
 
 export const piecesMap = new Map([
 	["bk", "&#9818;"], ["wk", "&#9812;"],
@@ -13,8 +13,8 @@ export const order = ["p", "n", "b", "q", "k", "r"];
 export const compareFn = (a: string, b: string) => order.indexOf(a[1]) - order.indexOf(b[1]);
 
 export const START_TIME: Time = {
-	white: 500,
-	black: 500
+	white: 5,
+	black: 5
 };
 
 export function clockState() {
@@ -81,6 +81,14 @@ export function buildInitialEndState(): End {
 		rematch: null,
 		rematchSuccess: null,
 		rematchGameId: null
+	}
+}
+
+export function buildInitialCommunicationError(): CommunicationError {
+	return {
+		kind: MessageType.COMMUNICATION_ERROR,
+		isPresent: false,
+		userMessage: "Server Error",
 	}
 }
 

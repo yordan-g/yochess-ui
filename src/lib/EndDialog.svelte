@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { GAME_STATE_KEY, getGameState, sendMessage } from "./webSocket.svelte";
-	import { buildCloseEndMessage, buildRematchMessage, gameResult } from "./utils.svelte";
+	import { buildCloseEndMessage } from "./utils.svelte";
+	import EndGameInfo from "$lib/EndGameInfo.svelte";
+	import CommunicationErrorInfo from "$lib/CommunicationErrorInfo.svelte";
 
 	let dialog: HTMLDialogElement;
 	let game = getGameState(GAME_STATE_KEY);
-	let endResult = $derived(gameResult(game.endState.winner));
 
 	$effect(() => {
-		if (game.endState.ended && dialog) dialog.showModal();
+		if (dialog &&
+			(game.endState.ended || game.communicationError.isPresent)
+		) {
+			dialog.showModal();
+		}
 	});
 
 	$effect(() => {
@@ -20,7 +25,9 @@
 
 	function closeDialog() {
 		dialog.close();
-		sendMessage(game.state.game.ws, buildCloseEndMessage(game.state.game.gameId));
+		if (game.endState.ended) {
+			sendMessage(game.state.game.ws, buildCloseEndMessage(game.state.game.gameId));
+		}
 	}
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
@@ -28,57 +35,15 @@
 	bind:this={dialog}
 	on:click|self={closeDialog}
 >
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|stopPropagation class="modal-c">
-		<h2>{endResult}</h2>
-		<div class="next-action-c">
-			{#if game.endState.close || game.endState.leftGame }
-				<span>Your opponent left the game!</span>
-			{:else}
-				<span>Hello</span>
-			{/if}
-		</div>
-		<div class="modal-btn">
-			<button
-				on:click={closeDialog}
-				class="button is-danger is-light">Close
-			</button>
-			<button
-				on:click={() => sendMessage(game.state.game.ws, buildRematchMessage(game.state.game.gameId))}
-				autofocus class="button is-success is-light">Rematch
-			</button>
-			<a href="play" class="button is-success is-light"
-			   on:click={closeDialog}
-			   data-sveltekit-reload>Play Again
-			</a>
-		</div>
-	</div>
+	{#if game.endState.ended || game.endState.close || game.endState.leftGame }
+		<EndGameInfo dialog={dialog} />
+	{:else if game.communicationError.isPresent }
+		<CommunicationErrorInfo dialog={dialog} />
+	{/if}
+
 </dialog>
 
 <style>
-	a {
-		text-decoration: none;
-		height: auto;
-	}
-
-	.modal-c {
-		display: grid;
-		grid-template-rows: 1fr auto 1fr;
-		height: 200px;
-	}
-
-	h2 {
-		justify-self: center;
-		align-self: center;
-		font-weight: normal;
-	}
-
-	.modal-btn {
-		display: flex;
-		justify-content: space-around;
-		align-items: end;
-	}
-
 	dialog {
 		width: 400px;
 		/*max-width: 32em;*/
