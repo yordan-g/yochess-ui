@@ -5,15 +5,16 @@
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
 	import EndDialog from "$lib/EndDialog.svelte";
-	import { buildLeftGameMessage } from "$lib/utils.svelte";
+	import { buildInitialEndState, buildLeftGameMessage } from "$lib/utils.svelte";
 	import { beforeNavigate, afterNavigate } from "$app/navigation";
-	import { page } from '$app/stores';
+	import { page } from "$app/stores";
 	import { userService } from "$lib/userService";
 
 	let userId: string;
 	let username: string;
 	const game = initGameState();
 	setContext(GAME_STATE_KEY, game);
+	// $inspect(game.endState)
 
 	onMount(() => {
 		userId = userService.getUserId();

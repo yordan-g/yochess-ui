@@ -48,10 +48,8 @@ export function initGameState() {
 	let communicationError = $state<CommunicationError>(buildInitialCommunicationError());
 	function resetState() {
 		const resetState = buildInitialState();
-		// const resetEndState = buildInitialEndState();
 		console.log("resetting state, isloading - ", resetState.game.isLoading);
 		state = resetState;
-		// endState = resetEndState;
 	}
 
 	return {
@@ -212,6 +210,7 @@ export function connectToWs(userId: String, game: any, username: string, rematch
 		switch (message.kind) {
 			case MessageType.INIT: {
 				if (message.type === "START") {
+					game.endState = buildInitialEndState();
 					game.state.game.gameId = message.gameId;
 					game.state.game.color = message.color;
 					game.state.game.isLoading = false;
