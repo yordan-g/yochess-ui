@@ -5,7 +5,7 @@
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
 	import EndDialog from "$lib/EndDialog.svelte";
-	import { buildInitialEndState, buildLeftGameMessage } from "$lib/utils.svelte";
+	import { buildLeftGameMessage } from "$lib/utils.svelte";
 	import { beforeNavigate, afterNavigate } from "$app/navigation";
 	import { page } from "$app/stores";
 	import { userService } from "$lib/userService";
@@ -52,7 +52,7 @@
 			<PlayerInfo color={game.state.game.color} />
 			{#if game.endState.leftGame || game.endState.close}
 				<div class="notification">
-					<span>Game ended, you can start another one!</span>
+					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
 			{/if}
 		</div>
@@ -60,8 +60,6 @@
 		</div>
 	</div>
 	<EndDialog />
-	<!--	<button on:click={() => (game.endState.ended = true)}> show modal</button>-->
-	<!--	<button on:click={() => (game.endState.ended = false)}> show modal false</button>-->
 {/if}
 
 <style>

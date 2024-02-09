@@ -78,3 +78,23 @@ span {
 	font-weight: bold;
 	font-style: normal;
 }
+
+
+:root {
+	--red-color: rgb(250, 100, 100);
+	--button-color: black; /* default then gets overridden */
+	--button-color-red: var(--red-color);
+	--button-color-green: rgb(32, 154, 102);
+}
+
+span.red-t {
+	color: var(--red-color);
+}
+
+.end-btn.red-b {
+	--button-color: var(--button-color-red);
+}
+
+.end-btn.green-b {
+	--button-color: var(--button-color-green);
+}

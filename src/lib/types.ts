@@ -26,13 +26,14 @@ export type Init = {
 export type End = {
 	kind: MessageType.END;
 	gameId: string;
-	winner: string;
+	timeout: boolean | null;
 	ended: boolean | null;
 	leftGame: boolean | null;
 	close: boolean | null;
 	rematch: boolean | null;
 	rematchSuccess: boolean | null;
 	rematchGameId: string | null;
+	gameOver: GameOver | null;
 }
 
 export type Move = {
@@ -80,4 +81,9 @@ export type InitGame = {
 export type GameState = {
 	game: InitGame;
 	lastMove: Move;
+};
+
+export type GameOver = {
+	winner: String | null;
+	result: String | null;
 };

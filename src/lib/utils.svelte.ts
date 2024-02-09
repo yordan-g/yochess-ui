@@ -66,7 +66,7 @@ export function gameResult(winner: string): string {
 		case "b":
 			return "Black wins!";
 		default:
-			return "Draw!";
+			return "Bug";
 	}
 }
 
@@ -74,13 +74,14 @@ export function buildInitialEndState(): End {
 	return {
 		kind: MessageType.END,
 		gameId: "Initial End State",
-		winner: "d",
+		timeout: null,
 		ended: false,
 		leftGame: null,
 		close: null,
 		rematch: null,
 		rematchSuccess: null,
-		rematchGameId: null
+		rematchGameId: null,
+		gameOver: null
 	}
 }
 
@@ -96,13 +97,14 @@ export function buildLeftGameMessage(gameId: string): End {
 	return {
 		kind: MessageType.END,
 		gameId: gameId,
-		winner: "d",
+		timeout: null,
 		ended: null,
 		leftGame: true,
 		close: null,
 		rematch: null,
 		rematchSuccess: null,
-		rematchGameId: null
+		rematchGameId: null,
+		gameOver: null
 	}
 }
 
@@ -110,13 +112,17 @@ export function buildTimeoutMessage(gameId: string, winner: string): End {
 	return {
 		kind: MessageType.END,
 		gameId: gameId,
-		winner: winner,
+		timeout: true,
 		ended: true,
 		leftGame: null,
 		close: null,
 		rematch: null,
 		rematchSuccess: null,
-		rematchGameId: null
+		rematchGameId: null,
+		gameOver: {
+			winner: winner,
+			result: "Timeout"
+		}
 	}
 }
 
@@ -124,14 +130,14 @@ export function buildCloseEndMessage(gameId: string): End {
 	return {
 		kind: MessageType.END,
 		gameId: gameId,
-		//todo make winner nullable?
-		winner: "d",
+		timeout: null,
 		ended: null,
 		leftGame: null,
 		close: true,
 		rematch: null,
 		rematchSuccess: null,
-		rematchGameId: null
+		rematchGameId: null,
+		gameOver: null
 	}
 }
 
@@ -139,13 +145,14 @@ export function buildRematchMessage(gameId: string): End {
 	return {
 		kind: MessageType.END,
 		gameId: gameId,
-		winner: "d",
+		timeout: null,
 		ended: null,
 		leftGame: null,
 		close: null,
 		rematch: true,
 		rematchSuccess: null,
-		rematchGameId: null
+		rematchGameId: null,
+		gameOver: null
 	}
 }
 

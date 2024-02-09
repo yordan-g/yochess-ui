@@ -12,12 +12,19 @@
 
 	$effect(() => {
 		if (clock.time === 0) {
+			clock.stop();
 			const winner = color === "w" ? "b" : "w";
-			console.log("timeout effect -------");
+
 			sendMessage(
 				game.state.game.ws,
 				buildTimeoutMessage(game.state.game.gameId, winner)
 			);
+		}
+	});
+
+	$effect(() => {
+		if (game.endState.ended) {
+			clock.stop();
 		}
 	});
 
@@ -37,8 +44,8 @@
 <div class="player-info">
 	<div class="user-c">
 		<span class="material-symbols-outlined i-face">face_6</span>
-<!--		<span>{username}</span>-->
-		<InputUsername color="{color}"/>
+		<!--		<span>{username}</span>-->
+		<InputUsername color="{color}" />
 	</div>
 	<div class="time-c">
 		{#if color !== game.turn}

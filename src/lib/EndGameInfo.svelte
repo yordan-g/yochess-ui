@@ -4,7 +4,7 @@
 
 	let { dialog } = $props();
 	let game = getGameState(GAME_STATE_KEY);
-	let endResult = $derived(gameResult(game.endState.winner));
+	let endWinner = $derived(gameResult(game.endState.gameOver?.winner));
 
 	function closeDialog() {
 		(dialog as HTMLDialogElement).close();
@@ -14,25 +14,26 @@
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click|stopPropagation class="modal-c">
-	<h2>{endResult}</h2>
+	<h2>{game.endState.gameOver.result} {endWinner}</h2>
 	<div class="next-action-c">
 		{#if game.endState.close || game.endState.leftGame }
-			<span>Your opponent left the game!</span>
+			<span class="red-t">Your opponent left the game!</span>
 		{:else}
-			<span>Hello</span>
+			<span>You can offer rematch or start another game!</span>
 		{/if}
 	</div>
 	<div class="modal-btn">
 		<button
 			onclick={closeDialog}
-			class="button">Close
+			class="end-btn red-b">Close
 		</button>
 		<button
 			onclick={() => sendMessage(game.state.game.ws, buildRematchMessage(game.state.game.gameId))}
-			autofocus class="button">Rematch
+			class="end-btn green-b">Rematch
 		</button>
-		<a href="play" class="button"
+		<a href="play" class="end-btn green-b"
 		   onclick={closeDialog}
 		   data-sveltekit-reload>Play Again
 		</a>
@@ -52,15 +53,39 @@
 		height: 200px;
 	}
 
+	.next-action-c {
+		justify-self: center;
+	}
+
 	.modal-btn {
 		display: flex;
 		justify-content: space-around;
-		align-items: end;
+		align-items: center;
 	}
 
 	a {
 		text-decoration: none;
 		height: auto;
+	}
+
+	.end-btn {
+		border: 1px solid var(--button-color);
+		color: var(--button-color);
+		background-color: transparent;
+		padding: 10px 10px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 16px;
+		margin: 4px 2px;
+		cursor: pointer;
+		border-radius: 10px;
+		transition: background-color 0.3s, color 0.3s;
+	}
+
+	.end-btn:hover {
+		color: white; /* White text on hover */
+		background-color: var(--button-color);
 	}
 
 </style>
