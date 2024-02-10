@@ -1,11 +1,28 @@
-<div class="spinner"></div>
+<script lang="ts">
+
+</script>
+
+<div class="loading-c">
+	<h2>Searching for a player</h2>
+	<div class="spinner"></div>
+</div>
+
 <style>
+	.loading-c {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 20px;
+		margin: 100px 0px 0px 100px;
+		width: 500px;
+	}
+
 	.spinner {
-		border: 5px solid rgba(255, 255, 255, 0.3);
+		border: 10px solid rgba(175, 175, 175, 30%);
 		border-radius: 50%;
-		border-top: 5px solid black;
-		width: 50px;
-		height: 50px;
+		border-top: 10px solid rgba(255, 0, 181);
+		width: 100px;
+		height: 100px;
 		animation: spin 1s linear infinite;
 	}
 

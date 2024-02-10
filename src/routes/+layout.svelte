@@ -1,78 +1,131 @@
 <script lang="ts">
+	import "../styles/global.css";
 	import { page } from "$app/stores";
+
+	let currentPath = $derived($page.url.pathname);
 </script>
 
 <svelte:head>
-	<link rel="stylesheet" href="/css/global.css" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </svelte:head>
 
 <div class="layout">
-	<nav>
-		<ul>
-			<li>
-				<a href="/" class="btn"
-				   class:highlighted={$page.url.pathname === '/'}
-				>Home
-				</a>
-				<a href="practice"
-				   class="btn"
-				   class:highlighted={$page.url.pathname === '/practice'}
-				>Practice
-				</a>
-				<a href="play" class="btn"
-				   data-sveltekit-reload
-				   class:highlighted={$page.url.pathname === '/play'}
-				>Play</a>
-			</li>
-		</ul>
-	</nav>
-	<slot></slot>
+	<div class="nav-and-route">
+		<nav class="nav">
+			<a href="/" class="btn-nav {currentPath === '/' ? 'highlighted' : ''}">Home</a>
+			<a href="practice" class="btn-nav {currentPath === '/practice' ? 'highlighted' : ''}">Practice</a>
+			<a href="play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}" data-sveltekit-reload>Play</a>
+		</nav>
+		<div class="route-c">
+			<slot></slot>
+		</div>
+	</div>
+	<footer class="footer">
+		Yochess 2024
+	</footer>
 </div>
 
 
 <style>
 	.layout {
-		display: grid;
-		grid-template-columns: 250px 1fr;
+		display: flex;
+		flex-direction: column;
+		width: 98vw;
+		height: 98vh;
+	}
+
+	.nav-and-route {
+		flex: 1;
+		display: flex;
+		flex-direction: row;
 	}
 
 	nav {
-		margin-top: 100px;
-		position: relative;
+		flex: 0 0 200px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 50px;
+		width: 220px;
+		margin: 100px 0 0 0;
 	}
 
-	a {
-		color: rgba(0, 0, 0, 85%);
+	.route-c {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		position: relative; /* Required for absolute positioning of pseudo-element */
 	}
 
-	nav::after {
+	.route-c::before {
 		content: "";
 		position: absolute;
-		top: -200px;
-		bottom: -200px;
-		right: 0px;
-		border-right: 3px solid #d3d3d3;
+		left: 0; /* Position the line on the left side; use 'right: 0;' for the right side */
+		top: 0;
+		bottom: 0;
+		width: 3px; /* Thickness of the line */
+		background: rgb(211, 211, 211); /* Color of the line */
+		border-radius: 10px; /* Adjust as needed to create the oval edges */
+	}
+
+	footer {
+		background: transparent;
+		text-align: start;
+	}
+
+	.btn-nav {
+		text-align: center;
+		display: block;
+		border: none;
+		text-decoration: none;
+		font-size: var(--text-xl);
+		font-weight: lighter;
+		padding: 10px 20px;
+		color: rgb(44, 18, 82);
+		transition: color 0.3s ease;
+		position: relative;
+		z-index: 1;
+	}
+
+	.btn-nav:hover {
+		color: white;
+	}
+
+	.btn-nav::before {
+		position: absolute;
+		content: "";
+		top: -2px;
+		right: -2px;
+		bottom: -2px;
+		left: -2px;
+		background-image: linear-gradient(
+			to left top,
+			rgb(255, 0, 206),
+			rgb(127, 153, 255)
+		);
+		background-clip: border-box;
+		z-index: -2;
+		transition: opacity 0.2s linear;
+		opacity: 0;
 		border-radius: 10px;
 	}
 
-	ul {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
+	.btn-nav::after {
+		position: absolute;
+		content: "";
+		z-index: -1;
+		top: 1px;
+		right: 1px;
+		bottom: 1px;
+		left: 1px;
+		background-color: white;
+		border-radius: 7px;
+		opacity: 0;
 	}
 
-	li {
-		display: flex;
-		row-gap: 50px;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-	}
-
-	a {
-		font-size: 40px;
+	.btn-nav:hover::before {
+		opacity: 0.7;
 	}
 
 	.highlighted::before {

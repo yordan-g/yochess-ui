@@ -30,3 +30,6 @@ You can preview the production build with `npm run preview`.
 ### Libraries to consider
 
 - https://melt-ui.com/
+
+### CSS
+- flexbox scaling issues - https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size

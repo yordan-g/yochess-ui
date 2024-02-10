@@ -3,7 +3,7 @@
 	export let classes: string;
 </script>
 
-<button class="btn {classes}" on:click>
+<button class="btn-nav {classes}" on:click>
 	{text}
 </button>
 

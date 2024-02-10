@@ -32,7 +32,7 @@
 	}
 </script>
 
-<div>
+<div class="username-c">
 	{#if game.state.game.color !== color}
 		<span>{opponentUsername}</span>
 	{:else}
@@ -47,13 +47,20 @@
 </div>
 
 <style>
+	.username-c {
+		min-width: 80px;
+		align-self: center;
+	}
+
 	span {
-		font-size: 18px;
+		width: 80px;
+		font-size: clamp(var(--text-s), 1.5vw, var(--text-m));
 	}
 
 	input {
-		max-width: 130px;
-		font-size: 18px;
+		width: 90%;
+		min-width: 0;
+		font-size: clamp(var(--text-s), 1.5vw, var(--text-m));
 		outline: none;
 		border: none;
 		background: transparent;
@@ -65,7 +72,7 @@
 	}
 
 	input:hover {
-		color: #7f99ff;
+		color: rgb(127, 153, 255);
 		cursor: text;
 	}
 

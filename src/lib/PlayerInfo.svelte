@@ -44,7 +44,6 @@
 <div class="player-info">
 	<div class="user-c">
 		<span class="material-symbols-outlined i-face">face_6</span>
-		<!--		<span>{username}</span>-->
 		<InputUsername color="{color}" />
 	</div>
 	<div class="time-c">
@@ -64,47 +63,47 @@
 
 <style>
 	.player-info {
-		display: grid;
-		grid-template-columns: 200px 100px 2fr;
+		flex: 1;
+		display: flex;
+		flex-direction: row;
+		max-height: 45px;
+		justify-content: flex-start;
 	}
 
 	.user-c {
+		flex: 2;
 		display: flex;
-		justify-content: start;
-		align-items: center;
+		flex-direction: row;
 		column-gap: 10px;
 	}
 
 	.time-c {
+		flex: 1;
 		display: flex;
-		/*justify-content: center;*/
-		padding-left: 13px;
 		align-items: center;
+		justify-content: center;
+		max-width: 80px;
 		font-family: Digital, Helvetica;
-		font-size: 35px;
+		font-size: clamp(var(--text-l), 2.5vw, var(--text-xl));
 		border-radius: 15px;
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
 		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
 	}
 
 	.pieces-c {
+		flex: 2.5;
 		display: flex;
 		justify-content: end;
-		column-gap: 5px;
 		align-items: center;
-		font-size: x-large;
-	}
-
-	.user-c span {
-		font-size: 18px;
+		font-size: clamp(var(--text-s), 2vw, var(--text-l));
 	}
 
 	.i-face {
-		font-size: 40px !important;
+		font-size: clamp(var(--text-xl), 3.5vw, var(--text-xxl)) !important;
 	}
 
 	i {
-		color: #2c1252;
+		color: rgb(44, 18, 82);
 	}
 
 	.material-symbols-outlined {

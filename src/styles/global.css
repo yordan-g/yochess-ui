@@ -1,0 +1,71 @@
+@font-face {
+	font-family: 'Digital';
+	src: url('/fonts/ds-digital/DS-DIGI.TTF') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Digital Bold';
+	src: url('/fonts/ds-digital/DS-DIGIB.TTF') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+:root {
+	--base-font-size: 16px;
+	--text-s: 0.5rem;
+	--text-m: 1rem;
+	--text-l: 1.5rem;
+	--text-xl: 2rem;
+	--text-xxl: 3rem;
+
+	--red-color: rgb(250, 100, 100);
+	--button-color: black; /* default then gets overridden */
+	--button-color-red: var(--red-color);
+	--button-color-green: rgb(32, 154, 102);
+}
+
+html {
+	font-size: var(--base-font-size);
+	font-family: "Helvetica", sans-serif;
+}
+
+body {
+	background-color: rgba(230, 230, 230, 0.1);
+}
+
+span, p, a, h1, h2, h3 {
+	color: rgba(0, 0, 0, 0.8);
+}
+
+span.red-t {
+	color: var(--red-color);
+}
+
+.end-btn.red-b {
+	--button-color: var(--button-color-red);
+}
+
+.end-btn.green-b {
+	--button-color: var(--button-color-green);
+}
+
+/* selects the div that gets rendered from the cm-chessboard library */
+.board > div:first-child {
+	flex: 1;
+	box-shadow: rgba(80, 80, 80, 1) 0px 3px 3px -2px,
+	rgba(80, 80, 80, 1) 0px 5px 3px -3px,
+	rgba(80, 80, 80, 1) 0px 8px 3px -4px,
+	rgba(128, 128, 128, 0.5) 0px 16px 2px -5px,
+	rgba(128, 128, 128, 0.3) 5px 5px 5px 7px;
+
+	/*display: flex;*/
+	/*min-width: 0;*/
+	/*min-height: 0;*/
+}
+
+/** {*/
+/*	min-width: 0;*/
+/*	min-height: 0;*/
+/*}*/

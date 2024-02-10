@@ -56,31 +56,40 @@
 				</div>
 			{/if}
 		</div>
-		<div class="chat-c">
-		</div>
+		<div class="chat-c"></div>
 	</div>
 	<EndDialog />
 {/if}
 
 <style>
 	.play-c {
-		display: grid;
-		grid-template-columns: 5fr 300px;
-		justify-self: center;
-		margin-top: 50px;
-		gap: 20px;
+		flex: 1;
+		display: flex;
+		flex-direction: row;
 	}
 
 	.game-c {
-		display: grid;
-		grid-template-rows: 50px 1fr 50px auto;
-		gap: 10px;
-		max-width: 600px;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		margin: 50px 25px 50px 100px;
+		gap: 15px;
+
+		width: min(60vw, 60vh);
+		height: min(50vw, 50vh);
+
+		min-width: 300px;
+		min-height: 300px;
+		max-width: 550px;
+		max-height: 550px;
 	}
 
 	.chat-c {
-		border-radius: 10px;
+		width: 250px;
+		height: 560px;
+		margin: 50px 0 0 0;
 
+		border-radius: 10px;
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
 		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
 	}
