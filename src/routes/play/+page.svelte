@@ -10,6 +10,7 @@
 	import { page } from "$app/stores";
 	import { userService } from "$lib/userService";
 	import type { GameState } from "$lib/types";
+	import { fade } from "svelte/transition";
 
 	let userId: string;
 	let username: string;
@@ -41,15 +42,6 @@
 		}
 	});
 
-	function mark() {
-		// @ts-ignore
-		gameState.config.board?.addMarker({class: "last-move-marker", slice: "markerSquare"}, "e4");
-	}
-
-	function removeMark() {
-		gameState.config.board?.removeMarkers();
-	}
-
 </script>
 
 {#if gameState.config.isLoading}
@@ -61,13 +53,13 @@
 			<Board />
 			<PlayerInfo color={gameState.config.color} />
 			{#if gameState.endState.leftGame || gameState.endState.close}
-				<div class="notification">
+				<div
+					in:fade={{delay: 300, duration: 700 }}
+					class="notification">
 					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
 			{/if}
 		</div>
-<!--		<button on:click={mark}>Mark</button>-->
-<!--		<button on:click={removeMark}>Remove</button>-->
 		<div class="chat-c"></div>
 	</div>
 	<EndDialog />

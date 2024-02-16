@@ -13,8 +13,8 @@ export const order = ["p", "n", "b", "q", "k", "r"];
 export const compareFn = (a: string, b: string) => order.indexOf(a[1]) - order.indexOf(b[1]);
 
 export const START_TIME: Time = {
-	white: 500,
-	black: 500
+	white: 5,
+	black: 5
 };
 
 export function clockState() {
@@ -25,7 +25,7 @@ export function clockState() {
 		time = timeLeft;
 		interval = setInterval(() => {
 			if (time < 2) {
-				clearInterval(interval);
+				// clearInterval(interval);
 				time = 0;
 			} else {
 				time -= 1;

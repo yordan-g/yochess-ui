@@ -30,14 +30,22 @@
 			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
 		}
 	}
+
+	function escClick(event: KeyboardEvent) {
+		// console.log("key pressed", event.key);
+		if (event.key === "Escape") {
+			closeDialog();
+		}
+	}
 </script>
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
 	bind:this={dialog}
 	on:click|self={closeDialog}
+	onkeydown={escClick}
 >
 	{#if gameState.endState.ended || gameState.endState.close || gameState.endState.leftGame }
-		<EndGameInfo dialog={dialog} />
+		<EndGameInfo closeDialog={closeDialog} />
 	{:else if gameState.communicationError.isPresent }
 		<CommunicationErrorInfo dialog={dialog} />
 	{/if}
@@ -62,7 +70,7 @@
 	}
 
 	dialog[open] {
-		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+		animation: zoom 1s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
 
 	@keyframes zoom {
@@ -75,7 +83,7 @@
 	}
 
 	dialog[open]::backdrop {
-		animation: fade 0.2s ease-out;
+		animation: fade 0.5s ease-out;
 	}
 
 	@keyframes fade {

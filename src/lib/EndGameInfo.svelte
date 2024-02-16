@@ -1,15 +1,24 @@
 <script lang="ts">
 	import { GAME_STATE_KEY, getGameState, sendMessage } from "$lib/webSocket.svelte";
-	import { buildCloseEndMessage, buildRematchMessage, gameResult } from "$lib/utils.svelte";
+	import { buildRematchMessage, gameResult } from "$lib/utils.svelte";
 	import type { GameState } from "$lib/types";
+	import { fade } from "svelte/transition";
 
-	let { dialog } = $props();
+	let { closeDialog } = $props<{ closeDialog: () => void }>();
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
 	let endWinner = $derived(gameResult(gameState.endState.gameOver?.winner));
+	let rematchOffered = $state(false);
 
-	function closeDialog() {
-		(dialog as HTMLDialogElement).close();
-		sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
+	let closeButton: HTMLButtonElement;
+
+	function offerRematch() {
+		sendMessage(gameState.config.wsClient, buildRematchMessage(gameState.config.gameId));
+		rematchOffered = true;
+		closeButton.focus();
+	}
+
+	function rematchKeydown(event: KeyboardEvent) {
+		if (event.key === "Escape") closeDialog();
 	}
 
 </script>
@@ -17,22 +26,40 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click|stopPropagation class="modal-c">
-	<h2>{gameState.endState.gameOver?.result} {endWinner}</h2>
+	<h2 in:fade={{delay: 300, duration: 700 }}>
+		{gameState.endState.gameOver?.result} {endWinner}
+	</h2>
+<!-- todo fix rematchOffered && close is not true -->
 	<div class="next-action-c">
-		{#if gameState.endState.close || gameState.endState.leftGame }
-			<span class="red-t">Your opponent left the game!</span>
+		{#if rematchOffered }
+			<span
+				in:fade={{delay: 300, duration: 700 }}
+				class="green-t">Waiting for the opponent to accept
+			</span>
+		{:else if gameState.endState.close || gameState.endState.leftGame }
+			<span
+				in:fade={{delay: 300, duration: 700 }}
+				class="red-t">Your opponent left the game!
+			</span>
 		{:else}
-			<span>You can offer rematch or start another game!</span>
+			<span in:fade={{delay: 300, duration: 700 }}>
+				You can offer rematch or start another game!
+			</span>
 		{/if}
 	</div>
-	<div class="modal-btn">
+	<div in:fade={{delay: 300, duration: 700 }}
+		class="modal-btn">
 		<button
+			bind:this={closeButton}
 			onclick={closeDialog}
 			class="end-btn red-b">Close
 		</button>
 		<button
-			onclick={() => sendMessage(gameState.config.wsClient, buildRematchMessage(gameState.config.gameId))}
-			class="end-btn green-b">Rematch
+			onclick={offerRematch}
+			class="end-btn green-b"
+			disabled={rematchOffered}
+			onkeydown={rematchKeydown}
+		>Rematch
 		</button>
 		<a href="play" class="end-btn green-b"
 		   onclick={closeDialog}
@@ -85,8 +112,15 @@
 	}
 
 	.end-btn:hover {
-		color: white; /* White text on hover */
+		color: white;
 		background-color: var(--button-color);
+	}
+
+	.end-btn:disabled {
+		color: var(--disabled-color);
+		border: 1px solid var(--disabled-color);
+		background-color: transparent;
+		cursor: not-allowed;
 	}
 
 </style>

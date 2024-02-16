@@ -20,10 +20,13 @@
 	--text-xl: 2rem;
 	--text-xxl: 3rem;
 
-	--red-color: rgb(250, 100, 100);
+	--red-color: rgb(220, 107, 107);
+	--green-color: rgb(90, 138, 119);
+	--disabled-color: rgb(204, 204, 204);
+
 	--button-color: black; /* default then gets overridden */
 	--button-color-red: var(--red-color);
-	--button-color-green: rgb(32, 154, 102);
+	--button-color-green: var(--green-color);
 }
 
 html {
@@ -41,6 +44,10 @@ span, p, a, h1, h2, h3 {
 
 span.red-t {
 	color: var(--red-color);
+}
+
+span.green-t {
+	color: var(--green-color);
 }
 
 .end-btn.red-b {
