@@ -5,11 +5,12 @@
 	import "cm-chessboard/assets/chessboard.css";
 	import "cm-chessboard/assets/extensions/markers/markers.css";
 	import "cm-chessboard/assets/extensions/promotion-dialog/promotion-dialog.css";
+	import type { GameState } from "$lib/types";
 
-	const game = getGameState();
+	const game: GameState = getGameState();
 
 	onMount(() => {
-		initBoard(game.state);
+		initBoard(game.config, game.lastMove);
 	});
 
 </script>

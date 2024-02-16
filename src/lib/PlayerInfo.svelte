@@ -2,13 +2,14 @@
 	import { getGameState, sendMessage } from "$lib/webSocket.svelte";
 	import { buildTimeoutMessage, clockState, compareFn, formatToClock, piecesMap } from "$lib/utils.svelte";
 	import InputUsername from "$lib/InputUsername.svelte";
+	import type { GameState } from "$lib/types";
 
 	let { color } = $props();
-	const game = getGameState();
-	let captures = $derived(color === "w" ? game.state.lastMove.whiteCaptures : game.state.lastMove.blackCaptures);
+	const gameState: GameState = getGameState();
+	let captures = $derived(color === "w" ? gameState.lastMove.whiteCaptures : gameState.lastMove.blackCaptures);
 
 	let clock = clockState();
-	let timeLeft = $derived(color === "w" ? game.state.lastMove.timeLeft.white : game.state.lastMove.timeLeft.black);
+	let timeLeft = $derived(color === "w" ? gameState.lastMove.timeLeft.white : gameState.lastMove.timeLeft.black);
 
 	$effect(() => {
 		if (clock.time === 0) {
@@ -16,20 +17,20 @@
 			const winner = color === "w" ? "b" : "w";
 
 			sendMessage(
-				game.state.game.ws,
-				buildTimeoutMessage(game.state.game.gameId, winner)
+				gameState.config.wsClient,
+				buildTimeoutMessage(gameState.config.gameId, winner)
 			);
 		}
 	});
 
 	$effect(() => {
-		if (game.endState.ended) {
+		if (gameState.endState.ended) {
 			clock.stop();
 		}
 	});
 
 	$effect(() => {
-		if (color === game.turn) {
+		if (color === gameState.turn) {
 			clock.start(timeLeft);
 		} else {
 			clock.stop();
@@ -47,7 +48,7 @@
 		<InputUsername color="{color}" />
 	</div>
 	<div class="time-c">
-		{#if color !== game.turn}
+		{#if color !== gameState.turn}
 			<span>{formatToClock(timeLeft)}</span>
 		{:else}
 			<span>{formatToClock(clock.time)}</span>

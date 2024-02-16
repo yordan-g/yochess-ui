@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { GAME_STATE_KEY, getGameState, sendMessage } from "$lib/webSocket.svelte";
 	import { buildCloseEndMessage, buildRematchMessage, gameResult } from "$lib/utils.svelte";
+	import type { GameState } from "$lib/types";
 
 	let { dialog } = $props();
-	let game = getGameState(GAME_STATE_KEY);
-	let endWinner = $derived(gameResult(game.endState.gameOver?.winner));
+	let gameState: GameState = getGameState(GAME_STATE_KEY);
+	let endWinner = $derived(gameResult(gameState.endState.gameOver?.winner));
 
 	function closeDialog() {
 		(dialog as HTMLDialogElement).close();
-		sendMessage(game.state.game.ws, buildCloseEndMessage(game.state.game.gameId));
+		sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
 	}
 
 </script>
@@ -16,9 +17,9 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click|stopPropagation class="modal-c">
-	<h2>{game.endState.gameOver.result} {endWinner}</h2>
+	<h2>{gameState.endState.gameOver?.result} {endWinner}</h2>
 	<div class="next-action-c">
-		{#if game.endState.close || game.endState.leftGame }
+		{#if gameState.endState.close || gameState.endState.leftGame }
 			<span class="red-t">Your opponent left the game!</span>
 		{:else}
 			<span>You can offer rematch or start another game!</span>
@@ -30,7 +31,7 @@
 			class="end-btn red-b">Close
 		</button>
 		<button
-			onclick={() => sendMessage(game.state.game.ws, buildRematchMessage(game.state.game.gameId))}
+			onclick={() => sendMessage(gameState.config.wsClient, buildRematchMessage(gameState.config.gameId))}
 			class="end-btn green-b">Rematch
 		</button>
 		<a href="play" class="end-btn green-b"

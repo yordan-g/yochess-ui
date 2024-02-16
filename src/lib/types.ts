@@ -69,18 +69,22 @@ export type Castle = {
 	rookPosEnd: string;
 };
 
-export type InitGame = {
-	ws: WebSocket | null;
+export type GameState = {
+	config: GameConfig
+	lastMove: Move
+	turn: string
+	endState: End
+	communicationError: CommunicationError
+	resetState: Function
+}
+
+export type GameConfig = {
+	wsClient: WebSocket | null;
 	board: Chessboard | null;
 	gameId: string | null;
 	color: string | null;
 	isLoading: boolean;
 	opponentUsername: string | null;
-};
-
-export type GameState = {
-	game: InitGame;
-	lastMove: Move;
 };
 
 export type GameOver = {

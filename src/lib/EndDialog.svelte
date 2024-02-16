@@ -4,29 +4,30 @@
 	import { buildCloseEndMessage } from "./utils.svelte";
 	import EndGameInfo from "$lib/EndGameInfo.svelte";
 	import CommunicationErrorInfo from "$lib/CommunicationErrorInfo.svelte";
+	import type { GameState } from "$lib/types";
 
 	let dialog: HTMLDialogElement;
-	let game = getGameState(GAME_STATE_KEY);
+	let gameState: GameState = getGameState(GAME_STATE_KEY);
 
 	$effect(() => {
 		if (dialog &&
-			(game.endState.ended || game.communicationError.isPresent)
+			(gameState.endState.ended || gameState.communicationError.isPresent)
 		) {
 			dialog.showModal();
 		}
 	});
 
 	$effect(() => {
-		if (game.endState.rematchSuccess && dialog) {
-			let queryParams = new URLSearchParams({ rematchGameId: game.endState.rematchGameId, }).toString();
+		if (gameState.endState.rematchSuccess && dialog) {
+			let queryParams = new URLSearchParams({ rematchGameId: gameState.endState.rematchGameId!!, }).toString();
 			goto(`/play?${queryParams}`);
 		}
 	});
 
 	function closeDialog() {
 		dialog.close();
-		if (game.endState.ended) {
-			sendMessage(game.state.game.ws, buildCloseEndMessage(game.state.game.gameId));
+		if (gameState.endState.ended) {
+			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
 		}
 	}
 </script>
@@ -35,9 +36,9 @@
 	bind:this={dialog}
 	on:click|self={closeDialog}
 >
-	{#if game.endState.ended || game.endState.close || game.endState.leftGame }
+	{#if gameState.endState.ended || gameState.endState.close || gameState.endState.leftGame }
 		<EndGameInfo dialog={dialog} />
-	{:else if game.communicationError.isPresent }
+	{:else if gameState.communicationError.isPresent }
 		<CommunicationErrorInfo dialog={dialog} />
 	{/if}
 

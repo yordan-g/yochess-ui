@@ -1,12 +1,13 @@
-declare module 'cm-chessboard/*'; // Wildcard declaration
+declare module "cm-chessboard/*"; // Wildcard declaration
 
 // I'm assuming Extension is being imported from 'cm-chessboard/src/model/Extension'.
 // If not, adjust the path.
-declare module 'cm-chessboard/src/model/Extension' {
-	export class Extension {}
+declare module "cm-chessboard/src/model/Extension" {
+	export class Extension {
+	}
 }
 
-declare module 'cm-chessboard/src/Chessboard' {
+declare module "cm-chessboard/src/Chessboard" {
 	export const INPUT_EVENT_TYPE: {
 		moveInputStarted: string;
 		validateMoveInput: string;
@@ -37,7 +38,9 @@ declare module 'cm-chessboard/src/Chessboard' {
 		async setPiece(square: string, piece: string | null, animated?: boolean): Promise<void>;
 
 		// suppressed
-    showPromotionDialog(squareTo: string, color: string, callback: Function)
+		showPromotionDialog(squareTo: string, color: string, callback: Function)
+
+		addMarker(type: any, square: string): void;
 
 		removeMarkers(type?: any, square?: any): void;
 
@@ -49,8 +52,8 @@ declare module 'cm-chessboard/src/Chessboard' {
 	}
 }
 
-declare module 'cm-chessboard/src/view/VisualMoveInput' {
-	import { Chessboard, INPUT_EVENT_TYPE } from 'cm-chessboard/src/Chessboard';
+declare module "cm-chessboard/src/view/VisualMoveInput" {
+	import { Chessboard, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
 
 	export class VisualMoveInput {
 		chessboard: Chessboard;
@@ -61,7 +64,7 @@ declare module 'cm-chessboard/src/view/VisualMoveInput' {
 	}
 }
 
-declare module 'cm-chessboard/src/extensions/markers/Markers' {
+declare module "cm-chessboard/src/extensions/markers/Markers" {
 	export const MARKER_TYPE: {
 		frame: any;
 		framePrimary: any;
@@ -76,13 +79,15 @@ declare module 'cm-chessboard/src/extensions/markers/Markers' {
 
 	// Since you have defined Extension in 'cm-chessboard/src/model/Extension',
 	// you don't need to redefine it here. Just import and extend.
-	import { Extension } from 'cm-chessboard/src/model/Extension';
+	import { Extension } from "cm-chessboard/src/model/Extension";
 
-	export class Markers extends Extension {}
+	export class Markers extends Extension {
+	}
 }
 
-declare module 'cm-chessboard/src/extensions/promotion-dialog/PromotionDialog' {
-	import { Extension } from 'cm-chessboard/src/model/Extension';
+declare module "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog" {
+	import { Extension } from "cm-chessboard/src/model/Extension";
 
-	export class PromotionDialog extends Extension {}
+	export class PromotionDialog extends Extension {
+	}
 }

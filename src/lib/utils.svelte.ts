@@ -70,29 +70,6 @@ export function gameResult(winner: string): string {
 	}
 }
 
-export function buildInitialEndState(): End {
-	return {
-		kind: MessageType.END,
-		gameId: "Initial End State",
-		timeout: null,
-		ended: false,
-		leftGame: null,
-		close: null,
-		rematch: null,
-		rematchSuccess: null,
-		rematchGameId: null,
-		gameOver: null
-	}
-}
-
-export function buildInitialCommunicationError(): CommunicationError {
-	return {
-		kind: MessageType.COMMUNICATION_ERROR,
-		isPresent: false,
-		userMessage: "Server Error",
-	}
-}
-
 export function buildLeftGameMessage(gameId: string): End {
 	return {
 		kind: MessageType.END,
@@ -105,7 +82,7 @@ export function buildLeftGameMessage(gameId: string): End {
 		rematchSuccess: null,
 		rematchGameId: null,
 		gameOver: null
-	}
+	};
 }
 
 export function buildTimeoutMessage(gameId: string, winner: string): End {
@@ -123,7 +100,7 @@ export function buildTimeoutMessage(gameId: string, winner: string): End {
 			winner: winner,
 			result: "Timeout"
 		}
-	}
+	};
 }
 
 export function buildCloseEndMessage(gameId: string): End {
@@ -138,7 +115,7 @@ export function buildCloseEndMessage(gameId: string): End {
 		rematchSuccess: null,
 		rematchGameId: null,
 		gameOver: null
-	}
+	};
 }
 
 export function buildRematchMessage(gameId: string): End {
@@ -153,7 +130,7 @@ export function buildRematchMessage(gameId: string): End {
 		rematchSuccess: null,
 		rematchGameId: null,
 		gameOver: null
-	}
+	};
 }
 
 export function buildChangeNameMessage(gameId: string, username: string): ChangeName {
@@ -161,5 +138,5 @@ export function buildChangeNameMessage(gameId: string, username: string): Change
 		kind: MessageType.CHANGE_NAME,
 		gameId: gameId,
 		name: username
-	}
+	};
 }

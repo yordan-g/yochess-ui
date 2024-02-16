@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Spinner from "$lib/Spinner.svelte";
 	import { onDestroy, onMount, setContext } from "svelte";
-	import { connectToWs, GAME_STATE_KEY, initGameState, sendMessage } from "$lib/webSocket.svelte";
+	import { connectToWebSocketServer, GAME_STATE_KEY, initGameState, sendMessage } from "$lib/webSocket.svelte";
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
 	import EndDialog from "$lib/EndDialog.svelte";
@@ -9,53 +9,65 @@
 	import { beforeNavigate, afterNavigate } from "$app/navigation";
 	import { page } from "$app/stores";
 	import { userService } from "$lib/userService";
+	import type { GameState } from "$lib/types";
 
 	let userId: string;
 	let username: string;
-	const game = initGameState();
-	setContext(GAME_STATE_KEY, game);
+	const gameState: GameState = initGameState();
+	setContext(GAME_STATE_KEY, gameState);
 	// $inspect(game.endState)
 
 	onMount(() => {
 		userId = userService.getUserId();
 		username = userService.getUsername();
-		connectToWs(userId, game, username, null);
+		connectToWebSocketServer(userId, gameState, username, null);
 	});
 
 	onDestroy(() => {
 		console.log("onDestroy -- ")
-		sendMessage(game.state.game.ws, buildLeftGameMessage(game.state.game.gameId));
-		game.resetState();
+		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
+		gameState.resetState();
 		// setContext(GAME_STATE_KEY, null);
 	});
 
 	beforeNavigate(() => {
-		sendMessage(game.state.game.ws, buildLeftGameMessage(game.state.game.gameId));
-		game.resetState();
+		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
+		gameState.resetState();
 	});
 
 	afterNavigate(() => {
 		if ($page.url.searchParams.get("rematchGameId") != null) {
-			connectToWs(userId, game, username, $page.url.searchParams.get("rematchGameId"));
+			connectToWebSocketServer(userId, gameState, username, $page.url.searchParams.get("rematchGameId"));
 		}
 	});
 
+	function mark() {
+		// @ts-ignore
+		gameState.config.board?.addMarker({class: "last-move-marker", slice: "markerSquare"}, "e4");
+	}
+
+	function removeMark() {
+		gameState.config.board?.removeMarkers();
+	}
+
 </script>
 
-{#if game.state.game.isLoading}
+{#if gameState.config.isLoading}
 	<Spinner />
 {:else}
 	<div class="play-c">
 		<div class="game-c">
-			<PlayerInfo color={game.state.game.color === "w" ? "b" : "w"} />
+			<PlayerInfo color={gameState.config.color === "w" ? "b" : "w"} />
 			<Board />
-			<PlayerInfo color={game.state.game.color} />
-			{#if game.endState.leftGame || game.endState.close}
+			<PlayerInfo color={gameState.config.color} />
+			{#if gameState.endState.leftGame || gameState.endState.close}
 				<div class="notification">
 					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
 			{/if}
 		</div>
+<!--		<button on:click={mark}>Mark</button>-->
+<!--		<button on:click={removeMark}>Remove</button>-->
 		<div class="chat-c"></div>
 	</div>
 	<EndDialog />
@@ -92,9 +104,5 @@
 		border-radius: 10px;
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
 		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
-	}
-
-	.notification > span {
-		color: rgba(255, 100, 100, 1)
 	}
 </style>

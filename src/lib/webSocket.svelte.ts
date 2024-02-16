@@ -2,13 +2,13 @@ import type { VisualMoveInput } from "cm-chessboard/src/view/VisualMoveInput";
 import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers";
 import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog";
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
-import { type CommunicationError, type End, type GameState, type InitGame, type Message, MessageType, type Move } from "$lib/types";
+import { type CommunicationError, type End, type GameState, type GameConfig, type Message, MessageType, type Move } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
-import { buildChangeNameMessage, buildInitialCommunicationError, buildInitialEndState, START_TIME } from "$lib/utils.svelte";
+import { buildChangeNameMessage, START_TIME } from "$lib/utils.svelte";
 
-export const GAME_NOT_STARTED: InitGame = {
-	ws: null,
+const GAME_NOT_STARTED: GameConfig = {
+	wsClient: null,
 	color: null,
 	gameId: null,
 	board: null,
@@ -16,7 +16,7 @@ export const GAME_NOT_STARTED: InitGame = {
 	opponentUsername: null
 };
 
-export const INIT_MOVE: Move = {
+const INIT_MOVE: Move = {
 	kind: MessageType.MOVE,
 	piece: "",
 	squareFrom: "",
@@ -32,29 +32,31 @@ export const INIT_MOVE: Move = {
 	turn: "w"
 };
 
-export function buildInitialState(): GameState {
-	return {
-		game: { ...GAME_NOT_STARTED },
-		lastMove: { ...INIT_MOVE }
-	};
-}
-
 export const GAME_STATE_KEY = "gameState";
 
-export function initGameState() {
-	let state = $state<GameState>(buildInitialState());
+export function initGameState(): GameState {
+	let config = $state<GameConfig>({ ...GAME_NOT_STARTED });
+	let lastMove = $state<Move>({ ...INIT_MOVE });
 	let turn = $state<string>("w");
 	let endState = $state<End>(buildInitialEndState());
 	let communicationError = $state<CommunicationError>(buildInitialCommunicationError());
+
 	function resetState() {
-		const resetState = buildInitialState();
-		console.log("resetting state, isloading - ", resetState.game.isLoading);
-		state = resetState;
+		config = { ...GAME_NOT_STARTED };
+		lastMove = { ...INIT_MOVE };
+		endState = buildInitialEndState();
+		console.log("resetting state, isloading - ", config.isLoading);
 	}
 
 	return {
-		get state(): GameState {
-			return state;
+		get config(): GameConfig {
+			return config;
+		},
+		get lastMove(): Move {
+			return lastMove;
+		},
+		set lastMove(value: Move) {
+			lastMove = value;
 		},
 		resetState,
 		get turn() {
@@ -78,12 +80,12 @@ export function initGameState() {
 	};
 }
 
-export function getGameState(): { readonly endState: End, readonly state: GameState, turn: string, communicationError: CommunicationError } {
-	return getContext(GAME_STATE_KEY);
+export function getGameState(): GameState {
+	return getContext<GameState>(GAME_STATE_KEY);
 }
 
-export function initBoard(gameState: GameState) {
-	gameState.game.board = new Chessboard(document.getElementById("containerId"), {
+export function initBoard(config: GameConfig, lastMove: Move) {
+	config.board = new Chessboard(document.getElementById("containerId"), {
 		position: FEN.start,
 		assetsUrl: "../assets/",
 		extensions: [{ class: Markers }, { class: PromotionDialog }],
@@ -92,28 +94,26 @@ export function initBoard(gameState: GameState) {
 			borderType: BORDER_TYPE.thin
 		}
 	});
-	gameState.game.board.enableMoveInput(createEventHandler(gameState));
-	gameState.game.board.setOrientation(gameState.game.color!!);
+	config.board.enableMoveInput(createMoveInputHandler(config, lastMove));
+	config.board.setOrientation(config.color!!);
 }
 
-async function updateBoard(move: Move, gameState: GameState): Promise<void> {
+async function updateBoard(move: Move, board: Chessboard): Promise<void> {
 	switch (move.valid) {
 		case true: {
 			console.log(`Moving ${move.squareFrom} - ${move.squareTo}`, move);
-			await gameState.game.board?.movePiece(move.squareFrom, move.squareTo);
+			board.removeMarkers();
+			await board.movePiece(move.squareFrom, move.squareTo);
+			board.addMarker({ class: "last-move-marker", slice: "markerSquare" }, move.squareFrom);
 			if (move.enPassantCapturePos) {
-				await gameState.game.board?.setPiece(move.enPassantCapturePos, null, true);
+				await board.setPiece(move.enPassantCapturePos, null, true);
 			}
 			if (move.promotion) {
-				await gameState.game.board?.setPiece(move.squareTo, move.promotion, true);
+				await board.setPiece(move.squareTo, move.promotion, true);
 			}
 			if (move.castle) {
-				await gameState.game.board?.setPiece(move.castle.rookPosStart, null, true);
-				await gameState.game.board?.setPiece(
-					move.castle.rookPosEnd,
-					move.castle.rook,
-					true
-				);
+				await board.setPiece(move.castle.rookPosStart, null, true);
+				await board.setPiece(move.castle.rookPosEnd, move.castle.rook, true);
 			}
 			break;
 		}
@@ -123,10 +123,10 @@ async function updateBoard(move: Move, gameState: GameState): Promise<void> {
 	}
 }
 
-function createEventHandler(gameState: GameState) {
+function createMoveInputHandler(config: GameConfig, lastMove: Move) {
 	// the method signature below required by cm-chessboard.
 	return function inputHandler(event: VisualMoveInput) {
-		gameState.game.board?.removeMarkers(MARKER_TYPE.frame);
+		config.board?.removeMarkers(MARKER_TYPE.frame);
 		switch (event.type) {
 			case INPUT_EVENT_TYPE.moveInputStarted:
 				return true;
@@ -138,35 +138,35 @@ function createEventHandler(gameState: GameState) {
 					piece: event.chessboard.getPiece(event.squareFrom),
 					squareFrom: event.squareFrom,
 					squareTo: event.squareTo,
-					gameId: gameState.game.gameId ?? "init",
+					gameId: config.gameId ?? "init",
 					valid: false,
 					enPassantCapturePos: null,
 					promotion: null,
 					castle: null,
 					whiteCaptures: [],
 					blackCaptures: [],
-					timeLeft: gameState.lastMove.timeLeft,
-					turn: gameState.lastMove.turn
+					timeLeft: lastMove.timeLeft,
+					turn: lastMove.turn
 				};
 
 				if (isWhitePromotionMove(event)) {
-					gameState.game.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
+					config.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
 						console.log("Promotion result", result);
 
-						sendMessage(gameState.game.ws, { ...moveRequest, promotion: result.piece });
+						sendMessage(config.wsClient, { ...moveRequest, promotion: result.piece });
 					});
 					return false;
 				}
 				if (isBlackPromotionMove(event)) {
-					gameState.game.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
+					config.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
 						console.log("Promotion result", result);
 
-						sendMessage(gameState.game.ws, { ...moveRequest, promotion: result.piece });
+						sendMessage(config.wsClient, { ...moveRequest, promotion: result.piece });
 					});
 					return false;
 				}
 
-				sendMessage(gameState.game.ws, moveRequest);
+				sendMessage(config.wsClient, moveRequest);
 				return false;
 			case INPUT_EVENT_TYPE.moveInputCanceled:
 				return true;
@@ -185,60 +185,65 @@ export async function sendMessage(ws: WebSocket | null, message: Message) {
 	}
 }
 
-export function connectToWs(userId: String, game: any, username: string, rematchGameId: string | null): void {
-	let url;
+export function connectToWebSocketServer(
+	userId: String, gameState: GameState, username: string, rematchGameId: string | null
+) {
+	let serverUrl;
 
 	if (rematchGameId != null) {
-		url = `${PUBLIC_WS_BASE_URL}/${userId}?rematchGameId=${encodeURIComponent(rematchGameId)}`;
+		serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?rematchGameId=${encodeURIComponent(rematchGameId)}`;
 	} else {
-		url = `${PUBLIC_WS_BASE_URL}/${userId}`;
+		serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}`;
 	}
-	// todo: try assigning the ws to the state at the end
-	game.state.game.ws = new WebSocket(url);
-	if (!game.state.game.ws) {
+	let wsClient = new WebSocket(serverUrl);
+
+	if (!wsClient) {
 		throw new Error("Server didn't accept WebSocket");
 	}
 
-	game.state.game.ws.addEventListener("open", () => {
+	wsClient.addEventListener("open", (event: Event) => {
 		console.log("Opened websocket");
 	});
 
-	game.state.game.ws.addEventListener("message", (rawMessage: MessageEvent<string>) => {
-		const message: Message = JSON.parse(rawMessage.data);
+	wsClient.addEventListener("message", (event: MessageEvent) => {
+		const message: Message = JSON.parse(event.data);
 		console.log("onMessage", message);
 
 		switch (message.kind) {
 			case MessageType.INIT: {
 				if (message.type === "START") {
-					game.endState = buildInitialEndState();
-					game.state.game.gameId = message.gameId;
-					game.state.game.color = message.color;
-					game.state.game.isLoading = false;
-					sendMessage(game.state.game.ws, buildChangeNameMessage(game.state.game.gameId, username));
+					// todo: on rematch end state message shows,
+					//  below is a workaround but ideally this should be handled in resetState()
+					// gameState.endState = buildInitialEndState();
+					gameState.config.gameId = message.gameId;
+					gameState.config.color = message.color;
+					gameState.config.isLoading = false;
+					sendMessage(gameState.config.wsClient, buildChangeNameMessage(gameState.config.gameId, username));
 				}
 				break;
 			}
 			case MessageType.MOVE: {
-				updateBoard(message, game.state);
+				// todo handle nullability?
+				updateBoard(message, gameState.config.board!!);
 				if (message.valid) {
-					game.state.lastMove = message;
+					gameState.lastMove = message;
 				}
-				if (message.turn !== game.turn) {
-					game.turn = message.turn;
+				if (message.turn !== gameState.turn) {
+					gameState.turn = message.turn;
 				}
 				break;
 			}
 			case MessageType.END: {
-				game.endState = message;
+				gameState.endState = message;
 				break;
 			}
 			case MessageType.CHANGE_NAME: {
 				// the backend always sends the opposite player name change event!
-				game.state.game.opponentUsername = message.name;
+				gameState.config.opponentUsername = message.name;
 				break;
 			}
 			case MessageType.COMMUNICATION_ERROR: {
-				game.communicationError = message
+				gameState.communicationError = message;
 				break;
 			}
 			default:
@@ -246,13 +251,15 @@ export function connectToWs(userId: String, game: any, username: string, rematch
 		}
 	});
 
-	game.state.game.ws.addEventListener("close", (message: Message) => {
+	wsClient.addEventListener("close", (event: CloseEvent) => {
 	});
 
-	game.state.game.ws.addEventListener("error", (message: Message) => {
-		console.log(message);
+	wsClient.addEventListener("error", (event: Event) => {
+		console.log(event);
 		console.log("Something went wrong with the WebSocket");
 	});
+
+	gameState.config.wsClient = wsClient;
 }
 
 function isWhitePromotionMove(event: VisualMoveInput): boolean {
@@ -267,4 +274,27 @@ function isBlackPromotionMove(event: VisualMoveInput): boolean {
 		event.squareTo.charAt(1) === "1" &&
 		event.piece.charAt(1) === "p" &&
 		event.piece.charAt(0) === "b";
+}
+
+function buildInitialEndState(): End {
+	return {
+		kind: MessageType.END,
+		gameId: "Initial End State",
+		timeout: null,
+		ended: false,
+		leftGame: null,
+		close: null,
+		rematch: null,
+		rematchSuccess: null,
+		rematchGameId: null,
+		gameOver: null
+	};
+}
+
+function buildInitialCommunicationError(): CommunicationError {
+	return {
+		kind: MessageType.COMMUNICATION_ERROR,
+		isPresent: false,
+		userMessage: "Server Error"
+	};
 }

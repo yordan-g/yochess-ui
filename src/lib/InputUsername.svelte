@@ -2,11 +2,12 @@
 	import { userService } from "$lib/userService";
 	import { getGameState, sendMessage } from "$lib/webSocket.svelte";
 	import { buildChangeNameMessage } from "$lib/utils.svelte";
+	import type { GameState } from "$lib/types";
 
 	let { color } = $props();
-	const game = getGameState();
+	const gameState: GameState = getGameState();
 
-	let opponentUsername = $derived(game.state.game.opponentUsername);
+	let opponentUsername = $derived(gameState.config.opponentUsername);
 	let username = userService.getUsername();
 	let currentName = $state(username);
 	let lastValidName = $state(username);
@@ -17,7 +18,7 @@
 			currentName = lastValidName;
 		} else {
 			userService.setUsername(newName);
-			sendMessage(game.state.game.ws, buildChangeNameMessage(game.state.game.gameId, newName));
+			sendMessage(gameState.config.wsClient, buildChangeNameMessage(gameState.config.gameId, newName));
 		}
 	}
 
@@ -33,7 +34,7 @@
 </script>
 
 <div class="username-c">
-	{#if game.state.game.color !== color}
+	{#if gameState.config.color !== color}
 		<span>{opponentUsername}</span>
 	{:else}
 		<input type="text" id="playerName"
