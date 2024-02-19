@@ -16,7 +16,7 @@
 		"@types/cookie": "^0.5.1",
 		"@types/node": "^20.5.9",
 		"@types/uuid": "^9.0.3",
-		"svelte": "^5.0.0-next.49",
+		"svelte": "^5.0.0-next.57",
 		"svelte-check": "^3.6.4",
 		"svelte-preprocess": "^5.1.3",
 		"tsconfig": "^7.0.0",
@@ -26,7 +26,8 @@
 	},
 	"dependencies": {
 		"cm-chessboard": "^8.5.0",
-		"uuid": "^9.0.0"
+		"uuid": "^9.0.0",
+		"nanoid": "^5.0.6"
 	},
 	"type": "module"
 }

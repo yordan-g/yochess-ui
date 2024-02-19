@@ -1,8 +1,20 @@
 <script lang="ts">
 	import "../styles/global.css";
 	import { page } from "$app/stores";
+	import { createCustomGame } from "$lib/customGameService";
+	import { onMount } from "svelte";
+	import { goto } from "$app/navigation";
 
 	let currentPath = $derived($page.url.pathname);
+	let customGameId = $derived($page.url.searchParams.get("cg"));
+
+	onMount(() => {
+		/** Redirects the User to connect to a Friendly Game
+		 *  when he is loading the website via custom link! */
+		if (customGameId != null) {
+			goto(`/play`, { state: { customGameId: customGameId } });
+		}
+	});
 </script>
 
 <svelte:head>
@@ -13,9 +25,9 @@
 <div class="layout">
 	<div class="nav-and-route">
 		<nav class="nav">
-			<a href="/" class="btn-nav {currentPath === '/' ? 'highlighted' : ''}">Home</a>
-			<a href="practice" class="btn-nav {currentPath === '/practice' ? 'highlighted' : ''}">Practice</a>
-			<a href="play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}" data-sveltekit-reload>Play</a>
+			<a href="/" class="btn-nav {currentPath === '/' ? 'highlighted' : ''}">About</a>
+			<a href="play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}">Play</a>
+			<button class="custom-game btn-nav" onclick={createCustomGame}>Friendly Game</button>
 		</nav>
 		<div class="route-c">
 			<slot></slot>
@@ -46,9 +58,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 50px;
+		gap: 30px;
 		width: 220px;
-		margin: 100px 0 0 0;
+		margin: 150px 0 0 0;
 	}
 
 	.route-c {
@@ -75,12 +87,15 @@
 	}
 
 	.btn-nav {
+		cursor: pointer;
+		background: none;
 		text-align: center;
 		display: block;
 		border: none;
 		text-decoration: none;
+		font-family: "Helvetica Neue", sans-serif;
 		font-size: var(--text-xl);
-		font-weight: lighter;
+		font-weight: 300;
 		padding: 10px 20px;
 		color: rgb(44, 18, 82);
 		transition: color 0.3s ease;
@@ -138,6 +153,11 @@
 
 	.highlighted:hover::after {
 		opacity: 0;
+	}
+
+	.custom-game {
+		padding: 10px;
+		margin: 0px 30px 0px 30px;
 	}
 
 </style>

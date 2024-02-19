@@ -1,13 +1,18 @@
 <script lang="ts">
+	import { fade } from "svelte/transition";
 
 </script>
 
-<div class="loading-c">
-	<h2>Searching for a player</h2>
+<div in:fade={{delay:100, duration: 700}} class="loading-c">
+	<p>Searching for opponent...</p>
 	<div class="spinner"></div>
 </div>
 
 <style>
+	p {
+		font-size: var(--text-l);
+	}
+
 	.loading-c {
 		display: flex;
 		flex-direction: column;

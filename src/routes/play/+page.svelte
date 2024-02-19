@@ -11,24 +11,28 @@
 	import { userService } from "$lib/userService";
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
+	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
 
 	let userId: string;
 	let username: string;
 	const gameState: GameState = initGameState();
 	setContext(GAME_STATE_KEY, gameState);
-	// $inspect(game.endState)
+
+	let rematchGameId = $derived($page.url.searchParams.get("rematchGameId"));
+	let customGameId = $derived($page.state.customGameId);
+	let isCreator = $derived($page.state.isCreator);
+	let friendlyGameDisplayLink =
+		$derived(`${$page.url.protocol}//${$page.url.host}/?cg=${$page.state.customGameId}`);
 
 	onMount(() => {
+		console.log(`Play -- onMount`);
 		userId = userService.getUserId();
 		username = userService.getUsername();
-		connectToWebSocketServer(userId, gameState, username, null);
 	});
 
 	onDestroy(() => {
-		console.log("onDestroy -- ")
 		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
 		gameState.resetState();
-		// setContext(GAME_STATE_KEY, null);
 	});
 
 	beforeNavigate(() => {
@@ -36,13 +40,30 @@
 		gameState.resetState();
 	});
 
-	afterNavigate(() => {
-		if ($page.url.searchParams.get("rematchGameId") != null) {
-			connectToWebSocketServer(userId, gameState, username, $page.url.searchParams.get("rematchGameId"));
+	afterNavigate((navigation: AfterNavigate) => {
+		console.log(`afterNavigate, customGameId: ${customGameId}`);
+
+		if (navigation.type === "goto") {
+			if (rematchGameId != null) {
+				connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null);
+				return;
+			}
+			if (customGameId != null && customGameId != undefined) {
+				connectToWebSocketServer(userId, gameState, username, null,
+					customGameId, isCreator === undefined ? null : isCreator
+				);
+				return;
+			}
+		} else {
+			connectToWebSocketServer(userId, gameState, username, null, null, null);
 		}
 	});
 
 </script>
+
+{#if customGameId != null}
+	<h2>{friendlyGameDisplayLink}</h2>
+{/if}
 
 {#if gameState.config.isLoading}
 	<Spinner />
@@ -53,9 +74,8 @@
 			<Board />
 			<PlayerInfo color={gameState.config.color} />
 			{#if gameState.endState.leftGame || gameState.endState.close}
-				<div
-					in:fade={{delay: 300, duration: 700 }}
-					class="notification">
+				<div in:fade={{delay: 100, duration: 700 }}
+					 class="notification">
 					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
 			{/if}

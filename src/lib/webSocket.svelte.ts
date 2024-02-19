@@ -186,12 +186,22 @@ export async function sendMessage(ws: WebSocket | null, message: Message) {
 }
 
 export function connectToWebSocketServer(
-	userId: String, gameState: GameState, username: string, rematchGameId: string | null
+	userId: String, gameState: GameState, username: string,
+	rematchGameId: string | null,
+	customGameId: string | null,
+	isCreator: string | null
 ) {
+	console.log(isCreator);
 	let serverUrl;
 
 	if (rematchGameId != null) {
 		serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?rematchGameId=${encodeURIComponent(rematchGameId)}`;
+	} else if (customGameId != null) {
+		if (isCreator != null) {
+			serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?customGameId=${encodeURIComponent(customGameId)}&isCreator=${isCreator}`;
+		} else {
+			serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?customGameId=${encodeURIComponent(customGameId)}`;
+		}
 	} else {
 		serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}`;
 	}

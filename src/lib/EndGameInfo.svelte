@@ -26,28 +26,28 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click|stopPropagation class="modal-c">
-	<h2 in:fade={{delay: 300, duration: 700 }}>
+	<h2 in:fade={{delay: 100, duration: 700 }}>
 		{gameState.endState.gameOver?.result} {endWinner}
 	</h2>
 <!-- todo fix rematchOffered && close is not true -->
 	<div class="next-action-c">
-		{#if rematchOffered }
+		{#if rematchOffered && !gameState.endState.close }
 			<span
-				in:fade={{delay: 300, duration: 700 }}
+				in:fade={{delay: 100, duration: 700 }}
 				class="green-t">Waiting for the opponent to accept
 			</span>
 		{:else if gameState.endState.close || gameState.endState.leftGame }
 			<span
-				in:fade={{delay: 300, duration: 700 }}
+				in:fade={{delay: 100, duration: 700 }}
 				class="red-t">Your opponent left the game!
 			</span>
 		{:else}
-			<span in:fade={{delay: 300, duration: 700 }}>
+			<span in:fade={{delay: 100, duration: 700 }}>
 				You can offer rematch or start another game!
 			</span>
 		{/if}
 	</div>
-	<div in:fade={{delay: 300, duration: 700 }}
+	<div in:fade={{delay: 100, duration: 700 }}
 		class="modal-btn">
 		<button
 			bind:this={closeButton}
@@ -63,7 +63,7 @@
 		</button>
 		<a href="play" class="end-btn green-b"
 		   onclick={closeDialog}
-		   data-sveltekit-reload>Play Again
+		>Play Again
 		</a>
 	</div>
 </div>

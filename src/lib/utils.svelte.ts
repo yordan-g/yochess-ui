@@ -1,4 +1,4 @@
-import { type Time, type End, MessageType, type ChangeName, type CommunicationError } from "$lib/types";
+import { type Time, type End, MessageType, type ChangeName } from "$lib/types";
 
 export const piecesMap = new Map([
 	["bk", "&#9818;"], ["wk", "&#9812;"],
