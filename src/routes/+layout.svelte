@@ -3,17 +3,11 @@
 	import { page } from "$app/stores";
 	import { createCustomGame } from "$lib/customGameService";
 	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
 
 	let currentPath = $derived($page.url.pathname);
-	let customGameId = $derived($page.url.searchParams.get("cg"));
 
 	onMount(() => {
-		/** Redirects the User to connect to a Friendly Game
-		 *  when he is loading the website via custom link! */
-		if (customGameId != null) {
-			goto(`/play`, { state: { customGameId: customGameId } });
-		}
+		console.log("Layout onMount");
 	});
 </script>
 
@@ -26,8 +20,9 @@
 	<div class="nav-and-route">
 		<nav class="nav">
 			<a href="/" class="btn-nav {currentPath === '/' ? 'highlighted' : ''}">About</a>
-			<a href="play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}">Play</a>
+			<a href="/play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}">Play</a>
 			<button class="custom-game btn-nav" onclick={createCustomGame}>Friendly Game</button>
+<!--			<a href="redirect" class="btn-nav {currentPath === '/redirect' ? 'highlighted' : ''}">Redirect</a>-->
 		</nav>
 		<div class="route-c">
 			<slot></slot>

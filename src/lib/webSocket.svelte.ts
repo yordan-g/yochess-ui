@@ -45,7 +45,8 @@ export function initGameState(): GameState {
 		config = { ...GAME_NOT_STARTED };
 		lastMove = { ...INIT_MOVE };
 		endState = buildInitialEndState();
-		console.log("resetting state, isloading - ", config.isLoading);
+		turn = "w";
+		communicationError = buildInitialCommunicationError();
 	}
 
 	return {
@@ -94,6 +95,7 @@ export function initBoard(config: GameConfig, lastMove: Move) {
 			borderType: BORDER_TYPE.thin
 		}
 	});
+	// console.log(`init board--- ${config.color}`);
 	config.board.enableMoveInput(createMoveInputHandler(config, lastMove));
 	config.board.setOrientation(config.color!!);
 }
@@ -101,7 +103,7 @@ export function initBoard(config: GameConfig, lastMove: Move) {
 async function updateBoard(move: Move, board: Chessboard): Promise<void> {
 	switch (move.valid) {
 		case true: {
-			console.log(`Moving ${move.squareFrom} - ${move.squareTo}`, move);
+			// console.log(`Moving ${move.squareFrom} - ${move.squareTo}`, move);
 			board.removeMarkers();
 			await board.movePiece(move.squareFrom, move.squareTo);
 			board.addMarker({ class: "last-move-marker", slice: "markerSquare" }, move.squareFrom);
@@ -190,14 +192,13 @@ export function connectToWebSocketServer(
 	rematchGameId: string | null,
 	customGameId: string | null,
 	isCreator: string | null
-) {
-	console.log(isCreator);
+): void {
 	let serverUrl;
 
-	if (rematchGameId != null) {
+	if (rematchGameId) {
 		serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?rematchGameId=${encodeURIComponent(rematchGameId)}`;
-	} else if (customGameId != null) {
-		if (isCreator != null) {
+	} else if (customGameId) {
+		if (isCreator) {
 			serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?customGameId=${encodeURIComponent(customGameId)}&isCreator=${isCreator}`;
 		} else {
 			serverUrl = `${PUBLIC_WS_BASE_URL}/${userId}?customGameId=${encodeURIComponent(customGameId)}`;
@@ -217,23 +218,26 @@ export function connectToWebSocketServer(
 
 	wsClient.addEventListener("message", (event: MessageEvent) => {
 		const message: Message = JSON.parse(event.data);
-		console.log("onMessage", message);
+		// console.log("onMessage", message);
 
 		switch (message.kind) {
 			case MessageType.INIT: {
+				gameState.config.gameId = message.gameId;
 				if (message.type === "START") {
-					// todo: on rematch end state message shows,
-					//  below is a workaround but ideally this should be handled in resetState()
-					// gameState.endState = buildInitialEndState();
-					gameState.config.gameId = message.gameId;
-					gameState.config.color = message.color;
+					/**
+					 *  Resets the endState on the start of the new game
+					 *  because end messages keep showing in the new game due to race condition between the websocket final End message of the last game
+					 *  and the SvelteKit lifecycle functions that tries to reset the state.
+					 **/
+					gameState.endState = buildInitialEndState();
+
 					gameState.config.isLoading = false;
+					gameState.config.color = message.color;
 					sendMessage(gameState.config.wsClient, buildChangeNameMessage(gameState.config.gameId, username));
 				}
 				break;
 			}
 			case MessageType.MOVE: {
-				// todo handle nullability?
 				updateBoard(message, gameState.config.board!!);
 				if (message.valid) {
 					gameState.lastMove = message;
@@ -286,7 +290,7 @@ function isBlackPromotionMove(event: VisualMoveInput): boolean {
 		event.piece.charAt(0) === "b";
 }
 
-function buildInitialEndState(): End {
+export function buildInitialEndState(): End {
 	return {
 		kind: MessageType.END,
 		gameId: "Initial End State",

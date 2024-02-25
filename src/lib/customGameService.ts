@@ -4,12 +4,11 @@ import { goto } from "$app/navigation";
 export function createCustomGame() {
 	let gameId = nanoid(8);
 
-	goto(`/play`,
-		{
-			state: {
-				isCreator: true,
-				customGameId: gameId
-			}
+	goto(`/redirect`, {
+		replaceState: true,
+		state: {
+			customGameId: gameId,
+			isCreator: "true"
 		}
-	);
+	});
 }

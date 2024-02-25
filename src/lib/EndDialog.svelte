@@ -19,8 +19,13 @@
 
 	$effect(() => {
 		if (gameState.endState.rematchSuccess && dialog) {
-			let queryParams = new URLSearchParams({ rematchGameId: gameState.endState.rematchGameId!!, }).toString();
-			goto(`/play?${queryParams}`);
+			dialog.close();
+
+			goto(`/redirect`, {
+				replaceState: true,
+				invalidateAll: true,
+				state: { rematchGameId: gameState.endState.rematchGameId }
+			});
 		}
 	});
 

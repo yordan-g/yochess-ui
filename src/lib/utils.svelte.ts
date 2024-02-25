@@ -1,4 +1,5 @@
 import { type Time, type End, MessageType, type ChangeName } from "$lib/types";
+import * as trace_events from "trace_events";
 
 export const piecesMap = new Map([
 	["bk", "&#9818;"], ["wk", "&#9812;"],
@@ -17,7 +18,7 @@ export const START_TIME: Time = {
 	black: 5
 };
 
-export function clockState() {
+export function initClockState() {
 	let time = $state(500);
 	let interval: NodeJS.Timeout;
 
@@ -139,4 +140,8 @@ export function buildChangeNameMessage(gameId: string, username: string): Change
 		gameId: gameId,
 		name: username
 	};
+}
+
+export function toNullableValue<T>(value: T | undefined): T | null {
+	return value === undefined ? null : value;
 }
