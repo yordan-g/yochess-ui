@@ -1,5 +1,4 @@
 import { type Time, type End, MessageType, type ChangeName } from "$lib/types";
-import * as trace_events from "trace_events";
 
 export const piecesMap = new Map([
 	["bk", "&#9818;"], ["wk", "&#9812;"],
