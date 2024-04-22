@@ -33,3 +33,6 @@ You can preview the production build with `npm run preview`.
 
 ### CSS
 - flexbox scaling issues - https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
+
+## Google Cloud
+- https://cloud.google.com/build/docs/configuring-builds/create-basic-configuration
