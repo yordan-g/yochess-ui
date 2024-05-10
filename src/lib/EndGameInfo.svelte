@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { GAME_STATE_KEY, getGameState, sendMessage } from "$lib/webSocket.svelte";
-	import { buildRematchMessage, gameResult } from "$lib/utils.svelte";
+	import { buildRematchMessage, gameResult, stopEventPropagation } from "$lib/utils.svelte";
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
 
@@ -25,7 +25,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div on:click|stopPropagation class="modal-c">
+<div onclick={stopEventPropagation} class="modal-c">
 	<h2 in:fade={{delay: 100, duration: 700 }}>
 		{gameState.endState.gameOver?.result} {endWinner}
 	</h2>

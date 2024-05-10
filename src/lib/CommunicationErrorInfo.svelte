@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { GAME_STATE_KEY, getGameState } from "$lib/webSocket.svelte";
 	import type { GameState } from "$lib/types";
+	import { stopEventPropagation } from "$lib/utils.svelte";
 
 	let { dialog } = $props();
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
@@ -12,7 +13,7 @@
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div on:click|stopPropagation class="modal-c">
+<div onclick={stopEventPropagation} class="modal-c">
 	<span>{gameState.communicationError.userMessage}</span>
 	<button onclick={closeDialog} class="button">Close</button>
 </div>

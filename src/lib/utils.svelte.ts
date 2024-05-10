@@ -13,8 +13,8 @@ export const order = ["p", "n", "b", "q", "k", "r"];
 export const compareFn = (a: string, b: string) => order.indexOf(a[1]) - order.indexOf(b[1]);
 
 export const START_TIME: Time = {
-	white: 5,
-	black: 5
+	white: 500,
+	black: 500
 };
 
 export function initClockState() {
@@ -143,4 +143,8 @@ export function buildChangeNameMessage(gameId: string, username: string): Change
 
 export function toNullableValue<T>(value: T | undefined): T | null {
 	return value === undefined ? null : value;
+}
+
+export function stopEventPropagation(event: Event) {
+	event.stopPropagation();
 }

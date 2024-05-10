@@ -46,7 +46,11 @@
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
 	bind:this={dialog}
-	on:click|self={closeDialog}
+	onclick={(event) => {
+		if (event.target === event.currentTarget) {
+			closeDialog();
+		}
+	}}
 	onkeydown={escClick}
 >
 	{#if gameState.endState.ended || gameState.endState.close || gameState.endState.leftGame }

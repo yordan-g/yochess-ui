@@ -39,9 +39,9 @@
 	{:else}
 		<input type="text" id="playerName"
 			   bind:value={currentName}
-			   on:keydown={checkForEnter}
-			   on:blur={handleNameUpdate}
-			   on:click={saveName}
+			   onkeydown={checkForEnter}
+			   onblur={handleNameUpdate}
+			   onclick={saveName}
 			   maxlength="15"
 		>
 	{/if}
