@@ -1,6 +1,6 @@
 # Yochess
 
-### Libraries
+### Libraries used
 
 #### [cm-chessboard]
 
