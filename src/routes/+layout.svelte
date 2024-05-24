@@ -22,10 +22,9 @@
 			<a href="/" class="btn-nav {currentPath === '/' ? 'highlighted' : ''}">About</a>
 			<a href="/play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}">Play</a>
 			<button class="custom-game btn-nav" onclick={createCustomGame}>Friendly Game</button>
-<!--			<a href="redirect" class="btn-nav {currentPath === '/redirect' ? 'highlighted' : ''}">Redirect</a>-->
 		</nav>
 		<div class="route-c">
-			<slot></slot>
+			<slot/>
 		</div>
 	</div>
 	<footer class="footer">

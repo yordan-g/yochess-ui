@@ -1,16 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-	testDir: "./tests",
 	fullyParallel: true,
+	workers: 3,
+	testDir: "./tests",
 	projects: [
 		{
 			name: "chromium",
 			use: {
 				...devices["Desktop Chrome"],
-				launchOptions: {
-					slowMo: 2000
-				}
+				// launchOptions: {
+				// 	slowMo: 2000
+				// }
 			}
 		},
 		// {
@@ -25,6 +26,6 @@ export default defineConfig({
 	webServer: {
 		command: "npm run dev",
 		port: 5173,
-		reuseExistingServer: !process.env.CI
+		// reuseExistingServer: !process.env.CI
 	}
 });
