@@ -65,19 +65,19 @@
 	{/if}
 	<Spinner />
 {:else}
-	<div class="play-c">
-		<div class="game-c">
+	<div class="play-c" data-testid="play-container">
+		<div class="game-c" data-testid="game-container">
 			<PlayerInfo color={gameState.config.color === "w" ? "b" : "w"} />
 			<Board />
 			<PlayerInfo color={gameState.config.color} />
 			{#if gameState.endState.leftGame || gameState.endState.close}
 				<div in:fade={{delay: 100, duration: 700 }}
-					 class="notification">
+					 class="notification" data-testid="end-game-notification">
 					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
 			{/if}
 		</div>
-		<div class="chat-c"></div>
+		<div class="chat-c" data-testid="chat-container"></div>
 	</div>
 {/if}
 <EndDialog />

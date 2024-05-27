@@ -15,7 +15,7 @@
 
 </script>
 
-<div in:fade="{{ duration: 700 }}" class="board"
+<div in:fade="{{ duration: 700 }}" class="board" data-testid="chessboard"
 	 id="containerId">
 </div>
 

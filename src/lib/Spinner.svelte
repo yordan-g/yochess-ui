@@ -5,7 +5,7 @@
 
 <div in:fade={{delay:100, duration: 700}} class="loading-c">
 	<p>Searching for opponent...</p>
-	<div class="spinner"></div>
+	<div class="spinner" data-testid="waiting-for-game-spinner"></div>
 </div>
 
 <style>

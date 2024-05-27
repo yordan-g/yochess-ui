@@ -4,7 +4,7 @@
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
 
-	let { closeDialog } = $props<{ closeDialog: () => void }>();
+	let { closeDialog } = $props<{ closeDialog: Function }>();
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
 	let endWinner = $derived(gameResult(gameState.endState.gameOver?.winner));
 	let rematchOffered = $state(false);
@@ -25,7 +25,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div onclick={stopEventPropagation} class="modal-c">
+<div onclick={stopEventPropagation} class="modal-c" data-testid="end-game-modal">
 	<h2 in:fade={{delay: 100, duration: 700 }}>
 		{gameState.endState.gameOver?.result} {endWinner}
 	</h2>

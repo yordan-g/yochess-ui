@@ -42,19 +42,19 @@
 	});
 </script>
 
-<div class="player-info">
-	<div class="user-c">
+<div class="player-info" data-testid="player-info-container">
+	<div class="player-name" data-testid="player-name">
 		<span class="material-symbols-outlined i-face">face_6</span>
 		<InputUsername color="{color}" />
 	</div>
-	<div class="time-c">
+	<div class="time-c" data-testid="time-left">
 		{#if color !== gameState.turn}
 			<span>{formatToClock(timeLeft)}</span>
 		{:else}
 			<span>{formatToClock(clockState.time)}</span>
 		{/if}
 	</div>
-	<div class="pieces-c">
+	<div class="pieces-c" data-testid="pieces-taken">
 		{#each captures.toSorted(compareFn) as piece}
 			<span>{@html piecesMap.get(piece)}</span>
 		{/each}
@@ -71,7 +71,7 @@
 		justify-content: flex-start;
 	}
 
-	.user-c {
+	.player-name {
 		flex: 2;
 		display: flex;
 		flex-direction: row;
