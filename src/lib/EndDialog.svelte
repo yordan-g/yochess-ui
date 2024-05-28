@@ -9,19 +9,19 @@
 	let dialog: HTMLDialogElement;
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
 
+	// Opens the dialog for actions after a game finished.
 	$effect(() => {
-		if (dialog &&
-			(gameState.endState.ended || gameState.communicationError.isPresent)
-		) {
+		if (dialog && (gameState.endState.ended || gameState.communicationError.isPresent)) {
 			dialog.showModal();
 		}
 	});
 
+	// Awaits the backend to send rematchSuccess and triggers a new rematch game.
 	$effect(() => {
 		if (gameState.endState.rematchSuccess && dialog) {
 			dialog.close();
-
-			goto(`/redirect`, {
+			// console.warn(`Starting a rematch game - ${JSON.stringify(gameState.endState)}`);
+			goto("/redirect", {
 				replaceState: true,
 				invalidateAll: true,
 				state: { rematchGameId: gameState.endState.rematchGameId }
@@ -32,6 +32,7 @@
 	function closeDialog() {
 		dialog.close();
 		if (gameState.endState.ended) {
+			console.warn(`closeDialog - ${gameState.config.gameId}`);
 			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
 		}
 	}

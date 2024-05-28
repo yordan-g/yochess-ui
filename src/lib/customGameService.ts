@@ -4,7 +4,7 @@ import { goto } from "$app/navigation";
 export function createCustomGame() {
 	let gameId = nanoid(8);
 
-	goto(`/redirect`, {
+	goto("/redirect", {
 		replaceState: true,
 		state: {
 			customGameId: gameId,

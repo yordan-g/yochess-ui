@@ -3,6 +3,7 @@
 	import { buildRematchMessage, gameResult, stopEventPropagation } from "$lib/utils.svelte";
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
+	import { goto } from "$app/navigation";
 
 	let { closeDialog } = $props<{ closeDialog: Function }>();
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
@@ -21,6 +22,16 @@
 		if (event.key === "Escape") closeDialog();
 	}
 
+	function playAgainHandler() {
+		closeDialog();
+		console.warn("redirect from button");
+		// Sveltekit does not replace state correctly when goto from '/play' to '/play'. That is why we do a fake redirect.
+		goto("/")
+			.then(() => {
+				goto("/play", { replaceState: true, state: {} });
+			});
+	}
+
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -29,7 +40,7 @@
 	<h2 in:fade={{delay: 100, duration: 700 }}>
 		{gameState.endState.gameOver?.result} {endWinner}
 	</h2>
-<!-- todo fix rematchOffered && close is not true -->
+	<!-- todo fix rematchOffered && close is not true -->
 	<div class="next-action-c">
 		{#if rematchOffered && !gameState.endState.close }
 			<span
@@ -47,8 +58,7 @@
 			</span>
 		{/if}
 	</div>
-	<div in:fade={{delay: 100, duration: 700 }}
-		class="modal-btn">
+	<div in:fade={{delay: 100, duration: 700 }} class="modal-btn">
 		<button
 			bind:this={closeButton}
 			onclick={closeDialog}
@@ -58,13 +68,12 @@
 			onclick={offerRematch}
 			class="end-btn green-b"
 			disabled={rematchOffered}
-			onkeydown={rematchKeydown}
-		>Rematch
+			onkeydown={rematchKeydown}>Rematch
 		</button>
-		<a href="play" class="end-btn green-b"
-		   onclick={closeDialog}
-		>Play Again
-		</a>
+		<button
+			class="end-btn green-b"
+			onclick={playAgainHandler}>Play Again
+		</button>
 	</div>
 </div>
 

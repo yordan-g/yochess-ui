@@ -182,6 +182,8 @@ function createMoveInputHandler(config: GameConfig, lastMove: Move) {
 }
 
 export async function sendMessage(ws: WebSocket | null, message: Message) {
+	// console.warn(`Sending message --- ${JSON.stringify(message)}`);
+
 	if (ws !== null && ws.readyState === WebSocket.OPEN) {
 		ws.send(JSON.stringify(message));
 	}

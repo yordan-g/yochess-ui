@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
-	import { navigating, page } from "$app/stores";
+	import { afterNavigate, goto } from "$app/navigation";
+	import { page } from "$app/stores";
 	import { toNullableValue } from "$lib/utils.svelte";
+	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
 
 	// Reading from the URL, SHOULD ONLY be used for the case where a user/2nd player is invited via custom link!
 	let customGameIdInUrl = $derived<string | null>($page.url.searchParams.get("cg"));
@@ -12,12 +12,13 @@
 	let rematchGameId = $derived<string | null>(toNullableValue($page.state.rematchGameId));
 	let isCreator = $derived<string | null>(toNullableValue($page.state.isCreator));
 
-	onMount(() => {
-		console.log("Redirect onMount ");
+	afterNavigate((navigation: AfterNavigate) => {
+		console.warn(`Redirect afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
 
 		// Simply loading '/redirect' should be forbidden!
-		if ($navigating == null && customGameIdInUrl == null) {
+		if (navigation.from === null && customGameIdInUrl === null) {
 			goto(`/`, { replaceState: true, invalidateAll: true });
+			return;
 		}
 
 		// When the 2nd player enters the site form a custom link
@@ -26,6 +27,7 @@
 				replaceState: true,
 				state: { customGameId: customGameIdInUrl }
 			});
+			return;
 		}
 
 		// When the 1st player creates custom game
@@ -34,6 +36,7 @@
 				replaceState: true,
 				state: { customGameId: customGameId, isCreator: isCreator }
 			});
+			return;
 		}
 
 		// When both players pressed the rematch button
@@ -42,6 +45,7 @@
 				replaceState: true,
 				state: { rematchGameId: rematchGameId }
 			});
+			return;
 		}
 	});
 </script>

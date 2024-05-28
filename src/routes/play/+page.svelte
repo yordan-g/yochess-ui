@@ -1,13 +1,13 @@
 <script lang="ts">
 	import Spinner from "$lib/Spinner.svelte";
-	import { onMount, setContext } from "svelte";
+	import { setContext } from "svelte";
 	import { connectToWebSocketServer, GAME_STATE_KEY, initGameState, sendMessage } from "$lib/webSocket.svelte";
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
 	import EndDialog from "$lib/EndDialog.svelte";
 	import { buildLeftGameMessage, toNullableValue } from "$lib/utils.svelte";
 	import { beforeNavigate, afterNavigate, goto } from "$app/navigation";
-	import { page, navigating } from "$app/stores";
+	import { page } from "$app/stores";
 	import { userService } from "$lib/userService";
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
@@ -25,13 +25,6 @@
 	let friendlyGameDisplayLink =
 		$derived(`${$page.url.protocol}//${$page.url.host}/redirect?cg=${customGameId}`);
 
-	onMount(() => {
-		console.log("Play onMount");
-		if ($navigating == null && customGameId == null && rematchGameId == null) {
-			goto(`/`, { replaceState: true, invalidateAll: true });
-		}
-	});
-
 	beforeNavigate(() => {
 		console.log(`Play beforeNavigate -- | ${gameState.config.gameId}`);
 		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
@@ -39,21 +32,30 @@
 	});
 
 	afterNavigate((navigation: AfterNavigate) => {
-		console.log(`Play afterNavigate`);
-
+		// console.warn(`Play afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
 		userId = userService.getUserId();
 		username = userService.getUsername();
 
-		if (navigation.type === "goto") {
-			if (rematchGameId) {
-				return connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null);
+		// Guard clause against the fact that Sveltekit sometimes runs afterNavigate twice, both on navigating out and in of '/play'.
+		// Since the code below inits the ws connection, we don't want 2 duplicate connections leading one of them to be stale.
+		if (navigation.to?.route.id === "/play") {
+
+			if (navigation.from === null || navigation.type === "enter") {
+				goto(`/`, { replaceState: true, invalidateAll: true });
+				return;
 			}
-			if (customGameId) {
-				return connectToWebSocketServer(userId, gameState, username, null, customGameId, isCreator);
+			if (navigation.type === "goto" || navigation.type === "link") {
+
+				console.warn(`page state ${JSON.stringify($page.state)}`);
+				if (rematchGameId) {
+					return connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null);
+				}
+				if (customGameId) {
+					return connectToWebSocketServer(userId, gameState, username, null, customGameId, isCreator);
+				}
+				// normal random game
+				return connectToWebSocketServer(userId, gameState, username, null, null, null);
 			}
-		}
-		if (navigation.type === "link") {
-			return connectToWebSocketServer(userId, gameState, username, null, null, null);
 		}
 	});
 </script>
@@ -61,7 +63,7 @@
 
 {#if gameState.config.isLoading}
 	{#if customGameId}
-		<h2>{friendlyGameDisplayLink}</h2>
+		<h2 data-testid="friendly-game-link">{friendlyGameDisplayLink}</h2>
 	{/if}
 	<Spinner />
 {:else}
@@ -71,8 +73,9 @@
 			<Board />
 			<PlayerInfo color={gameState.config.color} />
 			{#if gameState.endState.leftGame || gameState.endState.close}
-				<div in:fade={{delay: 100, duration: 700 }}
-					 class="notification" data-testid="end-game-notification">
+				<div
+					in:fade={{delay: 100, duration: 700 }}
+					class="notification" data-testid="end-game-notification">
 					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
 			{/if}
