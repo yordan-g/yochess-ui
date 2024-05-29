@@ -4,6 +4,7 @@
 	import { createCustomGame } from "$lib/customGameService";
 	import { onMount } from "svelte";
 
+	let { children } = $props();
 	let currentPath = $derived($page.url.pathname);
 
 	onMount(() => {
@@ -13,7 +14,8 @@
 
 <svelte:head>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link rel="stylesheet"
+		  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </svelte:head>
 
 <div class="layout">
@@ -24,7 +26,7 @@
 			<button class="custom-game btn-nav" onclick={createCustomGame}>Friendly Game</button>
 		</nav>
 		<div class="route-c">
-			<slot/>
+			{@render children()}
 		</div>
 	</div>
 	<footer class="footer">

@@ -12,8 +12,11 @@
 
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div onclick={stopEventPropagation} class="modal-c">
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+	onclick={stopEventPropagation}
+	onkeydown={stopEventPropagation}
+	class="modal-c">
 	<span>{gameState.communicationError.userMessage}</span>
 	<button onclick={closeDialog} class="button">Close</button>
 </div>

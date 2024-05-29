@@ -103,10 +103,6 @@
 		font-size: clamp(var(--text-xl), 3.5vw, var(--text-xxl)) !important;
 	}
 
-	i {
-		color: rgb(44, 18, 82);
-	}
-
 	.material-symbols-outlined {
 		font-variation-settings: 'FILL' 0,
 		'wght' 200,

@@ -44,7 +44,7 @@
 		}
 	}
 </script>
-<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events a11y-no-noninteractive-element-interactions -->
 <dialog
 	bind:this={dialog}
 	onclick={(event) => {
@@ -73,10 +73,6 @@
 
 	dialog::backdrop {
 		background: rgba(0, 0, 0, 0.3);
-	}
-
-	dialog > div {
-		padding: 1em;
 	}
 
 	dialog[open] {

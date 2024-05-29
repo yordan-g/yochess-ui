@@ -34,8 +34,8 @@
 
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div onclick={stopEventPropagation} class="modal-c" data-testid="end-game-modal">
 	<h2 in:fade={{delay: 100, duration: 700 }}>
 		{gameState.endState.gameOver?.result} {endWinner}
@@ -98,11 +98,6 @@
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
-	}
-
-	a {
-		text-decoration: none;
-		height: auto;
 	}
 
 	.end-btn {
