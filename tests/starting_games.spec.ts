@@ -161,7 +161,7 @@ test.describe("Starting Friendly/Custom Game behaviour", () => {
 		await page1.getByRole("button", { name: "Friendly Game" }).click();
 
 		await expect(page1.getByTestId("friendly-game-link")).toBeVisible();
-		await expect(page1.getByText("Searching for opponent...")).toBeVisible();
+		await expect(page1.getByText("Send the link to you friend. Waiting to for him to connect...")).toBeVisible();
 		await expect(page1.getByTestId("waiting-for-game-spinner")).toBeVisible();
 		await expect(page1.getByTestId("game-container")).toBeHidden();
 

@@ -23,6 +23,7 @@
 	--red-color: rgb(220, 107, 107);
 	--green-color: rgb(90, 138, 119);
 	--disabled-color: rgb(204, 204, 204);
+	--grey-color: rgba(175, 175, 175, 30%);
 
 	--button-color: black; /* default then gets overridden */
 	--button-color-red: var(--red-color);

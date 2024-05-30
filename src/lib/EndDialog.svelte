@@ -6,7 +6,7 @@
 	import CommunicationErrorInfo from "$lib/CommunicationErrorInfo.svelte";
 	import type { GameState } from "$lib/types";
 
-	let dialog: HTMLDialogElement;
+	let dialog: HTMLDialogElement | null = $state(null);
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
 
 	// Opens the dialog for actions after a game finished.
@@ -30,7 +30,9 @@
 	});
 
 	function closeDialog() {
-		dialog.close();
+		if (dialog) {
+			dialog.close();
+		}
 		if (gameState.endState.ended) {
 			console.warn(`closeDialog - ${gameState.config.gameId}`);
 			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
@@ -44,7 +46,8 @@
 		}
 	}
 </script>
-<!-- svelte-ignore a11y_click_events_have_key_events a11y-no-noninteractive-element-interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <dialog
 	bind:this={dialog}
 	onclick={(event) => {

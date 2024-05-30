@@ -1,16 +1,25 @@
 <script lang="ts">
 	import { fade } from "svelte/transition";
+	import { toNullableValue } from "$lib/utils.svelte";
+	import { page } from "$app/stores";
+
+	let customGameId = $derived<string | null>(toNullableValue($page.state.customGameId));
 
 </script>
 
-<div in:fade={{delay:100, duration: 700}} class="loading-c">
-	<p>Searching for opponent...</p>
+<div class="loading-c" in:fade={{delay:100, duration: 700}}>
+	{#if customGameId}
+		<p>Send the link to you friend. Waiting to for him to connect...</p>
+	{:else}
+		<p>Searching for opponent...</p>
+	{/if}
 	<div class="spinner" data-testid="waiting-for-game-spinner"></div>
 </div>
 
 <style>
 	p {
 		font-size: var(--text-l);
+		max-width: 350px;
 	}
 
 	.loading-c {

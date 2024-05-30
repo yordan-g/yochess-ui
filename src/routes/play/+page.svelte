@@ -25,6 +25,10 @@
 	let friendlyGameDisplayLink =
 		$derived(`${$page.url.protocol}//${$page.url.host}/redirect?cg=${customGameId}`);
 
+	async function copyToClipboard(event: MouseEvent) {
+		await navigator.clipboard.writeText(friendlyGameDisplayLink);
+	}
+
 	beforeNavigate(() => {
 		console.log(`Play beforeNavigate -- | ${gameState.config.gameId}`);
 		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
@@ -63,7 +67,14 @@
 
 {#if gameState.config.isLoading}
 	{#if customGameId}
-		<h2 data-testid="friendly-game-link">{friendlyGameDisplayLink}</h2>
+		<div class="flink-c">
+			<div>
+				<p data-testid="friendly-game-link">{friendlyGameDisplayLink}</p>
+			</div>
+			<button onclick={copyToClipboard}>
+				<span class="material-symbols-outlined">content_copy</span>
+			</button>
+		</div>
 	{/if}
 	<Spinner />
 {:else}
@@ -86,6 +97,40 @@
 <EndDialog />
 
 <style>
+	.flink-c {
+		display: flex;
+		justify-content: space-between;
+		max-height: 50px;
+		border: 3px solid var(--grey-color);
+		border-radius: 20px;
+		margin: 100px 0px 0px 120px;
+		max-width: 450px;
+	}
+
+	.flink-c > div > p {
+		padding: 0px 0px 0px 20px;
+		font-size: var(--text-m);
+	}
+
+	.flink-c > button {
+		padding: 3px 10px 0px 10px;
+		cursor: copy;
+		outline: none;
+		border: none;
+		border-left: 3px solid var(--grey-color);
+		background-color: transparent;
+	}
+
+	.flink-c > button:hover {
+		background-color: var(--grey-color);
+		border-radius: 0px 17px 17px 0px;
+	}
+
+	.flink-c > button:active {
+		transform: scale(0.95);
+		background-color: var(--green-color);
+	}
+
 	.play-c {
 		flex: 1;
 		display: flex;

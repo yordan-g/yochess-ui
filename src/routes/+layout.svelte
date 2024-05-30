@@ -2,20 +2,17 @@
 	import "../styles/global.css";
 	import { page } from "$app/stores";
 	import { createCustomGame } from "$lib/customGameService";
-	import { onMount } from "svelte";
 
 	let { children } = $props();
 	let currentPath = $derived($page.url.pathname);
 
-	onMount(() => {
-		console.log("Layout onMount");
-	});
 </script>
 
 <svelte:head>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
 	<link rel="stylesheet"
 		  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </svelte:head>
 
 <div class="layout">
