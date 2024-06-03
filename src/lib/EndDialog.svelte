@@ -34,7 +34,7 @@
 			dialog.close();
 		}
 		if (gameState.endState.ended) {
-			console.warn(`closeDialog - ${gameState.config.gameId}`);
+			// console.warn(`closeDialog - ${gameState.config.gameId}`);
 			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
 		}
 	}

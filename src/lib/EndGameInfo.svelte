@@ -24,7 +24,7 @@
 
 	function playAgainHandler() {
 		closeDialog();
-		console.warn("redirect from button");
+		// console.warn("redirect from button");
 		// Sveltekit does not replace state correctly when goto from '/play' to '/play'. That is why we do a fake redirect.
 		goto("/")
 			.then(() => {

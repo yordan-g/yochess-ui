@@ -9,7 +9,7 @@
 
 <div class="loading-c" in:fade={{delay:100, duration: 700}}>
 	{#if customGameId}
-		<p>Send the link to you friend. Waiting to for him to connect...</p>
+		<p>Send the link to you friend. Waiting for him to connect...</p>
 	{:else}
 		<p>Searching for opponent...</p>
 	{/if}

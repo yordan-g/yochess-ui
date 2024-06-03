@@ -133,8 +133,7 @@ function createMoveInputHandler(config: GameConfig, lastMove: Move) {
 			case INPUT_EVENT_TYPE.moveInputStarted:
 				return true;
 			case INPUT_EVENT_TYPE.validateMoveInput:
-				console.log(`validateMoveInput:`);
-				console.log(event);
+				// console.log(`validateMoveInput:`);
 				let moveRequest: Move = {
 					kind: MessageType.MOVE,
 					piece: event.chessboard.getPiece(event.squareFrom),
@@ -153,7 +152,7 @@ function createMoveInputHandler(config: GameConfig, lastMove: Move) {
 
 				if (isWhitePromotionMove(event)) {
 					config.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
-						console.log("Promotion result", result);
+						// console.log("Promotion result", result);
 
 						sendMessage(config.wsClient, { ...moveRequest, promotion: result.piece });
 					});
@@ -161,7 +160,7 @@ function createMoveInputHandler(config: GameConfig, lastMove: Move) {
 				}
 				if (isBlackPromotionMove(event)) {
 					config.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
-						console.log("Promotion result", result);
+						// console.log("Promotion result", result);
 
 						sendMessage(config.wsClient, { ...moveRequest, promotion: result.piece });
 					});
@@ -272,7 +271,7 @@ export function connectToWebSocketServer(
 
 	wsClient.addEventListener("error", (event: Event) => {
 		console.log(event);
-		console.log("Something went wrong with the WebSocket");
+		// console.log("Something went wrong with the WebSocket");
 	});
 
 	gameState.config.wsClient = wsClient;

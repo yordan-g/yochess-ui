@@ -14,8 +14,8 @@ test.describe("Starting Random Game behaviour", () => {
 		await page1.goto("/");
 		await page2.goto("/");
 
-		await expect(page1.getByText("About")).toBeVisible();
-		await expect(page2.getByText("About")).toBeVisible();
+		await expect(page1.getByText("Welcome to Yochess")).toBeVisible();
+		await expect(page2.getByText("Welcome to Yochess")).toBeVisible();
 
 		await page1.getByRole("link", { name: "Play" }).click();
 
@@ -60,7 +60,7 @@ test.describe("Starting Random Game behaviour", () => {
 	test("WHEN a player tries to connect to `/play` route skipping the home page THEN game should not start", async ({ page}) => {
 		await page.goto("http://localhost:5173/play");
 
-		await expect(page.getByText("Home Page")).toBeVisible();
+		await expect(page.getByText("Welcome to Yochess")).toBeVisible();
 		await expect(page.getByTestId("waiting-for-game-spinner")).toBeHidden();
 		await expect(page.getByTestId("game-container")).toBeHidden();
 	});
@@ -161,7 +161,7 @@ test.describe("Starting Friendly/Custom Game behaviour", () => {
 		await page1.getByRole("button", { name: "Friendly Game" }).click();
 
 		await expect(page1.getByTestId("friendly-game-link")).toBeVisible();
-		await expect(page1.getByText("Send the link to you friend. Waiting to for him to connect...")).toBeVisible();
+		await expect(page1.getByText("Send the link to you friend. Waiting for him to connect...")).toBeVisible();
 		await expect(page1.getByTestId("waiting-for-game-spinner")).toBeVisible();
 		await expect(page1.getByTestId("game-container")).toBeHidden();
 

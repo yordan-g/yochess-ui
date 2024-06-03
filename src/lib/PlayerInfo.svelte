@@ -84,7 +84,7 @@
 		align-items: center;
 		justify-content: center;
 		max-width: 80px;
-		font-family: Digital, Helvetica;
+		font-family: Digital, Roboto;
 		font-size: clamp(var(--text-l), 2.5vw, var(--text-xl));
 		border-radius: 15px;
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,

@@ -30,13 +30,13 @@
 	}
 
 	beforeNavigate(() => {
-		console.log(`Play beforeNavigate -- | ${gameState.config.gameId}`);
+		// console.log(`Play beforeNavigate -- | ${gameState.config.gameId}`);
 		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
 		gameState.resetState();
 	});
 
 	afterNavigate((navigation: AfterNavigate) => {
-		// console.warn(`Play afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
+		console.warn(`Play afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
 		userId = userService.getUserId();
 		username = userService.getUsername();
 
