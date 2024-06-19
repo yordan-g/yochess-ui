@@ -59,6 +59,16 @@ span.green-t {
 	--button-color: var(--button-color-green);
 }
 
+.gr-text {
+	background: linear-gradient(
+		to left top,
+		rgb(255, 0, 206),
+		rgb(127, 153, 255)
+	);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
 /* selects the div that gets rendered from the cm-chessboard library */
 .board > div:first-child {
 	flex: 1;

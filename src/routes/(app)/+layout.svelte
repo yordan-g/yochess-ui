@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "../styles/global.css";
+	import "../../styles/global.css";
 	import { page } from "$app/stores";
 	import { createCustomGame } from "$lib/customGameService";
 

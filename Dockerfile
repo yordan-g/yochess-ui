@@ -1,9 +1,6 @@
 # https://kit.svelte.dev/docs/adapter-node
 FROM node:lts-alpine as build
 
-ARG PUBLIC_WS_BASE_URL
-ENV PUBLIC_WS_BASE_URL=$PUBLIC_WS_BASE_URL
-
 WORKDIR /app
 COPY ./package*.json ./
 RUN npm install

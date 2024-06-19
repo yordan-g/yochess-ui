@@ -5,7 +5,7 @@
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
 	import EndDialog from "$lib/EndDialog.svelte";
-	import { buildLeftGameMessage, toNullableValue } from "$lib/utils.svelte";
+	import { buildLeftGameMessage, toNullableValue } from "$lib/utils.svelte.js";
 	import { beforeNavigate, afterNavigate, goto } from "$app/navigation";
 	import { page } from "$app/stores";
 	import { userService } from "$lib/userService";
@@ -42,7 +42,7 @@
 
 		// Guard clause against the fact that Sveltekit sometimes runs afterNavigate twice, both on navigating out and in of '/play'.
 		// Since the code below inits the ws connection, we don't want 2 duplicate connections leading one of them to be stale.
-		if (navigation.to?.route.id === "/play") {
+		if (navigation.to?.url.pathname === "/play") {
 
 			if (navigation.from === null || navigation.type === "enter") {
 				goto(`/`, { replaceState: true, invalidateAll: true });
