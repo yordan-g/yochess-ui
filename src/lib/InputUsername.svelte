@@ -77,4 +77,14 @@
 		cursor: text;
 	}
 
+	@media only screen and (max-width: 480px) {
+		span {
+			font-size: 0.8em;
+		}
+
+		input {
+			font-size: 0.8em;
+		}
+	}
+
 </style>

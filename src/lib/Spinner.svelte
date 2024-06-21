@@ -11,7 +11,7 @@
 	{#if customGameId}
 		<p>Send the link to you friend. Waiting for him to connect...</p>
 	{:else}
-		<p>Searching for opponent...</p>
+		<p class="r-game-text">Searching for opponent...</p>
 	{/if}
 	<div class="spinner" data-testid="waiting-for-game-spinner"></div>
 </div>
@@ -46,6 +46,25 @@
 		}
 		100% {
 			transform: rotate(360deg);
+		}
+	}
+
+	@media only screen and (max-width: 480px) {
+		.loading-c {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 20px;
+			margin: 0;
+			width: 100%;
+		}
+
+		p {
+			text-align: center;
+		}
+
+		.r-game-text {
+			margin: 5em 0 0 0;
 		}
 	}
 </style>

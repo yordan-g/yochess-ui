@@ -109,4 +109,17 @@
 		'GRAD' 0,
 		'opsz' 24
 	}
+
+	@media only screen and (max-width: 480px) {
+		.player-info {
+			max-width: 100%;
+			margin: 0em 1em 0em 1em;
+		}
+
+		.pieces-c {
+			flex-wrap: wrap;
+			font-size: 0.8em;
+			margin: 0em 0em 0em 1.5em;
+		}
+	}
 </style>

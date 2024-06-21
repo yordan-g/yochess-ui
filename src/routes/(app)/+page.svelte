@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div>
+<div class="about">
 	<h1 class="gr-text">Welcome to Yochess</h1>
 	<p>	Simple website for playing chess which doesn&#39;t require account creation.
 		Slowly I will try my best to add more features but don&#39;t get your hopes too high.
@@ -20,7 +20,7 @@
 </div>
 
 <style>
-	div {
+	.about {
 		display: flex;
 		flex-direction: column;
 		margin: 100px 0 100px 150px;
@@ -40,5 +40,22 @@
 
 	h2 {
 		font-weight: normal;
+	}
+
+	@media only screen and (max-width: 480px) {
+		.about {
+			display: flex;
+			margin: 5em 1.5em 0em 1.5em;
+			max-width: 100%;
+			max-height: 100%;
+		}
+
+		h1, h2 {
+			margin: 0em 0em 0.5em 0em;
+		}
+
+		p {
+			margin: 0em 0em 1em 0em;
+		}
 	}
 </style>

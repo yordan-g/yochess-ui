@@ -158,4 +158,61 @@
 		margin: 0px 30px 0px 30px;
 	}
 
+	@media only screen and (max-width: 480px) {
+		.layout {
+			display: flex;
+			width: 100vw;
+		}
+
+		.nav-and-route {
+			display: flex;
+			flex-direction: column-reverse;
+			flex-grow: 1;
+			height: 100%;
+			/*margin: 5em 1.5em 1.5em 1.5em;*/
+		}
+
+		.route-c {
+			display: flex;
+			margin: 0;
+			padding: 0;
+			flex: 3;
+			/*overflow-y: auto;*/
+		}
+
+		.route-c::before {
+			display: none;
+		}
+
+		nav {
+			flex: 1;
+			display: flex;
+			flex-direction: row;
+			gap: 2em;
+			min-width: 90%;
+			align-items: center;
+			justify-content: space-between;
+			margin: 0em 1.5em 0em 1.5em;
+			flex-grow: 1;
+		}
+		nav > * {
+			flex: 1;
+		}
+
+		.custom-game {
+			padding: 0em;
+			margin: 0em;
+		}
+
+		.btn-nav {
+			padding: 0.2em 0.5em 0.2em 0.5em;
+			/*padding: 0em;*/
+			/*margin: 0em;*/
+		}
+
+		footer {
+			display: none;
+		}
+	}
+
 </style>

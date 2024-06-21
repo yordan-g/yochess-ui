@@ -162,4 +162,30 @@
 		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
 		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
 	}
+
+	@media only screen and (max-width: 480px) {
+		.flink-c {
+			margin: 5em 1em 1em 1em;
+		}
+
+		.play-c {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+		}
+
+		.game-c {
+			margin: 3em 0em 0em 0em;
+			width: 100%;
+			height: 100%;
+		}
+
+		.notification {
+			margin: 0em 0em 0em 1em;
+		}
+
+		.chat-c {
+			display: none;
+		}
+	}
 </style>
