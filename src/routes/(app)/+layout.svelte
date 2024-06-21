@@ -169,7 +169,6 @@
 			flex-direction: column-reverse;
 			flex-grow: 1;
 			height: 100%;
-			/*margin: 5em 1.5em 1.5em 1.5em;*/
 		}
 
 		.route-c {
@@ -177,7 +176,7 @@
 			margin: 0;
 			padding: 0;
 			flex: 3;
-			/*overflow-y: auto;*/
+			overflow-y: auto;
 		}
 
 		.route-c::before {
@@ -188,8 +187,9 @@
 			flex: 1;
 			display: flex;
 			flex-direction: row;
-			gap: 2em;
-			min-width: 90%;
+			gap: 1em;
+			width: unset;
+			max-width: 100%;
 			align-items: center;
 			justify-content: space-between;
 			margin: 0em 1.5em 0em 1.5em;
@@ -206,8 +206,7 @@
 
 		.btn-nav {
 			padding: 0.2em 0.5em 0.2em 0.5em;
-			/*padding: 0em;*/
-			/*margin: 0em;*/
+			font-size: 1.8em;
 		}
 
 		footer {
