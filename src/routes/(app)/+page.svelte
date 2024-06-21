@@ -2,9 +2,9 @@
 </script>
 
 <div class="about">
-	<h1 class="gr-text">Welcome to Yochess</h1>
-	<p>	Simple website for playing chess which doesn&#39;t require account creation.
-		Slowly I will try my best to add more features but don&#39;t get your hopes too high.
+	<h1 class="gr-text">Let's play a quick game of chess!</h1>
+	<p>A simple website for playing chess which doesn't require account creation.
+		Slowly I will try my best to add more features but don't get your hopes too high.
 		If you like the project and want to give me any feedback or just chat about it,
 		<a href="https://www.instagram.com/jordangganev" target="_blank">you can find me on instagram.</a>
 	</p>
@@ -15,7 +15,8 @@
 	<h2 class="gr-text">More about me and the project</h2>
 	<p>I am a software developer based in Sofia, Bulgaria. Being the ultimate average hobby chess player, this project
 		exists mainly for me to learn and explore new web programming technologies. If you interested in the technical
-		details of the project, you can <a href="https://github.com/yordan-g/yochess-ui" target="_blank">read more here.</a>
+		details of the project, you can <a href="https://github.com/yordan-g/yochess-ui" target="_blank">read more
+			here.</a>
 	</p>
 </div>
 
