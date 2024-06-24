@@ -162,6 +162,7 @@
 		.layout {
 			display: flex;
 			width: 100vw;
+			height: 100vh;
 		}
 
 		.nav-and-route {
@@ -175,7 +176,7 @@
 			display: flex;
 			margin: 0;
 			padding: 0;
-			flex: 3;
+			flex: 5;
 			overflow-y: auto;
 		}
 

@@ -121,5 +121,16 @@
 			font-size: 0.8em;
 			margin: 0em 0em 0em 1.5em;
 		}
+
+		.i-face {
+			font-size: 2em !important;
+		}
+
+		.material-symbols-outlined {
+			font-variation-settings: 'FILL' 0,
+			'wght' 100,
+			'GRAD' 0,
+			'opsz' 24
+		}
 	}
 </style>
