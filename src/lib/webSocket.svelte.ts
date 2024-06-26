@@ -5,6 +5,7 @@ import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/sr
 import { type CommunicationError, type End, type GameState, type GameConfig, type Message, MessageType, type Move } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
+import { PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES } from "$env/static/public";
 import { buildChangeNameMessage, START_TIME } from "$lib/utils.svelte";
 
 const GAME_NOT_STARTED: GameConfig = {
@@ -85,8 +86,8 @@ export function getGameState(): GameState {
 	return getContext<GameState>(GAME_STATE_KEY);
 }
 
-export function initBoard(config: GameConfig, lastMove: Move) {
-	config.board = new Chessboard(document.getElementById("containerId"), {
+export function initBoard(gameConfig: GameConfig, lastMove: Move) {
+	gameConfig.board = new Chessboard(document.getElementById("containerId"), {
 		position: FEN.start,
 		assetsUrl: "../assets/",
 		extensions: [{ class: Markers }, { class: PromotionDialog }],
@@ -96,8 +97,8 @@ export function initBoard(config: GameConfig, lastMove: Move) {
 		}
 	});
 	// console.log(`init board--- ${config.color}`);
-	config.board.enableMoveInput(createMoveInputHandler(config, lastMove));
-	config.board.setOrientation(config.color!!);
+	gameConfig.board.enableMoveInput(createMoveInputHandler(gameConfig, lastMove));
+	gameConfig.board.setOrientation(gameConfig.color!!);
 }
 
 async function updateBoard(move: Move, board: Chessboard): Promise<void> {
@@ -125,21 +126,27 @@ async function updateBoard(move: Move, board: Chessboard): Promise<void> {
 	}
 }
 
-function createMoveInputHandler(config: GameConfig, lastMove: Move) {
+function createMoveInputHandler(gameConfig: GameConfig, lastMove: Move) {
 	// the method signature below required by cm-chessboard.
 	return function inputHandler(event: VisualMoveInput) {
-		config.board?.removeMarkers(MARKER_TYPE.frame);
+		gameConfig.board?.removeMarkers(MARKER_TYPE.frame);
 		switch (event.type) {
 			case INPUT_EVENT_TYPE.moveInputStarted:
 				return true;
 			case INPUT_EVENT_TYPE.validateMoveInput:
 				// console.log(`validateMoveInput:`);
+				if (
+					PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES === "true" &&
+					gameConfig.color != event.piece.charAt(0)
+				) {
+					return false;
+				}
 				let moveRequest: Move = {
 					kind: MessageType.MOVE,
 					piece: event.chessboard.getPiece(event.squareFrom),
 					squareFrom: event.squareFrom,
 					squareTo: event.squareTo,
-					gameId: config.gameId ?? "init",
+					gameId: gameConfig.gameId ?? "init",
 					valid: false,
 					enPassantCapturePos: null,
 					promotion: null,
@@ -151,23 +158,23 @@ function createMoveInputHandler(config: GameConfig, lastMove: Move) {
 				};
 
 				if (isWhitePromotionMove(event)) {
-					config.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
+					gameConfig.board?.showPromotionDialog(event.squareTo, "w", (result: any) => {
 						// console.log("Promotion result", result);
 
-						sendMessage(config.wsClient, { ...moveRequest, promotion: result.piece });
+						sendMessage(gameConfig.wsClient, { ...moveRequest, promotion: result.piece });
 					});
 					return false;
 				}
 				if (isBlackPromotionMove(event)) {
-					config.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
+					gameConfig.board?.showPromotionDialog(event.squareTo, "b", (result: any) => {
 						// console.log("Promotion result", result);
 
-						sendMessage(config.wsClient, { ...moveRequest, promotion: result.piece });
+						sendMessage(gameConfig.wsClient, { ...moveRequest, promotion: result.piece });
 					});
 					return false;
 				}
 
-				sendMessage(config.wsClient, moveRequest);
+				sendMessage(gameConfig.wsClient, moveRequest);
 				return false;
 			case INPUT_EVENT_TYPE.moveInputCanceled:
 				return true;

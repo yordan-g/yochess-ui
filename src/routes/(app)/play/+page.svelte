@@ -36,7 +36,7 @@
 	});
 
 	afterNavigate((navigation: AfterNavigate) => {
-		console.warn(`Play afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
+		// console.warn(`Play afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
 		userId = userService.getUserId();
 		username = userService.getUsername();
 
@@ -50,7 +50,7 @@
 			}
 			if (navigation.type === "goto" || navigation.type === "link") {
 
-				console.warn(`page state ${JSON.stringify($page.state)}`);
+				// console.warn(`page state ${JSON.stringify($page.state)}`);
 				if (rematchGameId) {
 					return connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null);
 				}
@@ -168,6 +168,11 @@
 			margin: 5em 1em 1em 1em;
 		}
 
+		.flink-c > div > p {
+			padding: 0px 0px 0px 20px;
+			font-size: 0.8em;
+		}
+
 		.play-c {
 			display: flex;
 			flex-direction: column;
@@ -175,13 +180,15 @@
 		}
 
 		.game-c {
-			margin: 3em 0em 0em 0em;
+			margin: 1em 0em 0em 0em;
 			width: 100%;
 			height: 100%;
 		}
 
 		.notification {
 			margin: 0em 0em 0em 1em;
+			/* renders the element at the top as if it's the first one */
+			order: -1;
 		}
 
 		.chat-c {

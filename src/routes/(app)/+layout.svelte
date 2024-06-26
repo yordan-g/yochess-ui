@@ -41,8 +41,8 @@
 	.layout {
 		display: flex;
 		flex-direction: column;
-		width: 98vw;
-		height: 98vh;
+		width: 100%;
+		height: 100%;
 	}
 
 	.nav-and-route {
@@ -160,16 +160,14 @@
 
 	@media only screen and (max-width: 480px) {
 		.layout {
-			display: flex;
-			width: 100vw;
-			height: 100vh;
+			display: flex; width: 100%; height: 100%;
 		}
 
 		.nav-and-route {
+			height: 100%;
 			display: flex;
 			flex-direction: column-reverse;
 			flex-grow: 1;
-			height: 100%;
 		}
 
 		.route-c {
@@ -177,6 +175,7 @@
 			margin: 0;
 			padding: 0;
 			flex: 5;
+			position: unset;
 			overflow-y: auto;
 		}
 

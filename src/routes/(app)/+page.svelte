@@ -41,12 +41,13 @@
 
 	h2 {
 		font-weight: normal;
+		text-align: start;
 	}
 
 	@media only screen and (max-width: 480px) {
 		.about {
 			display: flex;
-			margin: 5em 1.5em 0em 1.5em;
+			margin: 3em 1.5em 0em 1.5em;
 			max-width: 100%;
 			max-height: 100%;
 		}

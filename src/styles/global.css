@@ -33,12 +33,14 @@
 html {
 	font-size: var(--base-font-size);
 	font-family: Roboto, sans-serif;
+	height: 100%;
 }
 
 body {
 	background-color: rgba(230, 230, 230, 0.1);
 	margin: 0;
 	padding: 0;
+	height: 100%;
 }
 
 span, p, a, h1, h2, h3 {

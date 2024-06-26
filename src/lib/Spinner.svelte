@@ -9,9 +9,9 @@
 
 <div class="loading-c" in:fade={{delay:100, duration: 700}}>
 	{#if customGameId}
-		<p>Send the link to you friend. Waiting for him to connect...</p>
+		<p class="gr-text">Send the link to you friend. Waiting for him to connect...</p>
 	{:else}
-		<p class="r-game-text">Searching for opponent...</p>
+		<p class="r-game-text gr-text">Searching for opponent...</p>
 	{/if}
 	<div class="spinner" data-testid="waiting-for-game-spinner"></div>
 </div>
