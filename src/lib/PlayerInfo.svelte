@@ -96,6 +96,9 @@
 		display: flex;
 		justify-content: end;
 		align-items: center;
+	}
+
+	.pieces-c > span {
 		font-size: clamp(var(--text-s), 2vw, var(--text-l));
 	}
 
@@ -118,8 +121,11 @@
 
 		.pieces-c {
 			flex-wrap: wrap;
-			font-size: 0.8em;
 			margin: 0em 0em 0em 1.5em;
+		}
+
+		.pieces-c > span {
+			font-size: 0.8em;
 		}
 
 		.i-face {

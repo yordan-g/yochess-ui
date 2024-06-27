@@ -7,6 +7,7 @@ import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
 import { PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES } from "$env/static/public";
 import { buildChangeNameMessage, START_TIME } from "$lib/utils.svelte";
+const LAST_MOVE_MARKER = { class: "last-move-marker", slice: "markerSquare" }
 
 const GAME_NOT_STARTED: GameConfig = {
 	wsClient: null,
@@ -105,9 +106,9 @@ async function updateBoard(move: Move, board: Chessboard): Promise<void> {
 	switch (move.valid) {
 		case true: {
 			// console.log(`Moving ${move.squareFrom} - ${move.squareTo}`, move);
-			board.removeMarkers();
+			board.removeMarkers(LAST_MOVE_MARKER);
 			await board.movePiece(move.squareFrom, move.squareTo);
-			board.addMarker({ class: "last-move-marker", slice: "markerSquare" }, move.squareFrom);
+			board.addMarker(LAST_MOVE_MARKER, move.squareFrom);
 			if (move.enPassantCapturePos) {
 				await board.setPiece(move.enPassantCapturePos, null, true);
 			}
