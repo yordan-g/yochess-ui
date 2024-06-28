@@ -100,31 +100,4 @@
 		align-items: center;
 	}
 
-	.end-btn {
-		border: 1px solid var(--button-color);
-		color: var(--button-color);
-		background-color: transparent;
-		padding: 10px 10px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
-		margin: 4px 2px;
-		cursor: pointer;
-		border-radius: 10px;
-		transition: background-color 0.3s, color 0.3s;
-	}
-
-	.end-btn:hover {
-		color: white;
-		background-color: var(--button-color);
-	}
-
-	.end-btn:disabled {
-		color: var(--disabled-color);
-		border: 1px solid var(--disabled-color);
-		background-color: transparent;
-		cursor: not-allowed;
-	}
-
 </style>

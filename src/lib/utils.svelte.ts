@@ -1,4 +1,5 @@
-import { type Time, type End, MessageType, type ChangeName } from "$lib/types";
+import { type End, MessageType, type ChangeName, type Draw } from "$lib/types";
+import { sendMessage } from "$lib/webSocket.svelte";
 
 export const piecesMap = new Map([
 	["bk", "&#9818;"], ["wk", "&#9812;"],
@@ -11,11 +12,6 @@ export const piecesMap = new Map([
 
 export const order = ["p", "n", "b", "q", "k", "r"];
 export const compareFn = (a: string, b: string) => order.indexOf(a[1]) - order.indexOf(b[1]);
-
-export const START_TIME: Time = {
-	white: 500,
-	black: 500
-};
 
 export function initClockState() {
 	let time = $state(500);
@@ -131,6 +127,34 @@ export function buildRematchMessage(gameId: string): End {
 		rematchGameId: null,
 		gameOver: null
 	};
+}
+
+export function buildDrawMessage(gameId: string): Draw {
+	return {
+		kind: MessageType.DRAW,
+		gameId: gameId,
+		offerDraw: true,
+		denyDraw: false,
+		drawLimitExceeded: false
+	};
+}
+
+export function buildDenyDrawMessage(gameId: string): Draw {
+	return {
+		kind: MessageType.DRAW,
+		gameId: gameId,
+		offerDraw: false,
+		denyDraw: true,
+		drawLimitExceeded: false
+	};
+}
+
+export async function offerDraw(wsClient: WebSocket, gameId: string) {
+	sendMessage(wsClient, buildDrawMessage(gameId));
+}
+
+export async function denyDraw(wsClient: WebSocket, gameId: string) {
+	sendMessage(wsClient, buildDenyDrawMessage(gameId));
 }
 
 export function buildChangeNameMessage(gameId: string, username: string): ChangeName {

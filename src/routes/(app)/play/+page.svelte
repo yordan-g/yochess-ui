@@ -12,6 +12,7 @@
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
 	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
+	import GameControls from "$lib/GameControls.svelte";
 
 	let userId: string;
 	let username: string;
@@ -83,6 +84,7 @@
 			<PlayerInfo color={gameState.config.color === "w" ? "b" : "w"} />
 			<Board />
 			<PlayerInfo color={gameState.config.color} />
+			<GameControls/>
 			{#if gameState.endState.leftGame || gameState.endState.close}
 				<div
 					in:fade={{delay: 100, duration: 700 }}

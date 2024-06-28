@@ -2,12 +2,21 @@ import type { VisualMoveInput } from "cm-chessboard/src/view/VisualMoveInput";
 import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Markers";
 import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog";
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
-import { type CommunicationError, type End, type GameState, type GameConfig, type Message, MessageType, type Move } from "$lib/types";
+import {
+	type CommunicationError, type End, type GameState, type GameConfig,
+	type Message, MessageType, type Move, type Draw, type Time
+} from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
 import { PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES } from "$env/static/public";
-import { buildChangeNameMessage, START_TIME } from "$lib/utils.svelte";
-const LAST_MOVE_MARKER = { class: "last-move-marker", slice: "markerSquare" }
+import { buildChangeNameMessage } from "$lib/utils.svelte";
+
+const LAST_MOVE_MARKER = { class: "last-move-marker", slice: "markerSquare" };
+
+const START_TIME: Time = {
+	white: 500,
+	black: 500
+};
 
 const GAME_NOT_STARTED: GameConfig = {
 	wsClient: null,
@@ -41,12 +50,14 @@ export function initGameState(): GameState {
 	let lastMove = $state<Move>({ ...INIT_MOVE });
 	let turn = $state<string>("w");
 	let endState = $state<End>(buildInitialEndState());
+	let drawState = $state<Draw>(buildInitialDrawState());
 	let communicationError = $state<CommunicationError>(buildInitialCommunicationError());
 
 	function resetState() {
 		config = { ...GAME_NOT_STARTED };
 		lastMove = { ...INIT_MOVE };
 		endState = buildInitialEndState();
+		drawState = buildInitialDrawState();
 		turn = "w";
 		communicationError = buildInitialCommunicationError();
 	}
@@ -73,6 +84,12 @@ export function initGameState(): GameState {
 		},
 		set endState(value: any) {
 			endState = value;
+		},
+		get drawState() {
+			return drawState;
+		},
+		set drawState(value: any) {
+			drawState = value;
 		},
 		get communicationError(): CommunicationError {
 			return communicationError;
@@ -260,6 +277,10 @@ export function connectToWebSocketServer(
 				gameState.endState = message;
 				break;
 			}
+			case MessageType.DRAW: {
+				gameState.drawState = message;
+				break;
+			}
 			case MessageType.CHANGE_NAME: {
 				// the backend always sends the opposite player name change event!
 				gameState.config.opponentUsername = message.name;
@@ -311,6 +332,16 @@ export function buildInitialEndState(): End {
 		rematchSuccess: null,
 		rematchGameId: null,
 		gameOver: null
+	};
+}
+
+export function buildInitialDrawState(): Draw {
+	return {
+		kind: MessageType.DRAW,
+		gameId: "Initial Draw State",
+		offerDraw: false,
+		denyDraw: false,
+		drawLimitExceeded: false
 	};
 }
 

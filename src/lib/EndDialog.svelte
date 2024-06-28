@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { GAME_STATE_KEY, getGameState, sendMessage } from "./webSocket.svelte";
-	import { buildCloseEndMessage } from "./utils.svelte";
+	import { buildCloseEndMessage, denyDraw, offerDraw } from "./utils.svelte";
 	import EndGameInfo from "$lib/EndGameInfo.svelte";
 	import CommunicationErrorInfo from "$lib/CommunicationErrorInfo.svelte";
 	import type { GameState } from "$lib/types";
+	import DrawContentInfo from "$lib/DrawContentInfo.svelte";
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
 
 	// Opens the dialog for actions after a game finished.
 	$effect(() => {
-		if (dialog && (gameState.endState.ended || gameState.communicationError.isPresent)) {
+		if (dialog &&
+			(gameState.endState.ended || gameState.drawState.offerDraw ||gameState.communicationError.isPresent)
+		) {
 			dialog.showModal();
 		}
 	});
@@ -30,9 +33,8 @@
 	});
 
 	function closeDialog() {
-		if (dialog) {
-			dialog.close();
-		}
+		dialog?.close();
+
 		if (gameState.endState.ended) {
 			// console.warn(`closeDialog - ${gameState.config.gameId}`);
 			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
@@ -61,6 +63,8 @@
 		<EndGameInfo closeDialog={closeDialog} />
 	{:else if gameState.communicationError.isPresent }
 		<CommunicationErrorInfo dialog={dialog} />
+	{:else if gameState.drawState.offerDraw }
+		<DrawContentInfo dialog={dialog}/>
 	{/if}
 
 </dialog>
@@ -68,7 +72,6 @@
 <style>
 	dialog {
 		width: 400px;
-		/*max-width: 32em;*/
 		border-radius: 15px;
 		border: none;
 		padding: 0;

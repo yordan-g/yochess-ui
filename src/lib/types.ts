@@ -4,11 +4,12 @@ export enum MessageType {
 	INIT = "INIT",
 	MOVE = "MOVE",
 	END = "END",
+	DRAW = "DRAW",
 	CHANGE_NAME = "CHANGE_NAME",
 	COMMUNICATION_ERROR = "COMMUNICATION_ERROR",
 }
 
-export type Message = Init | Move | End | ChangeName | CommunicationError;
+export type Message = Init | Move | End | ChangeName | Draw | CommunicationError;
 
 export type CommunicationError = {
 	kind: MessageType.COMMUNICATION_ERROR;
@@ -58,6 +59,14 @@ export type ChangeName = {
 	name: string;
 }
 
+export type Draw = {
+	kind: MessageType.DRAW;
+	gameId: string;
+	offerDraw: boolean;
+	denyDraw: boolean;
+	drawLimitExceeded: boolean;
+}
+
 export type Time = {
 	white: number;
 	black: number;
@@ -70,12 +79,13 @@ export type Castle = {
 };
 
 export type GameState = {
-	config: GameConfig
-	lastMove: Move
-	turn: string
-	endState: End
-	communicationError: CommunicationError
-	resetState: Function
+	config: GameConfig;
+	lastMove: Move;
+	turn: string;
+	endState: End;
+	drawState: Draw;
+	communicationError: CommunicationError;
+	resetState: Function;
 }
 
 export type GameConfig = {

@@ -1,22 +1,3 @@
-## Developing
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-### Building
-
-Production build:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
 ## Useful links
 
 ### Svelte 5 docs
@@ -30,6 +11,7 @@ You can preview the production build with `npm run preview`.
 ### Libraries to consider
 
 - https://melt-ui.com/
+- https://github.com/huntabyte/bits-ui
 
 ### CSS
 - flexbox scaling issues - https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
