@@ -112,11 +112,7 @@
 		right: -2px;
 		bottom: -2px;
 		left: -2px;
-		background-image: linear-gradient(
-			to left top,
-			rgb(255, 0, 206),
-			rgb(127, 153, 255)
-		);
+		background-image: var(--purple-gradien);
 		background-clip: border-box;
 		z-index: -2;
 		transition: opacity 0.2s linear;

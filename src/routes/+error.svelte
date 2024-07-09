@@ -9,11 +9,7 @@
 <style>
 
 	h1 {
-		background: linear-gradient(
-			to left top,
-			rgb(255, 0, 206),
-			rgb(127, 153, 255)
-		);
+		background: var(--purple-gradien);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}

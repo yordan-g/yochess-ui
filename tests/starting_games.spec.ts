@@ -107,7 +107,7 @@ test.describe("Ending Game behaviour", () => {
 		for (const page of [page1, page2]) {
 			await expect(page.getByTestId("end-game-modal")).toBeVisible();
 			await expect(page.getByText("Checkmate! White wins!")).toBeVisible();
-			await expect(page.getByText("You can offer rematch or start another game!")).toBeVisible();
+			await expect(page.getByText("You can offer rematch or start another game")).toBeVisible();
 			await expect(page.getByRole("button", { name: "Close" })).toBeVisible();
 			await expect(page.getByRole("button", { name: "Rematch" })).toBeVisible();
 			await expect(page.getByRole("button", { name: "Play Again" })).toBeVisible();
@@ -124,7 +124,7 @@ test.describe("Ending Game behaviour", () => {
 		await expect(page1.getByTestId("game-container")).toBeHidden();
 
 		await expect(page2.getByTestId("end-game-modal")).toBeVisible();
-		await expect(page2.getByText("Your opponent left the game!")).toBeVisible();
+		await expect(page2.getByText("Your opponent left the game")).toBeVisible();
 		await expect(page2.getByText(ENG_GAME_NOTIFICATION_TEXT)).toBeVisible();
 
 		await page2.getByRole("button", { name: "Play Again" }).click();

@@ -5,11 +5,12 @@ export enum MessageType {
 	MOVE = "MOVE",
 	END = "END",
 	DRAW = "DRAW",
+	RESIGN = "RESIGN",
 	CHANGE_NAME = "CHANGE_NAME",
 	COMMUNICATION_ERROR = "COMMUNICATION_ERROR",
 }
 
-export type Message = Init | Move | End | ChangeName | Draw | CommunicationError;
+export type Message = Init | Move | End | ChangeName | Draw | Resign | CommunicationError;
 
 export type CommunicationError = {
 	kind: MessageType.COMMUNICATION_ERROR;
@@ -67,6 +68,13 @@ export type Draw = {
 	drawLimitExceeded: boolean;
 }
 
+export type Resign = {
+	kind: MessageType.RESIGN;
+	gameId: string;
+	requestedResignation: boolean;
+	resignationConfirmed: boolean;
+}
+
 export type Time = {
 	white: number;
 	black: number;
@@ -84,6 +92,7 @@ export type GameState = {
 	turn: string;
 	endState: End;
 	drawState: Draw;
+	resignState: Resign;
 	communicationError: CommunicationError;
 	resetState: Function;
 }

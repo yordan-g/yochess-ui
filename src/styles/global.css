@@ -28,6 +28,12 @@
 	--button-color: black; /* default then gets overridden */
 	--button-color-red: var(--red-color);
 	--button-color-green: var(--green-color);
+
+	--purple-gradien: linear-gradient(
+		to left top,
+		rgb(255, 0, 206),
+		rgb(127, 153, 255)
+	);
 }
 
 html {
@@ -91,11 +97,7 @@ span.green-t {
 }
 
 .gr-text {
-	background: linear-gradient(
-		to left top,
-		rgb(255, 0, 206),
-		rgb(127, 153, 255)
-	);
+	background: var(--purple-gradien);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }

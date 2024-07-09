@@ -1,33 +1,36 @@
 <script lang="ts">
-	import { denyDraw, offerDraw } from "$lib/utils.svelte";
 	import { getGameState } from "$lib/webSocket.svelte";
+	import { resignationConfirm } from "$lib/utils.svelte";
 
 	let { dialog } = $props();
 	let gameState = getGameState();
 </script>
 
-<div id="draw-c">
-	<h3>Your opponent is offering a draw</h3>
-	<div id="draw-btns">
+<div id="resign-c">
+	<h3>Are you sure you want to resign?</h3>
+	<div id="resign-btns">
 		<button
 			class="end-btn red-b"
-			onclick={() => {
-				dialog?.close();
-				denyDraw(gameState.config.wsClient, gameState.config.gameId)
-			}}>Deny
+			onclick={
+				() => {
+					dialog?.close();
+					gameState.resignState.requestedResignation = false;
+				}
+			}>Cancel
 		</button>
 		<button
 			class="end-btn green-b"
 			onclick={() => {
 				dialog?.close();
-				offerDraw(gameState.config.wsClient, gameState.config.gameId)
-			}}>Accept
+				resignationConfirm(gameState.config.wsClient, gameState.config.gameId)
+			}}>Confirm
 		</button>
 	</div>
 </div>
 
 <style>
-	#draw-c {
+
+	#resign-c {
 		display: flex;
 		flex-direction: column;
 		margin: 1em 0em 1em 0em;
@@ -38,7 +41,7 @@
 		font-weight: normal;
 	}
 
-	#draw-btns {
+	#resign-btns {
 		display: flex;
 		justify-content: center;
 		gap: 3em;

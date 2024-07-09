@@ -1,4 +1,4 @@
-import { type End, MessageType, type ChangeName, type Draw } from "$lib/types";
+import { type End, MessageType, type ChangeName, type Draw, type Resign } from "$lib/types";
 import { sendMessage } from "$lib/webSocket.svelte";
 
 export const piecesMap = new Map([
@@ -149,12 +149,38 @@ export function buildDenyDrawMessage(gameId: string): Draw {
 	};
 }
 
+export function buildResignationRequestMessage(gameId: string): Resign {
+	return {
+		kind: MessageType.RESIGN,
+		gameId: gameId,
+		requestedResignation: true,
+		resignationConfirmed: false
+	};
+}
+
+export function buildResignationConfirmedMessage(gameId: string): Resign {
+	return {
+		kind: MessageType.RESIGN,
+		gameId: gameId,
+		requestedResignation: false,
+		resignationConfirmed: true
+	};
+}
+
 export async function offerDraw(wsClient: WebSocket, gameId: string) {
 	sendMessage(wsClient, buildDrawMessage(gameId));
 }
 
 export async function denyDraw(wsClient: WebSocket, gameId: string) {
 	sendMessage(wsClient, buildDenyDrawMessage(gameId));
+}
+
+export async function resignRequest(wsClient: WebSocket, gameId: string) {
+	sendMessage(wsClient, buildResignationRequestMessage(gameId));
+}
+
+export async function resignationConfirm(wsClient: WebSocket, gameId: string) {
+	sendMessage(wsClient, buildResignationConfirmedMessage(gameId));
 }
 
 export function buildChangeNameMessage(gameId: string, username: string): ChangeName {

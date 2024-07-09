@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { GAME_STATE_KEY, getGameState, sendMessage } from "./webSocket.svelte";
-	import { buildCloseEndMessage, denyDraw, offerDraw } from "./utils.svelte";
+	import { buildCloseEndMessage } from "./utils.svelte";
 	import EndGameInfo from "$lib/EndGameInfo.svelte";
 	import CommunicationErrorInfo from "$lib/CommunicationErrorInfo.svelte";
 	import type { GameState } from "$lib/types";
 	import DrawContentInfo from "$lib/DrawContentInfo.svelte";
+	import ResignContentInfo from "$lib/ResignContentInfo.svelte";
 
 	let dialog: HTMLDialogElement | null = $state(null);
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
@@ -13,7 +14,8 @@
 	// Opens the dialog for actions after a game finished.
 	$effect(() => {
 		if (dialog &&
-			(gameState.endState.ended || gameState.drawState.offerDraw ||gameState.communicationError.isPresent)
+			(gameState.endState.ended || gameState.drawState.offerDraw ||
+				gameState.resignState.requestedResignation || gameState.communicationError.isPresent)
 		) {
 			dialog.showModal();
 		}
@@ -65,6 +67,8 @@
 		<CommunicationErrorInfo dialog={dialog} />
 	{:else if gameState.drawState.offerDraw }
 		<DrawContentInfo dialog={dialog}/>
+	{:else if gameState.resignState.requestedResignation }
+		<ResignContentInfo dialog={dialog}/>
 	{/if}
 
 </dialog>

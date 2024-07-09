@@ -50,11 +50,11 @@
 		{:else if gameState.endState.close || gameState.endState.leftGame }
 			<span
 				in:fade={{delay: 100, duration: 700 }}
-				class="red-t">Your opponent left the game!
+				class="red-t">Your opponent left the game
 			</span>
 		{:else}
 			<span in:fade={{delay: 100, duration: 700 }}>
-				You can offer rematch or start another game!
+				You can offer rematch or start another game
 			</span>
 		{/if}
 	</div>

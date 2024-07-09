@@ -4,7 +4,7 @@ import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/P
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
 import {
 	type CommunicationError, type End, type GameState, type GameConfig,
-	type Message, MessageType, type Move, type Draw, type Time
+	type Message, MessageType, type Move, type Draw, type Time, type Resign
 } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
@@ -44,6 +44,7 @@ const INIT_MOVE: Move = {
 };
 
 export const GAME_STATE_KEY = "gameState";
+export const END_DIALOG_KEY = "endDialog";
 
 export function initGameState(): GameState {
 	let config = $state<GameConfig>({ ...GAME_NOT_STARTED });
@@ -51,6 +52,7 @@ export function initGameState(): GameState {
 	let turn = $state<string>("w");
 	let endState = $state<End>(buildInitialEndState());
 	let drawState = $state<Draw>(buildInitialDrawState());
+	let resignState = $state<Resign>(buildInitialResignState());
 	let communicationError = $state<CommunicationError>(buildInitialCommunicationError());
 
 	function resetState() {
@@ -58,6 +60,7 @@ export function initGameState(): GameState {
 		lastMove = { ...INIT_MOVE };
 		endState = buildInitialEndState();
 		drawState = buildInitialDrawState();
+		resignState = buildInitialResignState();
 		turn = "w";
 		communicationError = buildInitialCommunicationError();
 	}
@@ -90,6 +93,12 @@ export function initGameState(): GameState {
 		},
 		set drawState(value: any) {
 			drawState = value;
+		},
+		get resignState() {
+			return resignState;
+		},
+		set resignState(value: any) {
+			resignState = value;
 		},
 		get communicationError(): CommunicationError {
 			return communicationError;
@@ -281,6 +290,10 @@ export function connectToWebSocketServer(
 				gameState.drawState = message;
 				break;
 			}
+			case MessageType.RESIGN: {
+				gameState.resignState = message;
+				break;
+			}
 			case MessageType.CHANGE_NAME: {
 				// the backend always sends the opposite player name change event!
 				gameState.config.opponentUsername = message.name;
@@ -342,6 +355,15 @@ export function buildInitialDrawState(): Draw {
 		offerDraw: false,
 		denyDraw: false,
 		drawLimitExceeded: false
+	};
+}
+
+export function buildInitialResignState(): Resign {
+	return {
+		kind: MessageType.RESIGN,
+		gameId: "Initial Resign State",
+		requestedResignation: false,
+		resignationConfirmed: false
 	};
 }
 
