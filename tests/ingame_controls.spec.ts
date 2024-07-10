@@ -3,7 +3,7 @@ import { createContextsAndPages, mockStartRandomGame } from "./setup_utils";
 
 test.describe.configure({ mode: "default", timeout: 6000, retries: 2 });
 
-test.describe.only("In game Controls", () => {
+test.describe("In game Controls", () => {
 	let context1: BrowserContext, context2: BrowserContext, page1: Page, page2: Page;
 
 	test.beforeEach(async ({ browser }) => {
