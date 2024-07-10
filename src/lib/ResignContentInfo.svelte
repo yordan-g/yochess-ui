@@ -6,7 +6,7 @@
 	let gameState = getGameState();
 </script>
 
-<div id="resign-c">
+<div id="resign-c" data-testid="resign-content-info">
 	<h3>Are you sure you want to resign?</h3>
 	<div id="resign-btns">
 		<button

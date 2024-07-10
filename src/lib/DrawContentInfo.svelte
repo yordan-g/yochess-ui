@@ -6,7 +6,7 @@
 	let gameState = getGameState();
 </script>
 
-<div id="draw-c">
+<div id="draw-c" data-testid="draw-content-info">
 	<h3>Your opponent is offering a draw</h3>
 	<div id="draw-btns">
 		<button

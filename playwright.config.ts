@@ -1,27 +1,25 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-	fullyParallel: true,
-	workers: 3,
+	fullyParallel: false,
+	workers: 1,
 	testDir: "./tests",
 	projects: [
 		{
-			name: "chromium",
+			name: "Desktop Chromium",
 			use: {
+				browserName: 'chromium',
 				...devices["Desktop Chrome"],
-				// launchOptions: {
-				// 	slowMo: 2000
-				// }
+				// viewport: { width: 1400, height: 1000 }
 			}
 		},
-		// {
-		// 	name: "firefox",
-		// 	use: { ...devices["Desktop Firefox"] }
-		// },
-		// {
-		// 	name: "webkit",
-		// 	use: { ...devices["Desktop Safari"] }
-		// }
+		{
+			name: 'Mobile Chromium',
+			use: {
+				browserName: 'chromium',
+				...devices['iPhone 14 Plus'],
+			},
+		},
 	],
 	webServer: {
 		command: "npm run dev",
