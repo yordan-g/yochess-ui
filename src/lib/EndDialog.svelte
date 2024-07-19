@@ -11,12 +11,15 @@
 	let dialog: HTMLDialogElement | null = $state(null);
 	let gameState: GameState = getGameState(GAME_STATE_KEY);
 
-	// Opens the dialog for actions after a game finished.
+	$inspect(gameState);
+
 	$effect(() => {
+		console.log("opening effect");
 		if (dialog &&
 			(gameState.endState.ended || gameState.drawState.offerDraw ||
 				gameState.resignState.requestedResignation || gameState.communicationError.isPresent)
 		) {
+			console.log("opening dialog");
 			dialog.showModal();
 		}
 	});

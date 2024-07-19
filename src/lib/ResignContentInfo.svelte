@@ -14,6 +14,8 @@
 			onclick={
 				() => {
 					dialog?.close();
+					// resetting the state so that dialog shows for subsequent resignation attempts
+					// this could be reworked so that state is driven only from the backend, like draw offer.
 					gameState.resignState.requestedResignation = false;
 				}
 			}>Cancel

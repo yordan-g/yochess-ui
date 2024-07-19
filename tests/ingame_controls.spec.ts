@@ -64,4 +64,22 @@ test.describe("In game Controls", () => {
 			await expect(page.getByText("You can offer rematch or start another game")).toBeVisible();
 		}
 	});
+
+	test("GIVEN player 1 offers a draw WHEN player 2 denies it THEN player 2 should be able to resign", async ({ browser }) => {
+		// p1 offers a draw
+		await page1.getByRole("button", { name: "Offer draw" }).click();
+		await expect(page2.getByTestId("draw-content-info")).toBeVisible();
+		await expect(page2.getByRole("button", { name: "Accept" })).toBeVisible();
+		await expect(page2.getByRole("button", { name: "Deny" })).toBeVisible();
+		await expect(page1.getByTestId("draw-content-info")).toBeHidden();
+
+		// p2 denies
+		await page2.getByRole("button", { name: "Deny" }).click();
+		await expect(page1.getByTestId("draw-content-info")).toBeHidden();
+		await expect(page2.getByTestId("draw-content-info")).toBeHidden();
+
+		// p2 can resign
+		await page2.getByRole("button", { name: "Resign" }).click();
+		await page2.getByRole("button", { name: "Cancel" }).click();
+	});
 });
