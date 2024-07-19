@@ -6,12 +6,19 @@ import { createContextsAndPages, makeMovesForCheckmate, mockStartRandomGame } fr
 test.describe.configure({ mode: "default", timeout: 6000, retries: 2 });
 
 test.describe("Starting Random Game behaviour", () => {
+	// Setup 2 different browser sessions as if 2 players are connecting to the website to play.
+	let context1: BrowserContext, context2: BrowserContext, page1: Page, page2: Page;
+
+	test.beforeEach(async ({ browser }) => {
+		({ context1, context2, page1, page2 } = await createContextsAndPages(browser));
+	});
+
+	test.afterEach(async () => {
+		await context1.close();
+		await context2.close();
+	});
 
 	test("WHEN 2 players click to start a game THEN connection works and game starts gracefully", async ({ browser }) => {
-		// Setup 2 different browser sessions as if 2 players are connecting to the website to play.
-		let page1: Page, page2: Page;
-		({ page1, page2 } = await createContextsAndPages(browser));
-
 		await page1.goto("/");
 		await page2.goto("/");
 
@@ -64,6 +71,23 @@ test.describe("Starting Random Game behaviour", () => {
 		await expect(page.getByText("Let's play a quick game of chess!")).toBeVisible();
 		await expect(page.getByTestId("waiting-for-game-spinner")).toBeHidden();
 		await expect(page.getByTestId("game-container")).toBeHidden();
+	});
+
+	test("GIVEN a player has clicked on Friendly Game AND is waiting WHEN he starts a random game THEN new random game should start", async ({ browser}) => {
+		await page1.goto("/");
+		await page2.goto("/");
+
+		await page1.getByRole("button", { name: "Friendly Game" }).click();
+		await expect(page1.getByTestId("friendly-game-link")).toBeVisible();
+
+		await page1.getByRole("link", { name: "Play" }).click();
+		await expect(page1.getByTestId("friendly-game-link")).toBeHidden();
+		await expect(page1.getByText("Searching for opponent...")).toBeVisible();
+
+		await page2.getByRole("link", { name: "Play" }).click();
+
+		await expect(page1.getByTestId("game-container")).toHaveCount(1);
+		await expect(page2.getByTestId("game-container")).toHaveCount(1);
 	});
 });
 

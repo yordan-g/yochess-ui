@@ -24,7 +24,7 @@
 	<div class="nav-and-route">
 		<nav class="nav">
 			<a href="/" class="btn-nav {currentPath === '/' ? 'highlighted' : ''}">About</a>
-			<a href="/play" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}">Play</a>
+			<a href="/redirect" class="btn-nav {currentPath === '/play' ? 'highlighted' : ''}">Play</a>
 			<button class="custom-game btn-nav" onclick={createCustomGame}>Friendly Game</button>
 		</nav>
 		<div class="route-c">

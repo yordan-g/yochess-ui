@@ -192,6 +192,7 @@ export function buildChangeNameMessage(gameId: string, username: string): Change
 }
 
 export function toNullableValue<T>(value: T | undefined): T | null {
+	// console.log(`store from generic: ${value}`);
 	return value === undefined ? null : value;
 }
 

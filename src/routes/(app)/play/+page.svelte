@@ -56,6 +56,7 @@
 					return connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null);
 				}
 				if (customGameId) {
+					// console.log(`starting custom game, cId: ${customGameId}`);
 					return connectToWebSocketServer(userId, gameState, username, null, customGameId, isCreator);
 				}
 				// normal random game
@@ -64,7 +65,6 @@
 		}
 	});
 </script>
-
 
 {#if gameState.config.isLoading}
 	{#if customGameId}

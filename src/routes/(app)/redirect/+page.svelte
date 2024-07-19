@@ -13,7 +13,7 @@
 	let isCreator = $derived<string | null>(toNullableValue($page.state.isCreator));
 
 	afterNavigate((navigation: AfterNavigate) => {
-		console.warn(`Redirect afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
+		// console.warn(`Redirect afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);
 
 		// Simply loading '/redirect' should be forbidden!
 		if (navigation.from === null && customGameIdInUrl === null) {
@@ -23,10 +23,7 @@
 
 		// When the 2nd player enters the site form a custom link
 		if (customGameIdInUrl) {
-			goto(`/play`, {
-				replaceState: true,
-				state: { customGameId: customGameIdInUrl }
-			});
+			goto(`/play`, { replaceState: true, state: { customGameId: customGameIdInUrl } });
 			return;
 		}
 
@@ -41,12 +38,13 @@
 
 		// When both players pressed the rematch button
 		if (rematchGameId) {
-			goto(`/play`, {
-				replaceState: true,
-				state: { rematchGameId: rematchGameId }
-			});
+			goto(`/play`, { replaceState: true, state: { rematchGameId: rematchGameId }});
 			return;
 		}
+
+		// When in the app load a normal game from the 'play' link
+		goto(`/play`, { replaceState: true, state: {} });
+		return;
 	});
 </script>
 
