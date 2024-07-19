@@ -13,6 +13,12 @@ import { buildChangeNameMessage } from "$lib/utils.svelte";
 
 const LAST_MOVE_MARKER = { class: "last-move-marker", slice: "markerSquare" };
 
+const NORMAL_MOVE_AUDIO = new Audio('/sounds/piece-move.wav');
+NORMAL_MOVE_AUDIO.volume = 0.05;
+
+const CASTLE_MOVE_AUDIO = new Audio('/sounds/castle-move.wav');
+CASTLE_MOVE_AUDIO.volume = 0.1;
+
 const START_TIME: Time = {
 	white: 500,
 	black: 500
@@ -144,8 +150,10 @@ async function updateBoard(move: Move, board: Chessboard): Promise<void> {
 			if (move.castle) {
 				await board.setPiece(move.castle.rookPosStart, null, true);
 				await board.setPiece(move.castle.rookPosEnd, move.castle.rook, true);
+				CASTLE_MOVE_AUDIO.play();
+				break;
 			}
-			break;
+			NORMAL_MOVE_AUDIO.play();
 		}
 		default: {
 			break;

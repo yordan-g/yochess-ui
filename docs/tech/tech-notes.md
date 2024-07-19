@@ -16,5 +16,8 @@
 ### CSS
 - flexbox scaling issues - https://stackoverflow.com/questions/36247140/why-dont-flex-items-shrink-past-content-size
 
-## Google Cloud
+### Google Cloud
 - https://cloud.google.com/build/docs/configuring-builds/create-basic-configuration
+
+### Sound bites
+- https://www.soundsnap.com/

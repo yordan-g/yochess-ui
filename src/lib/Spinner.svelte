@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="loading-c" in:fade={{delay:100, duration: 700}}>
+<div class="loading-c" in:fade={{duration: 700}}>
 	{#if customGameId}
 		<p class="gr-text">Send the link to you friend. Waiting for him to connect...</p>
 	{:else}

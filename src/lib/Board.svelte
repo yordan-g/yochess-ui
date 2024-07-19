@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fade } from "svelte/transition";
 	import { getGameState, initBoard } from "./webSocket.svelte";
 	import { onMount } from "svelte";
 	import "cm-chessboard/assets/chessboard.css";
@@ -15,7 +14,7 @@
 
 </script>
 
-<div in:fade="{{ duration: 700 }}" class="board" data-testid="chessboard"
+<div class="board" data-testid="chessboard"
 	 id="containerId">
 </div>
 

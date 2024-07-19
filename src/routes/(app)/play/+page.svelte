@@ -79,7 +79,7 @@
 	{/if}
 	<Spinner />
 {:else}
-	<div class="play-c" data-testid="play-container">
+	<div transition:fade={{duration: 700}} class="play-c" data-testid="play-container">
 		<div class="game-c" data-testid="game-container">
 			<PlayerInfo color={gameState.config.color === "w" ? "b" : "w"} />
 			<Board />
@@ -87,7 +87,7 @@
 			<GameControls/>
 			{#if gameState.endState.leftGame || gameState.endState.close}
 				<div
-					in:fade={{delay: 100, duration: 700 }}
+					in:fade={{duration: 700 }}
 					class="notification" data-testid="end-game-notification">
 					<span class="red-t">Game ended, you can start another one!</span>
 				</div>
