@@ -1,6 +1,6 @@
 # Yochess
 
-Simple, account-free website for playing chess. Try it out here - https://www.yochess.com
+Simple, account-free website for playing chess. Try it out here - https://www.yochess.net
 
 ## License for the project
 
