@@ -1,5 +1,7 @@
 # Yochess
 
+Simple, account-free website for playing chess. Try it out here - https://www.yochess.com
+
 ## License for the project
 
 This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) License. You are free to:
@@ -22,6 +24,10 @@ The library is created by [Stefan Haack] and is under MIT license - [cm-chessboa
 ### [SvelteKit]
 
 This project is powered by the [SvelteKit] framework, licensed under [MIT License][SvelteKit License].
+
+## Notes for developers
+
+If you are interested in running the project locally follow [this guide here](docs/running-locally.md)
 
 [cm-chessboard]: https://github.com/shaack/cm-chessboard
 [Stefan Haack]: https://github.com/shaack
