@@ -10,14 +10,18 @@ import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
 import { PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES } from "$env/static/public";
 import { buildChangeNameMessage } from "$lib/utils.svelte";
+import { browser } from "$app/environment";
 
 const LAST_MOVE_MARKER = { class: "last-move-marker", slice: "markerSquare" };
 
-const NORMAL_MOVE_AUDIO = new Audio('/sounds/piece-move.wav');
-NORMAL_MOVE_AUDIO.volume = 0.05;
-
-const CASTLE_MOVE_AUDIO = new Audio('/sounds/castle-move.wav');
-CASTLE_MOVE_AUDIO.volume = 0.1;
+let NORMAL_MOVE_AUDIO: HTMLAudioElement | null = null;
+let CASTLE_MOVE_AUDIO: HTMLAudioElement | null = null;
+if (browser) {
+	NORMAL_MOVE_AUDIO = new Audio("/sounds/piece-move.wav");
+	NORMAL_MOVE_AUDIO.volume = 0.05;
+	CASTLE_MOVE_AUDIO = new Audio("/sounds/castle-move.wav");
+	CASTLE_MOVE_AUDIO.volume = 0.1;
+}
 
 const START_TIME: Time = {
 	white: 500,
@@ -150,10 +154,10 @@ async function updateBoard(move: Move, board: Chessboard): Promise<void> {
 			if (move.castle) {
 				await board.setPiece(move.castle.rookPosStart, null, true);
 				await board.setPiece(move.castle.rookPosEnd, move.castle.rook, true);
-				CASTLE_MOVE_AUDIO.play();
+				CASTLE_MOVE_AUDIO?.play();
 				break;
 			}
-			NORMAL_MOVE_AUDIO.play();
+			NORMAL_MOVE_AUDIO?.play();
 		}
 		default: {
 			break;

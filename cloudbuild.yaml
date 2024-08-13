@@ -1,9 +1,0 @@
-steps:
-    # Docker Build
-    - name: 'gcr.io/cloud-builders/docker'
-      args: ['build',
-             '--build-arg', 'PUBLIC_WS_BASE_URL=wss://yochess-engine-6ybtt6m3qq-ew.a.run.app/chess',
-             '-t', 'europe-west1-docker.pkg.dev/$PROJECT_ID/yochess/ui:cb2', '.']
-    # Docker Push
-    - name: 'gcr.io/cloud-builders/docker'
-      args: ['push', 'europe-west1-docker.pkg.dev/$PROJECT_ID/yochess/ui:cb2']
