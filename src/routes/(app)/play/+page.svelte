@@ -172,6 +172,8 @@
 			margin: 1em 0em 0em 0em;
 			width: 100%;
 			height: 100%;
+			max-width: unset;
+			max-height: 500px;
 		}
 
 		.notification {
