@@ -8,9 +8,10 @@ export enum MessageType {
 	RESIGN = "RESIGN",
 	CHANGE_NAME = "CHANGE_NAME",
 	COMMUNICATION_ERROR = "COMMUNICATION_ERROR",
+	CHAT_ENTRIES = "CHAT_ENTRIES",
 }
 
-export type Message = Init | Move | End | ChangeName | Draw | Resign | CommunicationError;
+export type Message = Init | Move | End | ChangeName | Draw | Resign | CommunicationError | ChatEntries;
 
 export type CommunicationError = {
 	kind: MessageType.COMMUNICATION_ERROR;
@@ -75,6 +76,18 @@ export type Resign = {
 	resignationConfirmed: boolean;
 }
 
+export type ChatEntry = {
+	username: string;
+	timestamp: string;
+	text: string;
+}
+
+export type ChatEntries = {
+	kind: MessageType.CHAT_ENTRIES;
+	gameId: string;
+	entries: ChatEntry[]
+}
+
 export type Time = {
 	white: number;
 	black: number;
@@ -95,6 +108,7 @@ export type GameState = {
 	resignState: Resign;
 	communicationError: CommunicationError;
 	resetState: Function;
+	chatState: ChatEntry[];
 }
 
 export type GameConfig = {
@@ -103,6 +117,8 @@ export type GameConfig = {
 	gameId: string | null;
 	color: string | null;
 	isLoading: boolean;
+	username: string | null;
+	usernameHistory: string[];
 	opponentUsername: string | null;
 };
 

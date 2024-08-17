@@ -9,16 +9,21 @@
 
 	let opponentUsername = $derived(gameState.config.opponentUsername);
 	let username = userService.getUsername();
-	let currentName = $state(username);
+	gameState.config.username = username;
+	gameState.config.usernameHistory.push(gameState.config.username!!);
 	let lastValidName = $state(username);
 
+	/** InputUsername and Chat are connected so that whenever the user changes his name the Chat still
+	 *  aligns messages left or right. Done by keeping the state of the name changes in usernameHistory */
 	function handleNameUpdate(event: Event) {
 		let newName = (event.target as HTMLInputElement).value;
 		if (newName.length < 3) {
-			currentName = lastValidName;
+			gameState.config.username = lastValidName;
 		} else {
 			userService.setUsername(newName);
-			sendMessage(gameState.config.wsClient, buildChangeNameMessage(gameState.config.gameId, newName));
+			gameState.config.usernameHistory.push(gameState.config.username!!);
+			gameState.config.username = newName;
+			sendMessage(gameState.config.wsClient, buildChangeNameMessage(gameState.config.gameId!!, newName));
 		}
 	}
 
@@ -38,7 +43,7 @@
 		<span>{opponentUsername}</span>
 	{:else}
 		<input type="text" id="playerName"
-			   bind:value={currentName}
+			   bind:value={gameState.config.username}
 			   onkeydown={checkForEnter}
 			   onblur={handleNameUpdate}
 			   onclick={saveName}

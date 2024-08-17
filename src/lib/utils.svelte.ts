@@ -199,3 +199,10 @@ export function toNullableValue<T>(value: T | undefined): T | null {
 export function stopEventPropagation(event: Event) {
 	event.stopPropagation();
 }
+
+export function getCurrentTimeHHMM(): string {
+	const now = new Date();
+	const hours = String(now.getHours()).padStart(2, '0'); // Ensure 2 digits
+	const minutes = String(now.getMinutes()).padStart(2, '0'); // Ensure 2 digits
+	return `${hours}:${minutes}`;
+}

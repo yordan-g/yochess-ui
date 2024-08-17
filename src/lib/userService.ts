@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import Chance from "chance";
 
 export const userService = {
 	getUserId: (): string => {
@@ -18,9 +19,11 @@ export const userService = {
 
 	getUsername: (): string => {
 		let username = localStorage.getItem("username");
+		const chance = new Chance();
 
 		if (!username) {
-			username = "Change!";
+			chance.name();
+			username = chance.name();
 			localStorage.setItem("username", username);
 		}
 

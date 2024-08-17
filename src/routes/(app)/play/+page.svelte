@@ -13,6 +13,7 @@
 	import { fade } from "svelte/transition";
 	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
 	import GameControls from "$lib/GameControls.svelte";
+	import Chat from "$lib/Chat.svelte";
 
 	let userId: string;
 	let username: string;
@@ -93,7 +94,7 @@
 				</div>
 			{/if}
 		</div>
-		<div class="chat-c" data-testid="chat-container"></div>
+		<Chat/>
 	</div>
 {/if}
 <EndDialog />
@@ -145,24 +146,10 @@
 		flex-direction: column;
 		margin: 50px 25px 50px 100px;
 		gap: 15px;
-
-		width: min(60vw, 60vh);
-		height: min(50vw, 50vh);
-
 		min-width: 300px;
 		min-height: 300px;
-		max-width: 550px;
-		max-height: 550px;
-	}
-
-	.chat-c {
-		width: 250px;
-		height: 560px;
-		margin: 50px 0 0 0;
-
-		border-radius: 10px;
-		box-shadow: rgba(80, 80, 80, 0.6) inset 0px 7px 2px -3px,
-		rgba(80, 80, 80, 0.6) inset 3px 10px 10px -3px;
+		max-width: min(65vw, 65vh);
+		max-height: 500px;
 	}
 
 	@media only screen and (max-width: 480px) {
@@ -191,10 +178,6 @@
 			margin: 0em 0em 0em 1em;
 			/* renders the element at the top as if it's the first one */
 			order: -1;
-		}
-
-		.chat-c {
-			display: none;
 		}
 	}
 </style>

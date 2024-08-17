@@ -34,6 +34,12 @@
 		rgb(255, 0, 206),
 		rgb(127, 153, 255)
 	);
+
+	--purple-gradien-05: linear-gradient(
+		to left top,
+		rgba(255, 0, 206, 0.3),
+		rgba(127, 153, 255, 0.3)
+	);
 }
 
 html {

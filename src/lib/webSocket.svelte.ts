@@ -4,7 +4,7 @@ import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/P
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
 import {
 	type CommunicationError, type End, type GameState, type GameConfig,
-	type Message, MessageType, type Move, type Draw, type Time, type Resign
+	type Message, MessageType, type Move, type Draw, type Time, type Resign, type ChatEntry
 } from "$lib/types";
 import { getContext } from "svelte";
 import { PUBLIC_WS_BASE_URL } from "$env/static/public";
@@ -34,6 +34,8 @@ const GAME_NOT_STARTED: GameConfig = {
 	gameId: null,
 	board: null,
 	isLoading: true,
+	username: null,
+	usernameHistory: [],
 	opponentUsername: null
 };
 
@@ -54,7 +56,6 @@ const INIT_MOVE: Move = {
 };
 
 export const GAME_STATE_KEY = "gameState";
-export const END_DIALOG_KEY = "endDialog";
 
 export function initGameState(): GameState {
 	let config = $state<GameConfig>({ ...GAME_NOT_STARTED });
@@ -64,6 +65,7 @@ export function initGameState(): GameState {
 	let drawState = $state<Draw>(buildInitialDrawState());
 	let resignState = $state<Resign>(buildInitialResignState());
 	let communicationError = $state<CommunicationError>(buildInitialCommunicationError());
+	let chatState = $state<ChatEntry[]>([]);
 
 	function resetState() {
 		config = { ...GAME_NOT_STARTED };
@@ -73,6 +75,7 @@ export function initGameState(): GameState {
 		resignState = buildInitialResignState();
 		turn = "w";
 		communicationError = buildInitialCommunicationError();
+		chatState = [];
 	}
 
 	return {
@@ -115,7 +118,13 @@ export function initGameState(): GameState {
 		},
 		set communicationError(value: CommunicationError) {
 			communicationError = value;
-		}
+		},
+		get chatState() {
+			return chatState;
+		},
+		set chatState(value: ChatEntry[]) {
+			chatState = value;
+		},
 	};
 }
 
@@ -313,6 +322,10 @@ export function connectToWebSocketServer(
 			}
 			case MessageType.COMMUNICATION_ERROR: {
 				gameState.communicationError = message;
+				break;
+			}
+			case MessageType.CHAT_ENTRIES: {
+				gameState.chatState = message.entries;
 				break;
 			}
 			default:
