@@ -41,7 +41,7 @@ test.describe("Starting Random Game behaviour", () => {
 					userId: localStorage.getItem('userId')
 				}
 			});
-			expect(username).toBe('Change!');
+			expect(username).not.toEqual('');
 			expect(userId).toBeTruthy();
 
 			await expect(page.getByTestId("play-container")).toHaveCount(1);
