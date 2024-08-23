@@ -21,3 +21,8 @@
 
 ### Sound bites
 - https://www.soundsnap.com/
+
+### Web standards
+
+- https://en.wikipedia.org/wiki/Robots.txt#About_the_standard
+- https://en.wikipedia.org/wiki/Security.txt

@@ -48,4 +48,4 @@
 	});
 </script>
 
-<h1>Redirect</h1>
+<h1> </h1>

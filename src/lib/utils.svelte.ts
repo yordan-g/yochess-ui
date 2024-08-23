@@ -14,7 +14,7 @@ export const order = ["p", "n", "b", "q", "k", "r"];
 export const compareFn = (a: string, b: string) => order.indexOf(a[1]) - order.indexOf(b[1]);
 
 export function initClockState() {
-	let time = $state(500);
+	let time = $state(420);
 	let interval: NodeJS.Timeout;
 
 	function start(timeLeft: number) {

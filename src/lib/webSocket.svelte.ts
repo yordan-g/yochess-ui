@@ -24,8 +24,8 @@ if (browser) {
 }
 
 const START_TIME: Time = {
-	white: 500,
-	black: 500
+	white: 420,
+	black: 420
 };
 
 const GAME_NOT_STARTED: GameConfig = {
