@@ -20,6 +20,7 @@ export function initClockState() {
 	function start(timeLeft: number) {
 		time = timeLeft;
 		interval = setInterval(() => {
+			// console.error("clock is running");
 			if (time < 2) {
 				// clearInterval(interval);
 				time = 0;

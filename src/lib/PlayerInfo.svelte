@@ -24,7 +24,7 @@
 	});
 
 	$effect(() => {
-		if (gameState.endState.ended) {
+		if (gameState.endState.ended || gameState.endState.close || gameState.endState.leftGame) {
 			clockState.stop();
 		}
 	});

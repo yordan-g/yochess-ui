@@ -9,9 +9,11 @@ export enum MessageType {
 	CHANGE_NAME = "CHANGE_NAME",
 	COMMUNICATION_ERROR = "COMMUNICATION_ERROR",
 	CHAT_ENTRIES = "CHAT_ENTRIES",
+	PING = "PING",
+	PONG = "PONG",
 }
 
-export type Message = Init | Move | End | ChangeName | Draw | Resign | CommunicationError | ChatEntries;
+export type Message = Init | Move | End | ChangeName | Draw | Resign | CommunicationError | ChatEntries | Ping | Pong;
 
 export type CommunicationError = {
 	kind: MessageType.COMMUNICATION_ERROR;
@@ -86,6 +88,16 @@ export type ChatEntries = {
 	kind: MessageType.CHAT_ENTRIES;
 	gameId: string;
 	entries: ChatEntry[]
+}
+
+export type Ping = {
+	kind: MessageType.PING;
+	text: string;
+}
+
+export type Pong = {
+	kind: MessageType.PONG;
+	text: string;
 }
 
 export type Time = {

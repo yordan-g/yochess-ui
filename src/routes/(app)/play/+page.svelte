@@ -1,7 +1,13 @@
 <script lang="ts">
 	import Spinner from "$lib/Spinner.svelte";
 	import { setContext } from "svelte";
-	import { connectToWebSocketServer, GAME_STATE_KEY, initGameState, sendMessage } from "$lib/webSocket.svelte";
+	import {
+		connectToWebSocketServer,
+		GAME_STATE_KEY,
+		initGameState,
+		PingPingInterval,
+		sendMessage
+	} from "$lib/webSocket.svelte";
 	import Board from "$lib/Board.svelte";
 	import PlayerInfo from "$lib/PlayerInfo.svelte";
 	import EndDialog from "$lib/EndDialog.svelte";
@@ -19,6 +25,7 @@
 	let username: string;
 	const gameState: GameState = initGameState();
 	setContext(GAME_STATE_KEY, gameState);
+	const pingPongInterval = new PingPingInterval();
 
 	let rematchGameId = $derived<string | null>(toNullableValue($page.state.rematchGameId));
 	let customGameId = $derived<string | null>(toNullableValue($page.state.customGameId));
@@ -54,14 +61,14 @@
 
 				// console.warn(`page state ${JSON.stringify($page.state)}`);
 				if (rematchGameId) {
-					return connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null);
+					return connectToWebSocketServer(userId, gameState, username, rematchGameId, null, null, pingPongInterval);
 				}
 				if (customGameId) {
 					// console.log(`starting custom game, cId: ${customGameId}`);
-					return connectToWebSocketServer(userId, gameState, username, null, customGameId, isCreator);
+					return connectToWebSocketServer(userId, gameState, username, null, customGameId, isCreator, pingPongInterval);
 				}
 				// normal random game
-				return connectToWebSocketServer(userId, gameState, username, null, null, null);
+				return connectToWebSocketServer(userId, gameState, username, null, null, null, pingPongInterval);
 			}
 		}
 	});

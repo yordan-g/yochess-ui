@@ -3,12 +3,20 @@ import { MARKER_TYPE, Markers } from "cm-chessboard/src/extensions/markers/Marke
 import { PromotionDialog } from "cm-chessboard/src/extensions/promotion-dialog/PromotionDialog";
 import { BORDER_TYPE, Chessboard, FEN, INPUT_EVENT_TYPE } from "cm-chessboard/src/Chessboard";
 import {
-	type CommunicationError, type End, type GameState, type GameConfig,
-	type Message, MessageType, type Move, type Draw, type Time, type Resign, type ChatEntry
+	type ChatEntry,
+	type CommunicationError,
+	type Draw,
+	type End,
+	type GameConfig,
+	type GameState,
+	type Message,
+	MessageType,
+	type Move,
+	type Resign,
+	type Time
 } from "$lib/types";
 import { getContext } from "svelte";
-import { PUBLIC_WS_BASE_URL } from "$env/static/public";
-import { PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES } from "$env/static/public";
+import { PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES, PUBLIC_WS_BASE_URL } from "$env/static/public";
 import { buildChangeNameMessage } from "$lib/utils.svelte";
 import { browser } from "$app/environment";
 
@@ -132,6 +140,24 @@ export function getGameState(): GameState {
 	return getContext<GameState>(GAME_STATE_KEY);
 }
 
+export class PingPingInterval {
+	interval = $state<NodeJS.Timeout | undefined>(undefined);
+
+	start(wsClient: WebSocket) {
+		this.interval = setInterval(
+			() => {
+				// console.warn("sending ping message ---");
+				sendMessage(wsClient, { kind: MessageType.PING, text: "ping" });
+			}, 29000
+		);
+	}
+
+	clear() {
+		// console.warn("clearing interval ---");
+		clearInterval(this.interval);
+	}
+}
+
 export function initBoard(gameConfig: GameConfig, lastMove: Move) {
 	gameConfig.board = new Chessboard(document.getElementById("containerId"), {
 		position: FEN.start,
@@ -247,7 +273,8 @@ export function connectToWebSocketServer(
 	userId: String, gameState: GameState, username: string,
 	rematchGameId: string | null,
 	customGameId: string | null,
-	isCreator: string | null
+	isCreator: string | null,
+	pingPongInterval: PingPingInterval
 ): void {
 	let serverUrl;
 
@@ -290,6 +317,8 @@ export function connectToWebSocketServer(
 					gameState.config.isLoading = false;
 					gameState.config.color = message.color;
 					sendMessage(gameState.config.wsClient, buildChangeNameMessage(gameState.config.gameId, username));
+
+					pingPongInterval.start(gameState.config.wsClient!!)
 				}
 				break;
 			}
@@ -304,6 +333,7 @@ export function connectToWebSocketServer(
 				break;
 			}
 			case MessageType.END: {
+				pingPongInterval.clear();
 				gameState.endState = message;
 				break;
 			}
@@ -328,6 +358,7 @@ export function connectToWebSocketServer(
 				gameState.chatState = message.entries;
 				break;
 			}
+			case MessageType.PONG: {}
 			default:
 				break;
 		}

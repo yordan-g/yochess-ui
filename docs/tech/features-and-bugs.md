@@ -1,15 +1,14 @@
-## Feature to impl
-move sound
-Stop timer when offering a draw
+## Features to implement
+- Stop timer when offering a draw
+- Use vite-plugin-strip to strip console logs for prod
 
 ## Active bugs
-promotion dialog shows when pawn moves forward but there is opponent piece
-time increment
-fix transitions
+- Promotion dialog shows when pawn moves forward but there is opponent piece
+- Svelte transitions not quite working
 
 ### Important
 
 ### Fixed
-layout load on 404
-Clicking play when a friendly game is waiting is not working
-After draw deny resign button doesn't work!
+- Layout load on 404
+- Clicking play when a friendly game is waiting is not working
+- After draw deny resign button doesn't work!
