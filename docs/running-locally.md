@@ -6,6 +6,8 @@ To run the web app locally you will need this repo and the backend, yochess-engi
 
 - `npm` package manager installed
 
+## Steps to run
+
 1. Clone this repo.
 2. Clone the backend [yochess-engine](https://github.com/yordan-g/yochess-engine).
 3. Run the backend [instructions here](https://github.com/yordan-g/yochess-engine).
