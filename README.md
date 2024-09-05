@@ -2,8 +2,6 @@
 
 Simple, account-free website for playing chess. Try it out here - https://www.yochess.net
 
-## Demo
-
 <div style="text-align: center;">
   <img src="docs/assets/main-demo-1200.gif" alt="Demo" width="800"/>
 </div>
