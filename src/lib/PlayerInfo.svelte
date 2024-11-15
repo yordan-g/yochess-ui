@@ -45,7 +45,7 @@
 <div class="player-info" data-testid="player-info-container">
 	<div class="player-name" data-testid="player-name">
 		<span class="material-symbols-outlined i-face">face_6</span>
-		<InputUsername color="{color}" />
+		<InputUsername color={color} />
 	</div>
 	<div class="time-c" data-testid="time-left">
 		{#if color !== gameState.turn}
