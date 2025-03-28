@@ -210,7 +210,7 @@ function createMoveInputHandler(gameConfig: GameConfig, lastMove: Move) {
 			case INPUT_EVENT_TYPE.validateMoveInput:
 				// console.log(`validateMoveInput:`);
 				if (
-					PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES === "true" &&
+					PUBLIC_ENABLE_ONE_PLAYER_MOVE_BOTH_PIECES === "false" &&
 					gameConfig.color != event.piece.charAt(0)
 				) {
 					return false;
