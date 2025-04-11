@@ -1,0 +1,9 @@
+[
+  {
+    "user_agent": "prefetch-proxy",
+    "availability": {
+      "google_prefetch_proxy_eap": "on"
+    },
+    "fraction": 1.0
+  }
+]

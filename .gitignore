@@ -10,6 +10,5 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .idea
-*.txt
 test-results
 tmp-notes.md
