@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import Chance from "chance";
 
 export const userService = {
@@ -6,7 +5,7 @@ export const userService = {
 		let userId = localStorage.getItem("userId");
 
 		if (!userId) {
-			userId = uuidv4();
+			userId = crypto.randomUUID();
 			localStorage.setItem("userId", userId);
 		}
 

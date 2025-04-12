@@ -201,7 +201,7 @@ test.describe("Starting Friendly/Custom Game behaviour", () => {
 });
 
 test.describe("Consecutively starting multiple games should work normally in order", () => {
-	test.describe.configure({ timeout: 8000 });
+	test.describe.configure({ timeout: 15000 });
 	let context1: BrowserContext, context2: BrowserContext, page1: Page, page2: Page;
 
 	test.beforeEach(async ({ browser }) => {

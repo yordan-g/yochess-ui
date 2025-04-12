@@ -21,7 +21,6 @@
 		"@types/chance": "1.1.6",
 		"@types/cookie": "^0.6.0",
 		"@types/node": "^20.12.11",
-		"@types/uuid": "^9.0.8",
 		"svelte": "5.2.0",
 		"svelte-check": "4.0.8",
 		"tsconfig": "^7.0.0",
@@ -32,9 +31,7 @@
 	"dependencies": {
 		"chance": "^1.1.12",
 		"cm-chessboard": "^8.7.4",
-		"dotenv": "^16.4.5",
-		"nanoid": "^5.0.7",
-		"uuid": "^9.0.1"
+		"dotenv": "^16.4.5"
 	},
 	"type": "module"
 }
