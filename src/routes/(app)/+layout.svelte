@@ -1,10 +1,10 @@
 <script lang="ts">
 	import "../../styles/global.css";
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 	import { createCustomGame } from "$lib/customGameService";
 
 	let { children } = $props();
-	let currentPath = $derived($page.url.pathname);
+	let currentPath = $derived(page.url.pathname);
 
 </script>
 

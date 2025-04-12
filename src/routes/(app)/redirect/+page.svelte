@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { afterNavigate, goto } from "$app/navigation";
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 	import { toNullableValue } from "$lib/utils.svelte";
 	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
 
 	// Reading from the URL, SHOULD ONLY be used for the case where a user/2nd player is invited via custom link!
-	let customGameIdInUrl = $derived<string | null>($page.url.searchParams.get("cg"));
+	let customGameIdInUrl = $derived<string | null>(page.url.searchParams.get("cg"));
 
 	// Navigation State for Starting and Restarting Games determined by calls to the Svelte client-side navigation goto();
-	let customGameId = $derived<string | null>(toNullableValue($page.state.customGameId));
-	let rematchGameId = $derived<string | null>(toNullableValue($page.state.rematchGameId));
-	let isCreator = $derived<string | null>(toNullableValue($page.state.isCreator));
+	let customGameId = $derived<string | null>(toNullableValue(page.state.customGameId));
+	let rematchGameId = $derived<string | null>(toNullableValue(page.state.rematchGameId));
+	let isCreator = $derived<string | null>(toNullableValue(page.state.isCreator));
 
 	afterNavigate((navigation: AfterNavigate) => {
 		// console.warn(`Redirect afterNavigate | from ${navigation.from?.url} to ${navigation.to?.url}, type ${navigation.type}`);

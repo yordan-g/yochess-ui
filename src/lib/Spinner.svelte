@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { fade } from "svelte/transition";
 	import { toNullableValue } from "$lib/utils.svelte";
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 
-	let customGameId = $derived<string | null>(toNullableValue($page.state.customGameId));
+	let customGameId = $derived<string | null>(toNullableValue(page.state.customGameId));
 
 </script>
 
