@@ -135,6 +135,6 @@ export type GameConfig = {
 };
 
 export type GameOver = {
-	winner: String | null;
-	result: String | null;
+	winner: string | null;
+	result: string | null;
 };

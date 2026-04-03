@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { GameState } from "$lib/types";
 	import { getGameState } from "$lib/webSocket.svelte";
 	import { resignationConfirm } from "$lib/utils.svelte";
 
-	let { dialog } = $props();
-	let gameState = getGameState();
+	let { dialog }: { dialog: HTMLDialogElement | null } = $props();
+	let gameState: GameState = getGameState();
 </script>
 
 <div id="resign-c" data-testid="resign-content-info">
@@ -35,7 +36,7 @@
 	#resign-c {
 		display: flex;
 		flex-direction: column;
-		margin: 1em 0em 1em 0em;
+		margin: 1em 0 1em 0;
 	}
 
 	h3 {

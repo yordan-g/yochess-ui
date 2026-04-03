@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { GAME_STATE_KEY, getGameState, sendMessage } from "./webSocket.svelte";
+	import { getGameState, sendMessage } from "./webSocket.svelte";
 	import { buildCloseEndMessage } from "./utils.svelte";
 	import EndGameInfo from "$lib/EndGameInfo.svelte";
 	import CommunicationErrorInfo from "$lib/CommunicationErrorInfo.svelte";
@@ -9,7 +9,7 @@
 	import ResignContentInfo from "$lib/ResignContentInfo.svelte";
 
 	let dialog: HTMLDialogElement | null = $state(null);
-	let gameState: GameState = getGameState(GAME_STATE_KEY);
+	let gameState: GameState = getGameState();
 
 	$effect(() => {
 		if (dialog &&
@@ -36,7 +36,7 @@
 	function closeDialog() {
 		dialog?.close();
 
-		if (gameState.endState.ended) {
+		if (gameState.endState.ended && gameState.config.gameId) {
 			// console.warn(`closeDialog - ${gameState.config.gameId}`);
 			sendMessage(gameState.config.wsClient, buildCloseEndMessage(gameState.config.gameId));
 		}

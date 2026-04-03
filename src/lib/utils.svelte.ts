@@ -168,19 +168,23 @@ export function buildResignationConfirmedMessage(gameId: string): Resign {
 	};
 }
 
-export async function offerDraw(wsClient: WebSocket, gameId: string) {
+export async function offerDraw(wsClient: WebSocket | null, gameId: string | null) {
+	if (!gameId) return;
 	sendMessage(wsClient, buildDrawMessage(gameId));
 }
 
-export async function denyDraw(wsClient: WebSocket, gameId: string) {
+export async function denyDraw(wsClient: WebSocket | null, gameId: string | null) {
+	if (!gameId) return;
 	sendMessage(wsClient, buildDenyDrawMessage(gameId));
 }
 
-export async function resignRequest(wsClient: WebSocket, gameId: string) {
+export async function resignRequest(wsClient: WebSocket | null, gameId: string | null) {
+	if (!gameId) return;
 	sendMessage(wsClient, buildResignationRequestMessage(gameId));
 }
 
-export async function resignationConfirm(wsClient: WebSocket, gameId: string) {
+export async function resignationConfirm(wsClient: WebSocket | null, gameId: string | null) {
+	if (!gameId) return;
 	sendMessage(wsClient, buildResignationConfirmedMessage(gameId));
 }
 

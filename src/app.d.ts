@@ -5,6 +5,11 @@ declare global {
 		// interface Error {}
 		// interface Locals {}
 		// interface PageData {}
+		interface PageState {
+			customGameId?: string | null;
+			rematchGameId?: string | null;
+			isCreator?: string | null;
+		}
 		// interface Platform {}
 	}
 }

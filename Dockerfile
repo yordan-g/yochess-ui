@@ -1,5 +1,5 @@
 # https://kit.svelte.dev/docs/adapter-node
-# docker build . --tag yochess-ui
+# docker build -t jordanganev/yochess-ui:1.1.0 .
 # docker run -i --rm -p 3000:3000 yochess-ui
 FROM node:lts-slim as build
 

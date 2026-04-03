@@ -10,7 +10,7 @@
 
 <svelte:head>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
 	<link
 		href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
 		rel="stylesheet">
@@ -31,9 +31,6 @@
 			{@render children()}
 		</div>
 	</div>
-	<footer class="footer">
-		Yochess 2024
-	</footer>
 </div>
 
 
@@ -77,11 +74,6 @@
 		width: 3px; /* Thickness of the line */
 		background: rgb(211, 211, 211); /* Color of the line */
 		border-radius: 10px; /* Adjust as needed to create the oval edges */
-	}
-
-	footer {
-		background: transparent;
-		text-align: start;
 	}
 
 	.btn-nav {
@@ -203,10 +195,6 @@
 		.btn-nav {
 			padding: 0.2em 0.5em 0.2em 0.5em;
 			font-size: 1.8em;
-		}
-
-		footer {
-			display: none;
 		}
 	}
 

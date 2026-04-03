@@ -1,18 +1,22 @@
 <script lang="ts">
-	import { GAME_STATE_KEY, getGameState, sendMessage } from "$lib/webSocket.svelte";
+	import { getGameState, sendMessage } from "$lib/webSocket.svelte";
 	import { buildRematchMessage, gameResult, stopEventPropagation } from "$lib/utils.svelte";
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
 	import { goto } from "$app/navigation";
 
-	let { closeDialog } = $props<{ closeDialog: Function }>();
-	let gameState: GameState = getGameState(GAME_STATE_KEY);
-	let endWinner = $derived(gameResult(gameState.endState.gameOver?.winner));
+	let { closeDialog }: { closeDialog: () => void } = $props();
+	let gameState: GameState = getGameState();
+	let endResult = $derived(gameState.endState.gameOver?.result ?? "Game ended");
+	let endWinner = $derived(
+		gameState.endState.gameOver ? gameResult(gameState.endState.gameOver.winner ?? "") : ""
+	);
 	let rematchOffered = $state(false);
 
 	let closeButton: HTMLButtonElement;
 
 	function offerRematch() {
+		if (!gameState.config.gameId) return;
 		sendMessage(gameState.config.wsClient, buildRematchMessage(gameState.config.gameId));
 		rematchOffered = true;
 		closeButton.focus();
@@ -38,7 +42,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div onclick={stopEventPropagation} class="modal-c" data-testid="end-game-modal">
 	<h2 in:fade={{delay: 100, duration: 700 }}>
-		{gameState.endState.gameOver?.result} {endWinner}
+		{endResult} {endWinner}
 	</h2>
 	<!-- todo fix rematchOffered && close is not true -->
 	<div class="next-action-c">

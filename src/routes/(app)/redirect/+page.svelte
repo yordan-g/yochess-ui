@@ -2,7 +2,7 @@
 	import { afterNavigate, goto } from "$app/navigation";
 	import { page } from "$app/state";
 	import { toNullableValue } from "$lib/utils.svelte";
-	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
+	import type { AfterNavigate } from "@sveltejs/kit";
 
 	// Reading from the URL, SHOULD ONLY be used for the case where a user/2nd player is invited via custom link!
 	let customGameIdInUrl = $derived<string | null>(page.url.searchParams.get("cg"));

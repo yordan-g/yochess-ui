@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { GAME_STATE_KEY, getGameState } from "$lib/webSocket.svelte";
+	import { getGameState } from "$lib/webSocket.svelte";
 	import type { GameState } from "$lib/types";
 	import { stopEventPropagation } from "$lib/utils.svelte";
 
-	let { dialog } = $props();
-	let gameState: GameState = getGameState(GAME_STATE_KEY);
+	let { dialog }: { dialog: HTMLDialogElement | null } = $props();
+	let gameState: GameState = getGameState();
 
 	function closeDialog() {
-		(dialog as HTMLDialogElement).close();
+		dialog?.close();
 	}
 
 </script>

@@ -1,8 +1,9 @@
 <script lang="ts">
+	import type { GameState } from "$lib/types";
 	import { getGameState } from "$lib/webSocket.svelte";
 	import { offerDraw, resignRequest } from "$lib/utils.svelte";
 
-	let gameState = getGameState();
+	let gameState: GameState = getGameState();
 
 </script>
 

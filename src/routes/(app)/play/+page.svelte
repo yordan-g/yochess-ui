@@ -17,7 +17,7 @@
 	import { userService } from "$lib/userService";
 	import type { GameState } from "$lib/types";
 	import { fade } from "svelte/transition";
-	import type { AfterNavigate } from "@sveltejs/kit/src/exports/public";
+	import type { AfterNavigate } from "@sveltejs/kit";
 	import GameControls from "$lib/GameControls.svelte";
 	import Chat from "$lib/Chat.svelte";
 
@@ -40,7 +40,9 @@
 
 	beforeNavigate(() => {
 		// console.log(`Play beforeNavigate -- | ${gameState.config.gameId}`);
-		sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
+		if (gameState.config.gameId) {
+			sendMessage(gameState.config.wsClient, buildLeftGameMessage(gameState.config.gameId));
+		}
 		gameState.resetState();
 	});
 

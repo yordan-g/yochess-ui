@@ -15,6 +15,7 @@
 		if (clockState.time === 0) {
 			clockState.stop();
 			const winner = color === "w" ? "b" : "w";
+			if (!gameState.config.gameId) return;
 
 			sendMessage(
 				gameState.config.wsClient,

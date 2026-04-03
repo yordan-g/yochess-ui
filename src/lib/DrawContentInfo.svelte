@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { denyDraw, offerDraw } from "$lib/utils.svelte";
+	import type { GameState } from "$lib/types";
 	import { getGameState } from "$lib/webSocket.svelte";
 
-	let { dialog } = $props();
-	let gameState = getGameState();
+	let { dialog }: { dialog: HTMLDialogElement | null } = $props();
+	let gameState: GameState = getGameState();
 </script>
 
 <div id="draw-c" data-testid="draw-content-info">
@@ -30,7 +31,7 @@
 	#draw-c {
 		display: flex;
 		flex-direction: column;
-		margin: 1em 0em 1em 0em;
+		margin: 1em 0 1em 0;
 	}
 
 	h3 {
